@@ -25,6 +25,9 @@ export default class AppTextField extends Component {
                     clearTextOnFocus={this.props.clearTextOnFocus === undefined ? false : this.props.clearTextOnFocus}
                     secureTextEntry={this.props.secureTextEntry === undefined ? false : this.props.secureTextEntry}
                     enablesReturnKeyAutomatically={this.props.enablesReturnKeyAutomatically === undefined ? true : this.props.enablesReturnKeyAutomatically}
+                    onChangeText={this.props.onChangeText}
+                    onFocus={this.props.onFocus}
+                    onSubmitEditing={this.props.onSubmitEditing}
                 />
             </View>
         );

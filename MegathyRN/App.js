@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from "react";
-import { Platform, StyleSheet, Text, View, AsyncStorage } from "react-native";
+import { Platform, StyleSheet, Text, View, AsyncStorage, StatusBar } from "react-native";
 
 import AppMain from "./src/container/AppMain";
 
@@ -15,7 +15,8 @@ import store from "./src/AppRedux/Reducers/index";
 
 // Navigation
 import Router from "./src/Router/Router";
-import LoginScr from "./src/container/LoginScr";
+import LoginRouter from "./src/Router/LoginRouter";
+// import LoginScr from "./src/container/LoginScr";
 
 // Constant
 import Constants from "./src/Helper/constant";
@@ -24,9 +25,14 @@ export default class App extends Component {
     constructor(props) {
         super(props);
 
-        global.loginKey = "abc";
+        StatusBar.setBarStyle("light-content", true);
+        
+        // Global Variables (App wise scope)        
+        global.loginKey = "";
         global.currentUser = null;
         global.currentAppLanguage = "en";
+
+        // States
         this.state = {
             isLogin: false,
         };
@@ -75,7 +81,7 @@ export default class App extends Component {
         } else {
             return (
                 <Provider store={store}>
-                    <LoginScr onPressLogin={this.onLogin} />
+                    <LoginRouter onPressLogin={this.onLogin} />
                 </Provider>
             );
         }
