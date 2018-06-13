@@ -7,8 +7,6 @@
 import React, { Component } from "react";
 import { Platform, StyleSheet, Text, View, AsyncStorage, StatusBar } from "react-native";
 
-import AppMain from "./src/container/AppMain";
-
 // Redux
 import { Provider, connect } from "react-redux";
 import store from "./src/AppRedux/Reducers/index";
@@ -16,7 +14,6 @@ import store from "./src/AppRedux/Reducers/index";
 // Navigation
 import Router from "./src/Router/Router";
 import LoginRouter from "./src/Router/LoginRouter";
-// import LoginScr from "./src/container/LoginScr";
 
 // Constant
 import Constants from "./src/Helper/constant";

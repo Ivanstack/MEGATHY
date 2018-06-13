@@ -3,16 +3,16 @@ import { Platform, StyleSheet, Text, View } from "react-native";
 
 import { StackNavigator } from "react-navigation";
 
-import LoginScr from "../container/LoginScr";
-import SignUp from "../container/SignUp";
-import ForgotPassword from "../container/ForgotPassword";
+import LoginScreen from "../Containers/LoginScreens/LoginScreen";
+import SignUpScreen from "../Containers/LoginScreens/SignUpScreen";
+import ForgotPasswordScreen from "../Containers/LoginScreens/ForgotPasswordScreen";
 
 // Main Navigation Flow
 const LoginNav = StackNavigator(
     {
-        LoginScr: { screen: LoginScr },
-        SignUp: { screen: SignUp },
-        ForgotPassword: {screen: ForgotPassword},
+        LoginScreen: { screen: LoginScreen },
+        SignUpScreen: { screen: SignUpScreen },
+        ForgotPasswordScreen: {screen: ForgotPasswordScreen},
     },
     {
         headerMode: "none",

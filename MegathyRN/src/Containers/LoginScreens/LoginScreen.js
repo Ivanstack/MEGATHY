@@ -8,22 +8,22 @@ import React, { Component } from "react";
 import { Platform, StyleSheet, AsyncStorage, Dimensions } from "react-native";
 import { Text, View, Image, Button, TouchableOpacity, Alert, ScrollView } from "react-native";
 
-import AppTextField from "../components/AppTextField";
-import constant from "../Helper/constant";
+import AppTextField from "../../Components/AppTextField";
+import constant from "../../Helper/constant";
 
 // Redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as actions from "../AppRedux/Actions/actions";
+import * as actions from "../../AppRedux/Actions/actions";
 
 // Device Info
 var DeviceInfo = require("react-native-device-info");
 
 // Common Utilities
-import CommonUtilities, { validateEmail } from "../Helper/CommonUtilities";
+import CommonUtilities, { validateEmail } from "../../Helper/CommonUtilities";
 
 // Network Utility
-import * as networkUtility from "../Helper/NetworkUtility";
+import * as networkUtility from "../../Helper/NetworkUtility";
 
 // IQKeyboard Manager
 import KeyboardManager from "react-native-keyboard-manager";
@@ -32,7 +32,7 @@ import KeyboardManager from "react-native-keyboard-manager";
 const FBSDK = require("react-native-fbsdk");
 const { LoginManager } = FBSDK;
 
-class LoginScr extends Component {
+class LoginScreen extends Component {
     constructor(props) {
         super(props);
         KeyboardManager.setShouldResignOnTouchOutside(true);
@@ -103,11 +103,11 @@ class LoginScr extends Component {
     }
 
     onPressSignup() {
-        this.props.navigation.navigate("SignUp");
+        this.props.navigation.navigate("SignUpScreen");
     }
 
     onPressForgotPassword() {
-        this.props.navigation.navigate("ForgotPassword");
+        this.props.navigation.navigate("ForgotPasswordScreen");
     }
 
     onFocus() {
@@ -175,7 +175,7 @@ class LoginScr extends Component {
                     {/* // Top Image */}
                     <Image
                         style={{ width: 189, height: 59 }}
-                        source={require("../Resources/Images/LogoTitleImage.png")}
+                        source={require("../../Resources/Images/LogoTitleImage.png")}
                     />
 
                     {/* // FB Button */}
@@ -186,7 +186,7 @@ class LoginScr extends Component {
                         <View style={styles.fbButtonStyle}>
                             <Image
                                 style={{ width: 15, height: 15, marginRight: 15 }}
-                                source={require("../Resources/Images/FBIcon.png")}
+                                source={require("../../Resources/Images/FBIcon.png")}
                             />
                             <Text style={{ color: "#405798", fontFamily: "Ebrima", fontWeight: "bold" }}>
                                 Login with facebook{" "}
@@ -298,7 +298,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(LoginScr);
+)(LoginScreen);
 
 const styles = StyleSheet.create({
     container: {

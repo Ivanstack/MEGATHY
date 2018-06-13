@@ -2,7 +2,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { StyleSheet,ScrollView, Text, View } from 'react-native';
-// import styles from './SideMenu.style';
 import { NavigationActions } from 'react-navigation';
 
 

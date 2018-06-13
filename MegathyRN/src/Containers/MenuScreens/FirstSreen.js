@@ -24,7 +24,7 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as actions from '../AppRedux/Actions/actions';
+import * as actions from '../../AppRedux/Actions/actions';
 
 // const AppSocket = new SocketIO('http://192.168.0.7:1339');
 
@@ -32,7 +32,7 @@ class FirstScreen extends Component {
 
   static navigationOptions = ({ navigation }) => ({
     headerLeft:   <TouchableOpacity onPress={() => navigation.navigate('DrawerToggle')}>
-		                <Image style={{marginLeft:16}} source={require('../Resources/Images/menu.png')}/> 
+		                <Image style={{marginLeft:16}} source={require('../../Resources/Images/menu.png')}/> 
                   </TouchableOpacity>,
     headerStyle: {
       backgroundColor: 'yellow'

@@ -18,26 +18,26 @@ import {
     Dimensions,
 } from "react-native";
 
-import AppTextField from "../components/AppTextField";
-import constant from "../Helper/constant";
+import AppTextField from "../../Components/AppTextField";
+import constant from "../../Helper/constant";
 
 // Redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as actions from "../AppRedux/Actions/actions";
+import * as actions from "../../AppRedux/Actions/actions";
 
 // Device Info
 var DeviceInfo = require("react-native-device-info");
 
 // Common Utilities
-import CommonUtilities, { validateEmail } from "../Helper/CommonUtilities";
+import CommonUtilities, { validateEmail } from "../../Helper/CommonUtilities";
 
 // Network Utility
-import * as networkUtility from "../Helper/NetworkUtility";
+import * as networkUtility from "../../Helper/NetworkUtility";
 
 import KeyboardManager from "react-native-keyboard-manager";
 
-class SignUp extends Component {
+class SignUpScreen extends Component {
     constructor(props) {
         super(props);
 
@@ -201,7 +201,7 @@ class SignUp extends Component {
                     {/* // Top Image */}
                     <Image
                         style={{ width: 189, height: 59 }}
-                        source={require("../Resources/Images/LogoTitleImage.png")}
+                        source={require("../../Resources/Images/LogoTitleImage.png")}
                     />
 
                     {/* // Sign Up Text */}
@@ -318,7 +318,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(SignUp);
+)(SignUpScreen);
 
 const styles = StyleSheet.create({
     container: {

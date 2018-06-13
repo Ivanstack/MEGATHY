@@ -20,11 +20,11 @@ import { connect } from 'react-redux';
 import * as actions from '../AppRedux/Actions/actions';
 
 // Screens
-import LoginScr from '../container/LoginScr'
-import SideMenu from '../container/SideMenu'
+import LoginScreen from '../Containers/LoginScreens/LoginScreen'
+import SideMenu from '../Containers/MenuScreens/SideMenu'
 
-import FirstScreen from '../container/FirstSreen'
-import SecondScreen from '../container/SecondScreen'
+import FirstScreen from '../Containers/MenuScreens/FirstSreen'
+import SecondScreen from '../Containers/MenuScreens/SecondScreen'
 
 // Constant
 import constant from '../Helper/constant'
@@ -106,7 +106,6 @@ const AppDrawer = DrawerNavigator({
 
 // Main Navigation Flow
 const App = StackNavigator({
-  	// LoginScr: { screen: LoginScr },
 	Home: { screen: AppDrawer },
 },{
 	headerMode:'none',
