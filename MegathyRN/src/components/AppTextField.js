@@ -15,6 +15,7 @@ export default class AppTextField extends Component {
                 <TextField
                     ref={this.props.reference === undefined ? "" : this.props.reference}
                     label={this.props.label === undefined ? "" : this.props.label}
+                    value={this.props.value === undefined ? "" : this.props.value}
                     textColor={this.props.textColor === undefined ? "white" : this.props.textColor}
                     baseColor={this.props.baseColor === undefined ? "white" : this.props.baseColor}
                     tintColor={this.props.tintColor === undefined ? "white" : this.props.tintColor}

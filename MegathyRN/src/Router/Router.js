@@ -27,7 +27,7 @@ import FirstScreen from '../Containers/MenuScreens/FirstSreen'
 import SecondScreen from '../Containers/MenuScreens/SecondScreen'
 
 // Constant
-import constant from '../Helper/constant'
+import constant from '../Helper/Constants'
 
 
 // First Screen With Child Element

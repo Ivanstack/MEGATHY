@@ -19,7 +19,7 @@ import {
 } from "react-native";
 
 import AppTextField from "../../Components/AppTextField";
-import constant from "../../Helper/constant";
+import constant from "../../Helper/Constants";
 
 // Redux
 import { bindActionCreators } from "redux";
@@ -136,6 +136,7 @@ class ForgotPasswordScreen extends Component {
                         <AppTextField
                             reference={this.emailRef}
                             label="Email Id"
+                            value={this.state.email}
                             returnKeyType="next"
                             keyboardType="email-address"
                             onSubmitEditing={this.onSubmitEmail}

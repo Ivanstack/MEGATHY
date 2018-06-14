@@ -19,7 +19,7 @@ import {
 } from "react-native";
 
 import AppTextField from "../../Components/AppTextField";
-import constant from "../../Helper/constant";
+import constant from "../../Helper/Constants";
 
 // Redux
 import { bindActionCreators } from "redux";
@@ -70,43 +70,56 @@ class SignUpScreen extends Component {
             phone: "",
             password: "",
             confirmPassword: "",
-            userType: "user"
+            fbId: "",
         };
     }
 
     componentDidUpdate() {}
 
+    componentDidMount() {
+        console.log(this.props.navigation.getParam("fbResult"));
+        let fbResult = this.props.navigation.getParam("fbResult", "noFB");
+        if (fbResult != "noFB") {
+            this.setState({
+                fbId: fbResult["id"],
+                fullName: fbResult["name"],
+                email: fbResult["email"],
+            });
+        }
+    }
+
     onPressSignUp() {
         if (this.state.fullName.trim() === "") {
-            Alert.alert(constant.alertTitle, "Full Name cannot be blank")
+            Alert.alert(constant.alertTitle, "Full Name cannot be blank");
             return;
         }
-        
+
         if (!validateEmail(this.state.email)) {
-            Alert.alert(constant.alertTitle, "Invalid email id")
+            Alert.alert(constant.alertTitle, "Invalid email id");
             return;
         }
 
         if (this.state.phone === "") {
-            Alert.alert(constant.alertTitle, "Please register phone number first")
+            Alert.alert(constant.alertTitle, "Please register phone number first");
             return;
         }
 
-        if (this.state.password === "") {
-            Alert.alert(constant.alertTitle, "Password cannot be blank")
-            return;
-        }
+        if (this.props.navigation.getParam("fbResult") === undefined) {
+            if (this.state.password === "") {
+                Alert.alert(constant.alertTitle, "Password cannot be blank");
+                return;
+            }
 
-        if (this.state.password != this.state.confirmPassword) {
-            Alert.alert(constant.alertTitle, "Password and Confirm Password do not match")
-            return;
+            if (this.state.password != this.state.confirmPassword) {
+                Alert.alert(constant.alertTitle, "Password and Confirm Password do not match");
+                return;
+            }
         }
 
         var registerParameters = {
             userName: this.state.fullName,
             email: this.state.email,
             phone: this.state.email,
-            type: this.state.userType,
             deviceType: Platform.OS === "ios" ? constant.deviceTypeiPhone : constant.deviceTypeAndroid,
             notifyId: constant.notifyId,
             timeZone: constant.timeZone,
@@ -114,10 +127,12 @@ class SignUpScreen extends Component {
             appVersion: DeviceInfo.appVersion === undefined ? "0.0" : DeviceInfo.appVersion,
         };
 
-        if(this.state.userType === "user"){
-            registerParameters[password] = this.state.password
-        }else{
-            registerParameters[facebookId] = "FB_ID"
+        if (this.state.fbId === "") {
+            registerParameters["type"] = "user";
+            registerParameters["password"] = this.state.password;
+        } else {
+            registerParameters["type"] = "facebook";
+            registerParameters["facebookId"] = this.state.fbId;
         }
 
         networkUtility.postRequest(constant.register, registerParameters).then(result => {}, error => {});
@@ -139,13 +154,18 @@ class SignUpScreen extends Component {
     }
 
     onChangeText(text) {
-        ["fullName", "email", "phone", "password", "confirmPassword"]
-            .map(name => ({ name, ref: this[name] }))
-            .forEach(({ name, ref }) => {
-                if (ref.isFocused()) {
-                    this.setState({ [name]: text });
-                }
-            });
+        var arrTextFieldRef = [];
+        if (this.props.navigation.getParam("fbResult") === undefined) {
+            arrTextFieldRef = ["fullName", "email", "phone", "password", "confirmPassword"];
+        } else {
+            arrTextFieldRef = ["fullName", "email", "phone"];
+        }
+
+        arrTextFieldRef.map(name => ({ name, ref: this[name] })).forEach(({ name, ref }) => {
+            if (ref.isFocused()) {
+                this.setState({ [name]: text });
+            }
+        });
     }
 
     onSubmitFullName() {
@@ -192,7 +212,7 @@ class SignUpScreen extends Component {
     }
 
     render() {
-        let { errors = {}, secureTextEntry, email, password } = this.state;
+        let { errors = {}, secureTextEntry, fullName, email, password } = this.state;
 
         return (
             // Main View (Container)
@@ -222,6 +242,7 @@ class SignUpScreen extends Component {
                         <AppTextField
                             reference={this.fullNameRef}
                             label="Full Name"
+                            value={this.state.fullName}
                             returnKeyType="next"
                             onSubmitEditing={this.onSubmitFullName}
                             onChangeText={this.onChangeText}
@@ -232,6 +253,7 @@ class SignUpScreen extends Component {
                         <AppTextField
                             reference={this.emailRef}
                             label="Email Id"
+                            value={this.state.email}
                             returnKeyType="next"
                             keyboardType="email-address"
                             onSubmitEditing={this.onSubmitEmail}
@@ -243,6 +265,7 @@ class SignUpScreen extends Component {
                         <AppTextField
                             reference={this.phoneRef}
                             label="Phone No"
+                            value={this.state.phone}
                             returnKeyType="next"
                             keyboardType="numeric"
                             onSubmitEditing={this.onSubmitPhone}
@@ -250,29 +273,34 @@ class SignUpScreen extends Component {
                             onFocus={this.onFocus}
                         />
 
-                        {/* // Password Text Field */}
-                        <AppTextField
-                            reference={this.passwordRef}
-                            label="Password"
-                            returnKeyType="next"
-                            clearTextOnFocus={true}
-                            secureTextEntry={secureTextEntry}
-                            onSubmitEditing={this.onSubmitPassword}
-                            onChangeText={this.onChangeText}
-                            onFocus={this.onFocus}
-                        />
-
-                        {/* // Confirm Password Text Field */}
-                        <AppTextField
-                            reference={this.confirmPasswordRef}
-                            label="Confirm Password"
-                            returnKeyType="done"
-                            clearTextOnFocus={true}
-                            secureTextEntry={secureTextEntry}
-                            onSubmitEditing={this.onSubmitConfirmPassword}
-                            onChangeText={this.onChangeText}
-                            onFocus={this.onFocus}
-                        />
+                        {this.props.navigation.getParam("fbResult") === undefined ? (
+                            // {/* // Password Text Field */}
+                            <View>
+                                <AppTextField
+                                    reference={this.passwordRef}
+                                    label="Password"
+                                    value={this.state.password}
+                                    returnKeyType="next"
+                                    clearTextOnFocus={true}
+                                    secureTextEntry={secureTextEntry}
+                                    onSubmitEditing={this.onSubmitPassword}
+                                    onChangeText={this.onChangeText}
+                                    onFocus={this.onFocus}
+                                />
+                                // {/* // Confirm Password Text Field */}
+                                <AppTextField
+                                    reference={this.confirmPasswordRef}
+                                    label="Confirm Password"
+                                    value={this.state.confirmPassword}
+                                    returnKeyType="done"
+                                    clearTextOnFocus={true}
+                                    secureTextEntry={secureTextEntry}
+                                    onSubmitEditing={this.onSubmitConfirmPassword}
+                                    onChangeText={this.onChangeText}
+                                    onFocus={this.onFocus}
+                                />
+                            </View>
+                        ) : null}
                     </View>
 
                     {/* // Back and SignU[] Buttons View */}
@@ -280,23 +308,13 @@ class SignUpScreen extends Component {
                         style={{ width: "80%", flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}
                     >
                         {/* // Back Button */}
-                        <TouchableOpacity
-                            style={styles.signUpButtonStyle}
-                            onPress={this.onPressBack}
-                        >
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
-                                Back
-                            </Text>
+                        <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressBack}>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Back</Text>
                         </TouchableOpacity>
 
                         {/* // Sign Up Button */}
-                        <TouchableOpacity
-                            style={styles.signUpButtonStyle}
-                            onPress={this.onPressSignUp}
-                        >
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
-                                Sign Up
-                            </Text>
+                        <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressSignUp}>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Sign Up</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>

@@ -16,7 +16,7 @@ import Router from "./src/Router/Router";
 import LoginRouter from "./src/Router/LoginRouter";
 
 // Constant
-import Constants from "./src/Helper/constant";
+import Constants from "./src/Helper/Constants";
 
 export default class App extends Component {
     constructor(props) {

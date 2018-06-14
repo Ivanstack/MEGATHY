@@ -9,7 +9,7 @@ import { Platform, StyleSheet, AsyncStorage, Dimensions } from "react-native";
 import { Text, View, Image, Button, TouchableOpacity, Alert, ScrollView } from "react-native";
 
 import AppTextField from "../../Components/AppTextField";
-import constant from "../../Helper/constant";
+import constant from "../../Helper/Constants";
 
 // Redux
 import { bindActionCreators } from "redux";
@@ -28,9 +28,11 @@ import * as networkUtility from "../../Helper/NetworkUtility";
 // IQKeyboard Manager
 import KeyboardManager from "react-native-keyboard-manager";
 
+// Mics Constant
+
 // FBSDK
 const FBSDK = require("react-native-fbsdk");
-const { LoginManager } = FBSDK;
+const { LoginManager, GraphRequest, GraphRequestManager, AccessToken } = FBSDK;
 
 class LoginScreen extends Component {
     constructor(props) {
@@ -63,6 +65,13 @@ class LoginScreen extends Component {
         // AsyncStorage.setItem(constant.LOGIN_STATUS, "true");
     }
 
+    componentDidMount(){
+        // this.setState({
+        //     email: "",
+        //     password: ""
+        // })
+    }
+
     onPressLogin() {
         if (!validateEmail(this.state.email)) {
             Alert.alert(constant.alertTitle, "Invalid email id");
@@ -89,11 +98,40 @@ class LoginScreen extends Component {
 
     onPressLoginWithFB() {
         LoginManager.logInWithReadPermissions(["public_profile"]).then(
-            function(result) {
+            result => {
                 if (result.isCancelled) {
                     alert("Login cancelled");
                 } else {
-                    alert("Login success with permissions: " + result.grantedPermissions.toString());
+                    AccessToken.getCurrentAccessToken().then(data => {
+                        let accessToken = data.accessToken;
+
+                        const responseInfoCallback = (error, result) => {
+                            if (error) {
+                                console.log(error);
+                                alert("Error fetching data: " + error.toString());
+                            } else {
+                                console.log(result);
+                                this.props.navigation.navigate("SignUpScreen",{fbResult:result})
+                                // alert("Success fetching data: " + JSON.stringify(result));
+                            }
+                        };
+
+                        const infoRequest = new GraphRequest(
+                            "/me",
+                            {
+                                accessToken: accessToken,
+                                parameters: {
+                                    fields: {
+                                        string: "email,name,first_name,middle_name,last_name",
+                                    },
+                                },
+                            },
+                            responseInfoCallback
+                        );
+
+                        // Start the graph request.
+                        new GraphRequestManager().addRequest(infoRequest).start();
+                    });
                 }
             },
             function(error) {
@@ -228,6 +266,7 @@ class LoginScreen extends Component {
                         <AppTextField
                             reference={this.emailRef}
                             label="Email Id"
+                            value={this.state.email}
                             returnKeyType="next"
                             keyboardType="email-address"
                             onSubmitEditing={this.onSubmitEmail}
@@ -239,6 +278,7 @@ class LoginScreen extends Component {
                         <AppTextField
                             reference={this.passwordRef}
                             label="Password"
+                            value={this.state.password}
                             returnKeyType="done"
                             clearTextOnFocus={true}
                             secureTextEntry={secureTextEntry}
