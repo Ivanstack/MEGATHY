@@ -23,12 +23,21 @@ import * as actions from '../AppRedux/Actions/actions';
 import LoginScreen from '../Containers/LoginScreens/LoginScreen'
 import SideMenu from '../Containers/MenuScreens/SideMenu'
 
+import HomeScreen from '../Containers/MenuScreens/HomeScreen'
+import SubCategoryScreen from '../Containers/MenuScreens/SubCategory/SubCategoryScreen'
 import FirstScreen from '../Containers/MenuScreens/FirstSreen'
 import SecondScreen from '../Containers/MenuScreens/SecondScreen'
 
 // Constant
 import constant from '../Helper/Constants'
 
+// Home Screen With Child Element
+const HomeScreenNav = StackNavigator({
+	HomeScreen: { screen: HomeScreen },
+	SubCategoryScreen: { screen: SubCategoryScreen },
+}, {
+	headerMode:'screen',
+})
 
 // First Screen With Child Element
 const FirstScreenNav = StackNavigator({
@@ -46,6 +55,7 @@ const SecondScreenNav = StackNavigator({
 
 // Side Menu With Menu Items
 const AppDrawer = DrawerNavigator({
+	HomeScreen: { screen: HomeScreenNav },
 	FirstScreen: { screen: FirstScreenNav },
 	SecondScreen: { screen: SecondScreenNav},
 	}, {
@@ -56,7 +66,7 @@ const AppDrawer = DrawerNavigator({
 			backgroundColor: 'yellow'
 		}	
 	},
-	headerMode: 'screen',
+	headerMode: 'none',
 	contentComponent: (props) => (
 		// <View style={{flex:1, backgroundColor:'green'}}>
 		<ScrollView >
@@ -112,7 +122,7 @@ const App = StackNavigator({
 	navigationOptions: {
 		gesturesEnabled: false,	
 		headerStyle: {
-			backgroundColor: 'yellow'
+			backgroundColor: constant.themeColor
 		} 
 	}
 } );
