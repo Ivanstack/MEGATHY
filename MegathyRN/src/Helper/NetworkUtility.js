@@ -1,6 +1,6 @@
 var axios = require("axios");
 var DeviceInfo = require("react-native-device-info");
-import constants from "./constant";
+import constants from "./Constants";
 
 export function setDefaultAPIConfig() {
     let axiosDefaults = require("axios/lib/defaults");

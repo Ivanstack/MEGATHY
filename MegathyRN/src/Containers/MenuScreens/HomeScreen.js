@@ -88,7 +88,7 @@ class HomeScreen extends Component {
     console.log("App State: ", AppState.currentState);
 
     let categoryData = await networkUtility.getRequest(constant.getCategory);
-    let bannerData = await networkUtility.getRequest(constant.banners);
+    let bannerData = await networkUtility.getRequest(constant.getBanners);
     console.log("Category Data :===> ", bannerData.data.data);
     this.setState({
       categoryData: categoryData.data.data.data,
@@ -109,7 +109,7 @@ class HomeScreen extends Component {
 
   async getCategoryAndBannerList() {
     let categoryData = await networkUtility.getRequest(constant.getCategory);
-    let bannerData = await networkUtility.getRequest(constant.banners);
+    let bannerData = await networkUtility.getRequest(constant.getBanners);
     console.log("Category Data :===> ", bannerData);
     this.setState({
       categoryData: categoryData.data.data.data
