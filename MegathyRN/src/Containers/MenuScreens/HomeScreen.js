@@ -21,7 +21,8 @@ import {
   FlatList,
   ScrollView,
   Dimensions,
-  RefreshControl
+  RefreshControl,
+  ActivityIndicator
 } from "react-native";
 
 // Redux
@@ -58,8 +59,11 @@ class HomeScreen extends Component {
           : false
     };
 
-    // Temp Prop
-    this.items = ["January", "February", "March", "April", "May"];
+    // Class Props
+    (this.currentPage = 1),
+      (this.lastPage = 0),
+      // Temp Prop
+      (this.items = ["January", "February", "March", "April", "May"]);
     // ----------------------------
   }
 
@@ -115,13 +119,15 @@ class HomeScreen extends Component {
   async componentDidMount() {
     console.log("App State: ", AppState.currentState);
 
-    let categoryData = await networkUtility.getRequest(constant.getCategory);
-    let bannerData = await networkUtility.getRequest(constant.getBanners);
-    console.log("Category Data :===> ", bannerData.data.data);
-    this.setState({
-      categoryData: categoryData.data.data.data,
-      bannerData: bannerData.data.data
-    });
+    this.getCategoryAndBannerData(false);
+
+    // let categoryData = await networkUtility.getRequest(constant.getCategory);
+    // let bannerData = await networkUtility.getRequest(constant.getBanners);
+    // console.log("Category Data :===> ", bannerData.data.data);
+    // this.setState({
+    //   categoryData: categoryData.data.data.data,
+    //   bannerData: bannerData.data.data
+    // });
   }
 
   componentWillUnmount() {
@@ -164,28 +170,43 @@ class HomeScreen extends Component {
     // AppSocket.connect()
   };
 
-  async getCategoryAndBannerData() {
-    let categoryData = networkUtility.getRequest(constant.getCategory).then(
+  callLoadMore = () => {
+    if (this.currentPage < this.lastPage) {
+      this.getCategoryAndBannerData(true);
+    }
+  };
+
+  getCategoryData() {
+    let getCategoryUrl = constant.getCategory + categoryPage;
+    console.log("getCategoryUrl :===> ", getCategoryUrl);
+
+    let categoryData = networkUtility.getRequest(getCategoryUrl).then(
       result => {
         // Hide Loading View
-        this.setState({ isRefreshing: !this.state.isRefreshing });
 
         let statusCode = 0;
         let data = null;
 
         if (result.response) {
           statusCode = result.response.status;
-          data = result.response.data;
+          data = result.response.data.data;
         } else {
           statusCode = result.status;
-          data = result.data;
+          data = result.data.data;
         }
 
         switch (true) {
           case statusCode === 200:
             // console.log("Get Category :======> ",data.data.data);
-            console.log("Get Category :======> ",data);
-            
+            console.log("Get Category :======> ", data);
+            this.currentPage = data.current_page;
+            this.lastPage = data.last_page;
+            this.setState({
+              categoryData: this.state.categoryData.concat(data.data),
+              isRefreshing: !this.state.isRefreshing
+              // lastPage: data.last_page,
+              // currentPage: data.current_page
+            });
             break;
 
           case statusCode >= 400 && statusCode < 500:
@@ -222,18 +243,157 @@ class HomeScreen extends Component {
         }
       }
     );
-    let bannerData = await networkUtility.getRequest(constant.getBanners);
-    console.log("Category Data :===> ", bannerData.data.data);
-    this.setState({
-      categoryData: categoryData.data.data.data,
-      bannerData: bannerData.data.data,
-      isRefreshing: false
-    });
+  }
+
+  async getCategoryAndBannerData(isLoadMore) {
+    let categoryPage = this.currentPage;
+
+    if (isLoadMore && this.currentPage < this.lastPage) {
+      categoryPage = categoryPage + 1;
+    }
+
+    let getCategoryUrl = constant.getCategory + categoryPage;
+    console.log("getCategoryUrl :===> ", getCategoryUrl);
+
+    let categoryData = networkUtility.getRequest(getCategoryUrl).then(
+      result => {
+        // Hide Loading View
+
+        let statusCode = 0;
+        let data = null;
+
+        if (result.response) {
+          statusCode = result.response.status;
+          data = result.response.data.data;
+        } else {
+          statusCode = result.status;
+          data = result.data.data;
+        }
+
+        switch (true) {
+          case statusCode === 200:
+            // console.log("Get Category :======> ",data.data.data);
+            console.log("Get Category :======> ", data);
+            this.currentPage = data.current_page;
+            this.lastPage = data.last_page;
+            this.setState({
+              categoryData: [...this.state.categoryData, ...data.data],
+              isRefreshing: !this.state.isRefreshing
+              // lastPage: data.last_page,
+              // currentPage: data.current_page
+            });
+            break;
+
+          case statusCode >= 400 && statusCode < 500:
+            if (
+              global.currentAppLanguage != "en" &&
+              data["messageAr"] != undefined
+            ) {
+              alert(data["messageAr"]);
+            } else {
+              alert(data["message"]);
+            }
+            break;
+          case statusCode >= 500:
+            console.log("Internal Server Error: " + data);
+            alert("Something went wrong, plese try again");
+            break;
+          default:
+            console.log("Unknown Status Code: " + statusCode.toString);
+            alert("Something went wrong, plese try again");
+            break;
+        }
+        // }
+      },
+      error => {
+        // Show Loading View
+        console.log("\nStatus Code: " + error.status);
+        console.log("\nError Message: " + error.message);
+        if (error.response.status != 500) {
+          if (global.currentAppLanguage === "en") {
+          } else {
+          }
+        } else {
+          console.log(error.message);
+        }
+      }
+    );
+
+    let bannerData = networkUtility.getRequest(constant.getBanners).then(
+      result => {
+        // Hide Loading View
+
+        let statusCode = 0;
+        let data = null;
+
+        if (result.response) {
+          statusCode = result.response.status;
+          data = result.response.data;
+        } else {
+          statusCode = result.status;
+          data = result.data;
+        }
+
+        switch (true) {
+          case statusCode === 200:
+            // console.log("Get Category :======> ",data.data.data);
+            console.log("Get Banner Data :======> ", data);
+            this.setState({ bannerData: data.data });
+            break;
+
+          case statusCode >= 400 && statusCode < 500:
+            if (
+              global.currentAppLanguage != "en" &&
+              data["messageAr"] != undefined
+            ) {
+              alert(data["messageAr"]);
+            } else {
+              alert(data["message"]);
+            }
+            break;
+          case statusCode >= 500:
+            console.log("Internal Server Error: " + data);
+            alert("Something went wrong, plese try again");
+            break;
+          default:
+            console.log("Unknown Status Code: " + statusCode.toString);
+            alert("Something went wrong, plese try again");
+            break;
+        }
+        // }
+      },
+      error => {
+        // Show Loading View
+        console.log("\nStatus Code: " + error.status);
+        console.log("\nError Message: " + error.message);
+        if (error.response.status != 500) {
+          if (global.currentAppLanguage === "en") {
+          } else {
+          }
+        } else {
+          console.log(error.message);
+        }
+      }
+    );
+
+    // let bannerData = await networkUtility.getRequest(constant.getBanners);
+    // console.log("Category Data :===> ", bannerData.data.data);
+    // this.setState({
+    //   categoryData: categoryData.data.data.data,
+    //   bannerData: bannerData.data.data,
+    //   isRefreshing: false
+    // });
   }
 
   _onRefresh() {
-    this.setState({ isRefreshing: true });
-    this.getCategoryAndBannerData();
+    this.currentPage = 1;
+    this.setState(
+      // { isRefreshing: true, currentPage: 1, categoryData: [] },
+      { isRefreshing: true, categoryData: [] },
+      () => {
+        this.getCategoryAndBannerData(false);
+      }
+    );
   }
 
   _onPressCategory(item) {
@@ -242,7 +402,28 @@ class HomeScreen extends Component {
     if (item.subCategoryCount > 0) {
       this.props.navigation.navigate("HomeScreen", { category: item });
     } else {
-      this.props.navigation.navigate("SubCategoryScreen", { category: item });
+      this.props.navigation.navigate("ProductScreen", { category: item });
+    }
+  }
+
+  _renderFooter() {
+    if (this.currentPage < this.lastPage) {
+      return (
+        <View style={styles.footer}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={this.callLoadMore}
+            style={styles.loadMoreBtn}
+          >
+            <Text style={styles.btnText}>Load More</Text>
+            {this.state.fetching_from_server ? (
+              <ActivityIndicator color="white" style={{ marginLeft: 8 }} />
+            ) : null}
+          </TouchableOpacity>
+        </View>
+      );
+    } else {
+      return <View />;
     }
   }
 
@@ -284,7 +465,7 @@ class HomeScreen extends Component {
               }}
             >
               {" "}
-              {item.subCategoryCount}
+              {item.productCount}
               {" Products"}
             </Text>
           </View>
@@ -429,12 +610,15 @@ class HomeScreen extends Component {
                     this.categoryList = flatList;
                   }}
                   data={this.state.categoryData}
-                  onEndReachedThreshold={0.5}
                   keyExtractor={(item, index) => item.PkId.toString()}
                   renderItem={this._renderCategoryItem.bind(this)}
                   showsHorizontalScrollIndicator={false}
                   removeClippedSubviews={false}
                   directionalLockEnabled
+                  // onEndReached={this.callLoadMore.bind(this)}
+                  // onEndReachedThreshold={0.1}
+
+                  ListFooterComponent={this._renderFooter.bind(this)}
                 />
               ) : // </View>
               null}
@@ -524,5 +708,28 @@ const styles = StyleSheet.create({
   },
   pagination: {
     bottom: 5
+  },
+  footer: {
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    borderTopWidth: 1.5,
+    borderTopColor: "black"
+  },
+
+  loadMoreBtn: {
+    padding: 10,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    borderRadius: 4,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+
+  btnText: {
+    color: "white",
+    fontSize: 15,
+    textAlign: "center"
   }
 });

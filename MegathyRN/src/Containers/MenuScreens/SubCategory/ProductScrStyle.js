@@ -90,5 +90,43 @@ export default StyleSheet.create({
     width: "48%",
     marginLeft: 5,
     marginBottom: 5
+  },
+  selectedProductQuentity: {
+    width: 24,
+    height: 24,
+    margin: 4
+  },
+  productSelectBtns: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "20%",
+    justifyContent: "space-between",
+    flexDirection: "row"
+  },
+  showSelectedProductQuentityView: {
+    width: 24,
+    height: 24,
+    margin: 4,
+    backgroundColor: "green",
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: "transparent",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  cartImg: {
+    width: 30,
+    height: 30,
+    marginLeft: 20,
+    // margin: 5
+  },
+  cartContainer: {
+    backgroundColor: constant.themeColor,//"#F5F5F5",
+    width: "100%",
+    height: "8%",
+    // justifyContent:"space-between",
+    flexDirection: 'row',
   }
 });

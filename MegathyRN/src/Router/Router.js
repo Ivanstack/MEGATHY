@@ -24,7 +24,7 @@ import LoginScreen from '../Containers/LoginScreens/LoginScreen'
 import SideMenu from '../Containers/MenuScreens/SideMenu'
 
 import HomeScreen from '../Containers/MenuScreens/HomeScreen'
-import SubCategoryScreen from '../Containers/MenuScreens/SubCategory/SubCategoryScreen'
+import ProductScreen from '../Containers/MenuScreens/SubCategory/ProductScreen'
 import FirstScreen from '../Containers/MenuScreens/FirstSreen'
 import SecondScreen from '../Containers/MenuScreens/SecondScreen'
 
@@ -34,7 +34,7 @@ import constant from '../Helper/Constants'
 // Home Screen With Child Element
 const HomeScreenNav = StackNavigator({
 	HomeScreen: { screen: HomeScreen },
-	SubCategoryScreen: { screen: SubCategoryScreen },
+	ProductScreen: { screen: ProductScreen },
 }, {
 	headerMode:'screen',
 })

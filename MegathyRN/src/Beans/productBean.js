@@ -1,0 +1,23 @@
+var product = {
+    "PkId": "",
+    "FkCategoryId": 0,
+    "FkSubCategoryId": null,
+    "productName": "",
+    "productNameAr": "",
+    "productImage": "",
+    "productQuntity": 0,
+    "productUnit": "",
+    "productUnitAr": "",
+    "productPrice": null,
+    "productCreatedAt": "",
+    "priority": 0,
+    "deleted_at": null,
+    "categoryName": "",
+    "categoryNameAr": "",
+    "subCategoryName": null,
+    "subCategoryNameAr": null,
+    "productPriceId": 0,
+    "productImageUrl": "",
+    "product_price": [],
+
+};
