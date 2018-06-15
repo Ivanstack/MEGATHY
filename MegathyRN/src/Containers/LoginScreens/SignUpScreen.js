@@ -35,6 +35,10 @@ import CommonUtilities, { validateEmail } from "../../Helper/CommonUtilities";
 // Network Utility
 import * as networkUtility from "../../Helper/NetworkUtility";
 
+// Loading View
+import Spinner from "react-native-loading-spinner-overlay";
+
+// IQKeyboard Manager
 import KeyboardManager from "react-native-keyboard-manager";
 
 class SignUpScreen extends Component {
@@ -71,13 +75,13 @@ class SignUpScreen extends Component {
             password: "",
             confirmPassword: "",
             fbId: "",
+            visible: false,
         };
     }
 
     componentDidUpdate() {}
 
     componentDidMount() {
-        console.log(this.props.navigation.getParam("fbResult"));
         let fbResult = this.props.navigation.getParam("fbResult", "noFB");
         if (fbResult != "noFB") {
             this.setState({
@@ -135,7 +139,40 @@ class SignUpScreen extends Component {
             registerParameters["facebookId"] = this.state.fbId;
         }
 
-        networkUtility.postRequest(constant.register, registerParameters).then(result => {}, error => {});
+        // Show Loading View
+        this.setState({ visible: true });
+
+        networkUtility.postRequest(constant.register, registerParameters).then(
+            result => {
+                // Hide Loading View
+                this.setState({ visible: false });
+
+                AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data["data"]["userData"]));
+                AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data["data"]["settingData"]));
+                AsyncStorage.removeItem(constant.keyCurrentStore);
+                console.log("User Login Success");
+                this.props.navigation.navigate("CityScreen");
+            },
+            error => {
+                // Hide Loading View
+                this.setState({ visible: false });
+
+                console.log("\nStatus Code: " + error.status);
+                console.log("\nError Message: " + error.message);
+                if (error.status != 500) {
+                    if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
+                        alert(error.data["messageAr"]);
+                    } else {
+                        setTimeout(() => {
+                            alert(error.data["message"]);
+                        }, 200);
+                    }
+                } else {
+                    console.log("Internal Server Error: " + error.data);
+                    alert("Something went wrong, plese try again");
+                }
+            }
+        );
     }
 
     onPressBack() {
@@ -217,6 +254,12 @@ class SignUpScreen extends Component {
         return (
             // Main View (Container)
             <View style={styles.container}>
+                <Spinner
+                    visible={this.state.visible}
+                    cancelable={true}
+                    // textContent={"Please wait..."}
+                    textStyle={{ color: "#FFF" }}
+                />
                 <ScrollView style={{ width: "100%" }} contentContainerStyle={styles.scrollView}>
                     {/* // Top Image */}
                     <Image

@@ -17,6 +17,8 @@ import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
 
+  private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
+
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
     public boolean getUseDeveloperSupport() {
@@ -28,7 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new VectorIconsPackage(),
-            new FBSDKPackage(),
+            new FBSDKPackage(mCallbackManager),
             new RNDeviceInfo(),
             new NavigationReactPackage()
       );
@@ -39,6 +41,10 @@ public class MainApplication extends Application implements ReactApplication {
       return "index";
     }
   };
+
+  protected static CallbackManager getCallbackManager() {
+    return mCallbackManager;
+  }
 
   @Override
   public ReactNativeHost getReactNativeHost() {

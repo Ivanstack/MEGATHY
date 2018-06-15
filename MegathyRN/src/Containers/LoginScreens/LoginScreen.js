@@ -28,7 +28,8 @@ import * as networkUtility from "../../Helper/NetworkUtility";
 // IQKeyboard Manager
 import KeyboardManager from "react-native-keyboard-manager";
 
-// Mics Constant
+// Loading View
+import Spinner from "react-native-loading-spinner-overlay";
 
 // FBSDK
 const FBSDK = require("react-native-fbsdk");
@@ -43,6 +44,7 @@ class LoginScreen extends Component {
         this.onPressSignup = this.onPressSignup.bind(this);
         this.onPressForgotPassword = this.onPressForgotPassword.bind(this);
         this.onPressLoginWithFB = this.onPressLoginWithFB.bind(this);
+        this.checkFBIdExistance = this.checkFBIdExistance.bind(this);
         this.onPressLogin = this.onPressLogin.bind(this);
         this.onFocus = this.onFocus.bind(this);
         this.onChangeText = this.onChangeText.bind(this);
@@ -57,6 +59,7 @@ class LoginScreen extends Component {
             secureTextEntry: true,
             email: "",
             password: "",
+            visible: false,
         };
     }
 
@@ -65,11 +68,11 @@ class LoginScreen extends Component {
         // AsyncStorage.setItem(constant.LOGIN_STATUS, "true");
     }
 
-    componentDidMount(){
-        // this.setState({
-        //     email: "",
-        //     password: ""
-        // })
+    componentDidMount() {
+        this.setState({
+            email: "test@user.com",
+            password: "123456",
+        });
     }
 
     onPressLogin() {
@@ -93,10 +96,45 @@ class LoginScreen extends Component {
             appVersion: DeviceInfo.appVersion === undefined ? "0.0" : DeviceInfo.appVersion,
         };
 
-        networkUtility.postRequest(constant.login, loginParameters).then(result => {}, error => {});
+        // Show Loading View
+        this.setState({ visible: true });
+
+        networkUtility.postRequest(constant.login, loginParameters).then(
+            result => {
+                // Hide Loading View
+                this.setState({ visible: false });
+
+                AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data["data"]["userData"]));
+                AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data["data"]["settingData"]));
+                AsyncStorage.removeItem(constant.keyCurrentStore);
+                console.log("User Login Success");
+                this.props.navigation.navigate("CityScreen");
+            },
+            error => {
+                // Hide Loading View
+                this.setState({ visible: false });
+
+                console.log("\nStatus Code: " + error.status);
+                console.log("\nError Message: " + error.message);
+                if (error.status != 500) {
+                    if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
+                        alert(error.data["messageAr"]);
+                    } else {
+                        setTimeout(() => {
+                            alert(error.data["message"]);
+                        }, 200);
+                    }
+                } else {
+                    console.log("Internal Server Error: " + error.data);
+                    alert("Something went wrong, plese try again");
+                }
+            }
+        );
     }
 
     onPressLoginWithFB() {
+        // Show Loading View
+        this.setState({ visible: true });
         LoginManager.logInWithReadPermissions(["public_profile"]).then(
             result => {
                 if (result.isCancelled) {
@@ -111,8 +149,7 @@ class LoginScreen extends Component {
                                 alert("Error fetching data: " + error.toString());
                             } else {
                                 console.log(result);
-                                this.props.navigation.navigate("SignUpScreen",{fbResult:result})
-                                // alert("Success fetching data: " + JSON.stringify(result));
+                                this.props.navigation.navigate("SignUpScreen", { fbResult: result });
                             }
                         };
 
@@ -126,7 +163,7 @@ class LoginScreen extends Component {
                                     },
                                 },
                             },
-                            responseInfoCallback
+                            this.checkFBIdExistance
                         );
 
                         // Start the graph request.
@@ -134,11 +171,66 @@ class LoginScreen extends Component {
                     });
                 }
             },
-            function(error) {
+            error => {
                 alert("Login fail with error: " + error);
             }
         );
     }
+
+    checkFBIdExistance = (error, fbResult) => {
+        if (error) {
+            console.log(error);
+            alert("Error fetching data: " + error.toString());
+        } else {
+            console.log(fbResult);
+            var checkFBIdParameters = {
+                facebookId: fbResult["id"],
+                deviceType: Platform.OS === "ios" ? constant.deviceTypeiPhone : constant.deviceTypeAndroid,
+                notifyId: constant.notifyId,
+                timeZone: constant.timeZone,
+                appVersion: DeviceInfo.appVersion === undefined ? "0.0" : DeviceInfo.appVersion,
+            };
+
+            networkUtility.postRequest(constant.verifyFBId, checkFBIdParameters).then(
+                result => {
+                    // Hide Loading View
+                    this.setState({ visible: false });
+
+                    if (result.status == 206) {
+                        this.props.navigation.navigate("SignUpScreen", { fbResult: fbResult });
+                    } else {
+                        AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data["data"]["userData"]));
+                        AsyncStorage.setItem(
+                            constant.keyCurrentSettings,
+                            JSON.stringify(result.data["data"]["settingData"])
+                        );
+                        AsyncStorage.removeItem(constant.keyCurrentStore);
+                        console.log("User Login Success");
+                        this.props.navigation.navigate("CityScreen");
+                    }
+                },
+                error => {
+                    // Show Loading View
+                    this.setState({ visible: false });
+
+                    console.log("\nStatus Code: " + error.status);
+                    console.log("\nError Message: " + error.message);
+                    if (error.status != 500) {
+                        if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
+                            alert(error.data["messageAr"]);
+                        } else {
+                            setTimeout(() => {
+                                alert(error.data["message"]);
+                            }, 200);
+                        }
+                    } else {
+                        console.log("Internal Server Error: " + error.data);
+                        alert("Something went wrong, plese try again");
+                    }
+                }
+            );
+        }
+    };
 
     onPressSignup() {
         this.props.navigation.navigate("SignUpScreen");
@@ -209,6 +301,12 @@ class LoginScreen extends Component {
         return (
             // Main View (Container)
             <View style={styles.container}>
+                <Spinner
+                    visible={this.state.visible}
+                    cancelable={true}
+                    // textContent={"Please wait..."}
+                    textStyle={{ color: "#FFF" }}
+                />
                 <ScrollView style={{ width: "100%" }} contentContainerStyle={styles.scrollView}>
                     {/* // Top Image */}
                     <Image

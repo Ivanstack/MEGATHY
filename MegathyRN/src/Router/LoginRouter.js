@@ -6,13 +6,19 @@ import { StackNavigator } from "react-navigation";
 import LoginScreen from "../Containers/LoginScreens/LoginScreen";
 import SignUpScreen from "../Containers/LoginScreens/SignUpScreen";
 import ForgotPasswordScreen from "../Containers/LoginScreens/ForgotPasswordScreen";
+import CityScreen from "../Containers/PostLoginScreens/CityScreen";
+import AreaScreen from "../Containers/PostLoginScreens/AreaScreen";
+import StoreScreen from "../Containers/PostLoginScreens/StoreScreen";
 
 // Main Navigation Flow
 const LoginNav = StackNavigator(
     {
         LoginScreen: { screen: LoginScreen },
         SignUpScreen: { screen: SignUpScreen },
-        ForgotPasswordScreen: {screen: ForgotPasswordScreen},
+        ForgotPasswordScreen: { screen: ForgotPasswordScreen },
+        CityScreen: { screen: CityScreen },
+        AreaScreen: { screen: AreaScreen },
+        StoreScreen: { screen: StoreScreen},
     },
     {
         headerMode: "none",

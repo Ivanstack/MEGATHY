@@ -35,6 +35,10 @@ import CommonUtilities, { validateEmail } from "../../Helper/CommonUtilities";
 // Network Utility
 import * as networkUtility from "../../Helper/NetworkUtility";
 
+// Loading View
+import Spinner from "react-native-loading-spinner-overlay";
+
+// IQKeyboard Manager
 import KeyboardManager from "react-native-keyboard-manager";
 
 class ForgotPasswordScreen extends Component {
@@ -45,7 +49,7 @@ class ForgotPasswordScreen extends Component {
         KeyboardManager.setToolbarPreviousNextButtonEnable(false);
 
         this.onPressBack = this.onPressBack.bind(this);
-        this.onPressReset = this.onPressReset.bind(this);        
+        this.onPressReset = this.onPressReset.bind(this);
         this.onFocus = this.onFocus.bind(this);
         this.onChangeText = this.onChangeText.bind(this);
         this.onSubmitEmail = this.onSubmitEmail.bind(this);
@@ -53,6 +57,7 @@ class ForgotPasswordScreen extends Component {
 
         this.state = {
             email: "",
+            visible: false,
         };
     }
 
@@ -60,7 +65,7 @@ class ForgotPasswordScreen extends Component {
 
     onPressReset() {
         if (!validateEmail(this.state.email)) {
-            Alert.alert(constant.alertTitle, "Invalid email id")
+            Alert.alert(constant.alertTitle, "Invalid email id");
             return;
         }
         var forgotPasswordParameters = {
@@ -68,7 +73,34 @@ class ForgotPasswordScreen extends Component {
             vendorId: DeviceInfo.getUniqueID(),
         };
 
-        networkUtility.postRequest(constant.forgotPassword, forgotPasswordParameters).then(result => {}, error => {});
+        // Show Loading View
+        this.setState({ visible: true });
+
+        networkUtility.postRequest(constant.forgotPassword, forgotPasswordParameters).then(
+            result => {
+                // Hide Loading View
+                this.setState({ visible: false });
+            },
+            error => {
+                // Hide Loading View
+                this.setState({ visible: false });
+
+                console.log("\nStatus Code: " + error.status);
+                console.log("\nError Message: " + error.message);
+                if (error.status != 500) {
+                    if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
+                        alert(error.data["messageAr"]);
+                    } else {
+                        setTimeout(() => {
+                            alert(error.data["message"]);
+                        }, 200);
+                    }
+                } else {
+                    console.log("Internal Server Error: " + error.data);
+                    alert("Something went wrong, plese try again");
+                }
+            }
+        );
     }
 
     onPressBack() {
@@ -87,18 +119,16 @@ class ForgotPasswordScreen extends Component {
     }
 
     onChangeText(text) {
-        ["email"]
-            .map(name => ({ name, ref: this[name] }))
-            .forEach(({ name, ref }) => {
-                if (ref.isFocused()) {
-                    this.setState({ [name]: text });
-                }
-            });
+        ["email"].map(name => ({ name, ref: this[name] })).forEach(({ name, ref }) => {
+            if (ref.isFocused()) {
+                this.setState({ [name]: text });
+            }
+        });
     }
 
     onSubmitEmail() {
-        this.email.blur()
-        this.onPressReset()
+        this.email.blur();
+        this.onPressReset();
     }
 
     updateRef(name, ref) {
@@ -111,6 +141,12 @@ class ForgotPasswordScreen extends Component {
         return (
             // Main View (Container)
             <View style={styles.container}>
+                <Spinner
+                    visible={this.state.visible}
+                    cancelable={true}
+                    // textContent={"Please wait..."}
+                    textStyle={{ color: "#FFF" }}
+                />
                 <ScrollView style={{ width: "100%" }} contentContainerStyle={styles.scrollView}>
                     {/* // Top Image */}
                     <Image
@@ -150,23 +186,13 @@ class ForgotPasswordScreen extends Component {
                         style={{ width: "80%", flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}
                     >
                         {/* // Back Button */}
-                        <TouchableOpacity
-                            style={styles.signUpButtonStyle}
-                            onPress={this.onPressBack}
-                        >
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
-                                Back
-                            </Text>
+                        <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressBack}>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Back</Text>
                         </TouchableOpacity>
 
                         {/* // Reset Button */}
-                        <TouchableOpacity
-                            style={styles.signUpButtonStyle}
-                            onPress={this.onPressReset}
-                        >
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
-                                Reset
-                            </Text>
+                        <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressReset}>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Reset</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>

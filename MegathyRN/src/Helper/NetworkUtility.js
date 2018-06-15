@@ -12,6 +12,9 @@ export function setDefaultAPIConfig() {
         AppVersion: DeviceInfo.AppVersion,
         "User-Agent": DeviceInfo.getUserAgent.name,
     };
+    // ValidityState = status => {
+    //     return status >= 200 && status < 300;
+    // };
 }
 
 export function getRequest(endPoint, parameters) {
@@ -21,19 +24,23 @@ export function getRequest(endPoint, parameters) {
     console.log("\n HTTP Method: Get");
     console.log("\n Request for URL: " + constants.baseURL);
     console.log("\n Endpoint: " + endPoint);
-    console.log("\n Parameters: " + parameters.stringify);
+    console.log("\n Parameters: " + JSON.stringify(parameters));
     console.log("<================\n\n");
 
-    axios
-        .get(endPoint, {
-            params: JSON.stringify(parameters),
-        })
-        .then(function(response) {
-            console.log(response);
-        })
-        .catch(function(error) {
-            console.log(error);
-        });
+    return new Promise((resolve, reject) => {
+        axios
+            .get(endPoint, {
+                params: parameters === undefined || parameters === null ? "" : parameters,
+            })
+            .then(function(response) {
+                console.log(response);
+                resolve(response);
+            })
+            .catch(function(error) {
+                console.log(error);
+                reject(error.response);
+            });
+    });
 }
 
 export function postRequest(endPoint, parameters) {
@@ -46,14 +53,16 @@ export function postRequest(endPoint, parameters) {
     console.log("\n Parameters: " + JSON.stringify(parameters));
     console.log("<================\n\n");
 
-    return axios
-        .post(endPoint, parameters)
-        .then(response => {
-            console.log(response);
-            return response;
-        })
-        .catch(error => {
-            console.log(error);
-            return error;
-        });
+    return new Promise((resolve, reject) => {
+        axios
+            .post(endPoint, parameters)
+            .then(response => {
+                console.log(response);
+                resolve(response);
+            })
+            .catch(error => {
+                console.log(error.response);
+                reject(error.response);
+            });
+    });
 }
