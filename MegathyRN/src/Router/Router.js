@@ -24,7 +24,7 @@ import LoginScreen from '../Containers/LoginScreens/LoginScreen'
 import SideMenu from '../Containers/MenuScreens/SideMenu'
 
 import HomeScreen from '../Containers/MenuScreens/HomeScreen'
-import ProductScreen from '../Containers/MenuScreens/SubCategory/ProductScreen'
+import ProductScreen from '../Containers/MenuScreens/Product/ProductScreen'
 import FirstScreen from '../Containers/MenuScreens/FirstSreen'
 import SecondScreen from '../Containers/MenuScreens/SecondScreen'
 
@@ -84,7 +84,7 @@ const AppDrawer = DrawerNavigator({
 						({ route, focused }) =>       
 						{    
 						  props.onItemPress({ route, focused })
-						  console.log("item pressed "+ route.key);
+						  constant.debugLog("item pressed "+ route.key)
 						  if (route.key === 'FirstScreen') {
 							// props.getFirstScreenTap()
 						  } else if (route.key === 'SecondScreen') {
@@ -132,7 +132,7 @@ const App = StackNavigator({
 export function onPressLogout () {
 	console.log ('Logout Pressed')
 	constant.emitter.emit(constant.LOGOUT_EVENT, 'ok');
-	AsyncStorage.removeItem(constant.LOGIN_STATUS)
+	AsyncStorage.removeItem(constant.isLogin)
 	// this.props.onPressLogout()
 }
 

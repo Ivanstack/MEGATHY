@@ -41,7 +41,7 @@ module.exports = {
     setStore: "setStore",
 
     /// Menu Screens
-    getCategory: "getCategory?page=1",
+    getCategory: "getCategory?page=",
     getSubCategory: "getSubCategory?page=1&categoryId=",
     getBanners: "banners",
 

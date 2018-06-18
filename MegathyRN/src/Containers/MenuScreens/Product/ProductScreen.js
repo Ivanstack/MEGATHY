@@ -22,7 +22,8 @@ import {
   FlatList,
   ScrollView,
   Dimensions,
-  RefreshControl
+  RefreshControl,
+  AsyncStorage
 } from "react-native";
 
 // Redux
@@ -33,6 +34,7 @@ import * as actions from "../../../AppRedux/Actions/actions";
 // Common file
 import CommonStyles from "../../../Helper/CommonStyle";
 import constant from "../../../Helper/Constants";
+import * as cartFunc from '../../../Helper/Functions/Cart'
 
 // Lib
 import Icon from "react-native-vector-icons/EvilIcons";
@@ -56,7 +58,8 @@ class ProductScreen extends Component {
         { name: "space-bet" }
       ],
       isRefreshing: false,
-      productQuentity: 0
+      productQuentity: 0,
+      cartItems: 10
     };
   }
 
@@ -67,7 +70,7 @@ class ProductScreen extends Component {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Icon
               name="arrow-left"
-              style={{ marginLeft: 15 }}
+              style={{ marginLeft: 10 }}
               size={35}
               color="white"
             />
@@ -92,11 +95,13 @@ class ProductScreen extends Component {
       "Get Category :===> ",
       this.props.navigation.state.params.category
     );
-    this.getSubCategoryData();
+    this.GetOrSaveCartItem(false);
+    // this.getSubCategoryData();
   }
 
   componentWillUnmount() {
     console.log("App State: ", AppState.currentState);
+    this.GetOrSaveCartItem(true);
   }
 
   componentDidUpdate() {
@@ -105,7 +110,6 @@ class ProductScreen extends Component {
   }
 
   // Mics Methods
-
   async getSubCategoryData() {
     let subCategoryApi =
       constant.getSubCategory +
@@ -119,6 +123,85 @@ class ProductScreen extends Component {
     //   bannerData: bannerData.data.data,
     //   isRefreshing: false
     // });
+  }
+  async GetCartItem() {
+    try {
+      await AsyncStorage.getItem("cartItems")
+        .then(JSON.parse)
+        .then(oldArrCartItems => {
+          if (oldArrCartItems !== null) {
+            // We have data!!
+            // let oldData = JSON.parse(oldArrCartItems);
+
+            console.log(
+              "Check Array from AsynStorage :====>",
+              Array.isArray(oldArrCartItems)
+            );
+            console.log("Get Array from AsynStorage :====>", oldArrCartItems);
+            return oldArrCartItems;
+          } else {
+            return [];
+          }
+        });
+    } catch (error) {
+      isSaveCartItem
+        ? console.log("Error in save Data :===> ", error)
+        : console.log("Error in get Data :===> ", error);
+      return [];
+    }
+  }
+
+  async SaveCartItem() {
+    try {
+      await AsyncStorage.setItem(
+        "cartItems",
+        JSON.stringify(global.arrCartItems)
+      );
+      console.log(
+        "Save Array in AsynStorage :====>",
+        JSON.stringify(global.arrCartItems)
+      );
+    } catch (error) {
+      isSaveCartItem
+        ? console.log("Error in save Data :===> ", error)
+        : console.log("Error in get Data :===> ", error);
+    }
+  }
+
+  async GetOrSaveCartItem(isSaveCartItem) {
+    try {
+      if (isSaveCartItem) {
+        await AsyncStorage.setItem(
+          "cartItems",
+          JSON.stringify(global.arrCartItems)
+        );
+        console.log(
+          "Save Array in AsynStorage :====>",
+          JSON.stringify(global.arrCartItems)
+        );
+      } else {
+        var oldArrCartItems = await AsyncStorage.getItem("cartItems");
+        if (oldArrCartItems !== null) {
+          // We have data!!
+          global.arrCartItems = JSON.parse(oldArrCartItems);
+
+          global.arrCartItems.map(cartItem => {
+            this.state.subCategoryData.map(item => {
+              if (cartItem.name === item.name) {
+                item.totalAddedProduct = cartItem.totalAddedProduct;
+                console.log("Item changed :===> ", item);
+              }
+            });
+          });
+          console.log("Get Array from AsynStorage :====>", oldArrCartItems);
+          this.forceUpdate();
+        }
+      }
+    } catch (error) {
+      isSaveCartItem
+        ? console.log("Error in save Data :===> ", error)
+        : console.log("Error in get Data :===> ", error);
+    }
   }
 
   _onRefresh() {
@@ -134,6 +217,20 @@ class ProductScreen extends Component {
       ? item.totalAddedProduct + 1
       : 1;
     this.setState({ productQuentity: this.state.productQuentity + 1 });
+    global.arrCartItems.map((cartItem)=>{
+      if (cartItem.name === item.name) {
+        console.log("Item is available in arr");
+        console.log("Array before replace : ====> ", global.arrCartItems);
+  
+        // let itemIdx = global.arrCartItems.indexOf(item)
+        // global.arrCartItems.splice(itemIdx, 1, item)
+        // console.log("Array after replace : ====> ",global.arrCartItems);
+      } else {
+        console.log("Item is not available in arr");
+        global.arrCartItems.push(item);
+      }
+    })
+    
     // item["totalAddedProduct"] = item.totalAddedProduct
     //   ? item["totalAddedProduct"] + 1
     //   : 1;
@@ -148,6 +245,8 @@ class ProductScreen extends Component {
   };
 
   _renderCategoryItem = ({ item, index }) => {
+    console.log("global array :===> ", global.arrCartItems);
+
     return (
       <View style={ProductStyles.productCountainer}>
         <TouchableWithoutFeedback
@@ -299,6 +398,13 @@ class ProductScreen extends Component {
                     style={ProductStyles.cartImg}
                     source={require("../../../Resources/Images/ProductScr/CartImageRed.png")}
                   />
+                  {this.state.cartItems > 0 ? (
+                    <View style={ProductStyles.cartBadge}>
+                      <Text style={ProductStyles.cartItemLbl}>
+                        {cartFunc.getCartItemsCount()}
+                      </Text>
+                    </View>
+                  ) : null}
                 </View>
 
                 <View
@@ -330,14 +436,16 @@ class ProductScreen extends Component {
               </View>
             </View>
 
-            <View style={{
+            <View
+              style={{
                 backgroundColor: "transparent",
                 width: "15%",
                 // flex: 1,
                 justifyContent: "center",
-                alignItems: 'center',
+                alignItems: "center"
                 // marginTop: 1
-              }}>
+              }}
+            >
               <Icon
                 name="arrow-right"
                 // style={{ marginLeft: 15 }}

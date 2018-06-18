@@ -38,6 +38,7 @@ import constant from "../../Helper/Constants";
 import Icon from "react-native-vector-icons/EvilIcons";
 import Swiper from "react-native-swiper";
 import ImageLoad from "react-native-image-placeholder";
+import Spinner from "react-native-loading-spinner-overlay";
 
 // Network Utility
 import * as networkUtility from "../../Helper/NetworkUtility";
@@ -52,6 +53,7 @@ class HomeScreen extends Component {
       bannerData: [],
       swipeIndex: 0,
       isRefreshing: false,
+      visible: true,
       isSubCategoryScr:
         this.props.navigation.state.params != undefined &&
         this.props.navigation.state.params.category != undefined
@@ -91,7 +93,7 @@ class HomeScreen extends Component {
                   ? "arrow-left"
                   : "navicon"
               }
-              style={{ marginLeft: 15 }}
+              style={{ marginLeft: 10 }}
               size={35}
               color="white"
             />
@@ -140,31 +142,6 @@ class HomeScreen extends Component {
   }
 
   // Mics Methods
-
-  onPressActionSheet = () => {
-    if (Platform.OS === "ios") {
-      ActionSheetIOS.showActionSheetWithOptions(
-        {
-          options: ["Cancel", "Destructive Action", "Normal Action"],
-          destructiveButtonIndex: 1,
-          cancelButtonIndex: 0
-        },
-        buttonIndex => {
-          if (buttonIndex === 0) {
-            console.log("Cancel Press");
-          } else if (buttonIndex === 1) {
-            /* destructive action */
-            console.log("Destructive Action Press");
-          } else if (buttonIndex === 2) {
-            /* destructive action */
-            console.log("Normal Action Press");
-          }
-        }
-      );
-    } else {
-      Alert: alert("This component not support in your OS");
-    }
-  };
 
   connectSocket = () => {
     // AppSocket.connect()
@@ -260,61 +237,63 @@ class HomeScreen extends Component {
         // Hide Loading View
 
         let statusCode = 0;
-        let data = null;
+        // let data = null;
 
         if (result.response) {
           statusCode = result.response.status;
-          data = result.response.data.data;
+          // data = result.response.data.data;
         } else {
           statusCode = result.status;
-          data = result.data.data;
+          // data = result.data.data;
         }
 
-        switch (true) {
-          case statusCode === 200:
-            // console.log("Get Category :======> ",data.data.data);
-            console.log("Get Category :======> ", data);
-            this.currentPage = data.current_page;
-            this.lastPage = data.last_page;
-            this.setState({
-              categoryData: [...this.state.categoryData, ...data.data],
-              isRefreshing: !this.state.isRefreshing
-              // lastPage: data.last_page,
-              // currentPage: data.current_page
-            });
-            break;
-
-          case statusCode >= 400 && statusCode < 500:
-            if (
-              global.currentAppLanguage != "en" &&
-              data["messageAr"] != undefined
-            ) {
-              alert(data["messageAr"]);
-            } else {
-              alert(data["message"]);
-            }
-            break;
-          case statusCode >= 500:
-            console.log("Internal Server Error: " + data);
+        if (statusCode === 200) {
+          console.log("Get Category :======> ", data);
+          this.currentPage = data.current_page;
+          this.lastPage = data.last_page;
+          this.setState({
+            categoryData: [...this.state.categoryData, ...data.data],
+            isRefreshing: !this.state.isRefreshing
+            // lastPage: data.last_page,
+            // currentPage: data.current_page
+          });
+        } else {
+          setTimeout(() => {
             alert("Something went wrong, plese try again");
-            break;
-          default:
-            console.log("Unknown Status Code: " + statusCode.toString);
-            alert("Something went wrong, plese try again");
-            break;
+          }, 200);
         }
-        // }
+
+        // Show Loading View
+        setTimeout(() => {
+          this.setState({ visible: false });
+        }, 200);
       },
       error => {
         // Show Loading View
-        console.log("\nStatus Code: " + error.status);
-        console.log("\nError Message: " + error.message);
-        if (error.response.status != 500) {
-          if (global.currentAppLanguage === "en") {
+        constants.debugLog("\nStatus Code: " + error.status);
+        constants.debugLog("\nError Message: " + error);
+        // Show Loading View
+
+        this.setState({ visible: false });
+
+        if (error.status != 500) {
+          if (
+            global.currentAppLanguage != "en" &&
+            error.data["messageAr"] != undefined
+          ) {
+            setTimeout(() => {
+              alert(error.data["messageAr"]);
+            }, 200);
           } else {
+            setTimeout(() => {
+              alert(error.data["message"]);
+            }, 200);
           }
         } else {
-          console.log(error.message);
+          constants.debugLog("Internal Server Error: " + error.data);
+          setTimeout(() => {
+            alert("Something went wrong, plese try again");
+          }, 200);
         }
       }
     );
@@ -334,44 +313,31 @@ class HomeScreen extends Component {
           data = result.data;
         }
 
-        switch (true) {
-          case statusCode === 200:
-            // console.log("Get Category :======> ",data.data.data);
-            console.log("Get Banner Data :======> ", data);
-            this.setState({ bannerData: data.data });
-            break;
-
-          case statusCode >= 400 && statusCode < 500:
-            if (
-              global.currentAppLanguage != "en" &&
-              data["messageAr"] != undefined
-            ) {
-              alert(data["messageAr"]);
-            } else {
-              alert(data["message"]);
-            }
-            break;
-          case statusCode >= 500:
-            console.log("Internal Server Error: " + data);
-            alert("Something went wrong, plese try again");
-            break;
-          default:
-            console.log("Unknown Status Code: " + statusCode.toString);
-            alert("Something went wrong, plese try again");
-            break;
+        if (statusCode === 200) {
+          // console.log("Get Category :======> ",data.data.data);
+          console.log("Get Banner Data :======> ", data);
+          this.setState({ bannerData: data.data });
         }
+
         // }
       },
       error => {
-        // Show Loading View
-        console.log("\nStatus Code: " + error.status);
-        console.log("\nError Message: " + error.message);
-        if (error.response.status != 500) {
-          if (global.currentAppLanguage === "en") {
+        constants.debugLog("\nStatus Code: " + error.status);
+        constants.debugLog("\nError Message: " + error.message);
+        if (error.status != 500) {
+          if (
+            global.currentAppLanguage != "en" &&
+            error.data["messageAr"] != undefined
+          ) {
+            alert(error.data["messageAr"]);
           } else {
+            setTimeout(() => {
+              alert(error.data["message"]);
+            }, 200);
           }
         } else {
-          console.log(error.message);
+          constants.debugLog("Internal Server Error: " + error.data);
+          alert("Something went wrong, plese try again");
         }
       }
     );
@@ -513,7 +479,7 @@ class HomeScreen extends Component {
               }
             ]}
           >
-            <Text
+            {/* <Text
               style={{
                 fontSize: 25,
                 fontFamily: constant.themeFont,
@@ -522,7 +488,7 @@ class HomeScreen extends Component {
             >
               {" "}
               {item.categoryName}{" "}
-            </Text>
+            </Text> */}
           </View>
         </View>
       </TouchableOpacity>
@@ -560,7 +526,7 @@ class HomeScreen extends Component {
               style={styles.bannerWrapper}
               showPagination
               autoplay={true}
-              autoplayTimeout={2}
+              autoplayTimeout={3}
               autoplayDirection={true}
               loop={true}
               // index={0}
@@ -616,12 +582,17 @@ class HomeScreen extends Component {
                   removeClippedSubviews={false}
                   directionalLockEnabled
                   // onEndReached={this.callLoadMore.bind(this)}
-                  // onEndReachedThreshold={0.1}
+                  // onEndReachedThreshold={0.8}
 
                   ListFooterComponent={this._renderFooter.bind(this)}
                 />
-              ) : // </View>
-              null}
+              ) : (
+                <Spinner
+                  visible={this.state.visible}
+                  cancelable={true}
+                  textStyle={{ color: "#FFF" }}
+                />
+              )}
             </SafeAreaView>
           </View>
         </ScrollView>
@@ -676,7 +647,7 @@ const styles = StyleSheet.create({
     backgroundColor: "black"
   },
   bannerWrapper: {
-    height: 170,
+    height: 185,
     backgroundColor: "transparent"
   },
   slide: {

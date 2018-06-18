@@ -20,7 +20,7 @@ export default StyleSheet.create({
   },
   headerText: {
     color: "white",
-    margin: 4,
+    marginTop: 4,
     // marginLeft: 5,
     fontSize: 15,
     fontFamily: constant.themeFont
@@ -128,5 +128,25 @@ export default StyleSheet.create({
     height: "8%",
     // justifyContent:"space-between",
     flexDirection: 'row',
+  },
+  cartBadge: {
+    position: "absolute",
+    bottom: "50%",
+    left: "75%",
+    width: 20,
+    height: 20,
+    backgroundColor: constant.themeColor,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "transparent",
+    justifyContent: 'center',
+    alignItems: 'center',
+
+  },
+  cartItemLbl: {
+    fontFamily: constant.themeFont,
+    fontSize:9,
+    fontWeight: 'bold',
+    color: "white"
   }
 });
