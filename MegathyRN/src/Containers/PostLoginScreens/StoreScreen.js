@@ -5,7 +5,17 @@
  */
 
 import React, { Component } from "react";
-import { Platform, StyleSheet, Text, View, TouchableOpacity, ScrollView, Dimensions, Picker } from "react-native";
+import {
+    Platform,
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+    ScrollView,
+    Dimensions,
+    Picker,
+    AsyncStorage,
+} from "react-native";
 
 // Constants
 import constant from "../../Helper/Constants";
@@ -40,6 +50,7 @@ class StoreScreen extends Component {
     }
 
     componentWillMount() {
+        constant.debugLog("This is example of debug log");
         let selectedCityTemp = this.props.navigation.getParam("selectedCity", "noCity");
         let selectedAreaTemp = this.props.navigation.getParam("selectedArea", "noArea");
         if (selectedCityTemp != "noCity" && selectedAreaTemp != "noArea") {
@@ -72,8 +83,8 @@ class StoreScreen extends Component {
                             // Hide Loading View
                             this.setState({ visible: false });
 
-                            console.log("\nStatus Code: " + error.status);
-                            console.log("\nError Message: " + error.message);
+                            constant.debugLog("Status Code: " + error.status);
+                            constant.debugLog("Error Message: " + error.message);
                             if (error.status != 500) {
                                 if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
                                     alert(error.data["messageAr"]);
@@ -83,7 +94,7 @@ class StoreScreen extends Component {
                                     }, 200);
                                 }
                             } else {
-                                console.log("Internal Server Error: " + error.data);
+                                constant.debugLog("Internal Server Error: " + error.data);
                                 alert("Something went wrong, plese try again");
                             }
                         }
@@ -98,38 +109,30 @@ class StoreScreen extends Component {
     }
 
     onPressOK() {
-        var checkFBIdParameters = {
-            facebookId: fbResult["id"],
-            deviceType: Platform.OS === "ios" ? constant.deviceTypeiPhone : constant.deviceTypeAndroid,
-            notifyId: constant.notifyId,
-            timeZone: constant.timeZone,
-            appVersion: DeviceInfo.appVersion === undefined ? "0.0" : DeviceInfo.appVersion,
+        var setStoreParameters = {
+            _method: "put",
+            storeId: this.state.arrStores[this.state.selectedStoreIndex].storeId,
         };
 
-        networkUtility.postRequest(constant.verifyFBId, checkFBIdParameters).then(
+        networkUtility.postRequest(constant.setStore, setStoreParameters).then(
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
 
-                if (result.status == 206) {
-                    this.props.navigation.navigate("SignUpScreen", { fbResult: fbResult });
-                } else {
-                    AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data["data"]["userData"]));
-                    AsyncStorage.setItem(
-                        constant.keyCurrentSettings,
-                        JSON.stringify(result.data["data"]["settingData"])
-                    );
-                    AsyncStorage.removeItem(constant.keyCurrentStore);
-                    console.log("User Login Success");
-                    this.props.navigation.navigate("CityScreen");
-                }
+                AsyncStorage.setItem(
+                    constant.keyCurrentUser,
+                    JSON.stringify(this.state.arrStores[this.state.selectedStoreIndex])
+                );
+                constant.debugLog("Set Store Success");
+                AsyncStorage.setItem(constant.isLogin, "true");
+                constant.emitter.emit(constant.loginListener);
             },
             error => {
                 // Show Loading View
                 this.setState({ visible: false });
 
-                console.log("\nStatus Code: " + error.status);
-                console.log("\nError Message: " + error.message);
+                constant.debugLog("\nStatus Code: " + error.status);
+                constant.debugLog("\nError Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
                         alert(error.data["messageAr"]);
@@ -139,7 +142,7 @@ class StoreScreen extends Component {
                         }, 200);
                     }
                 } else {
-                    console.log("Internal Server Error: " + error.data);
+                    constant.debugLog("Internal Server Error: " + error.data);
                     alert("Something went wrong, plese try again");
                 }
             }
@@ -147,7 +150,7 @@ class StoreScreen extends Component {
     }
 
     onChangeStore(newStore, newIndex) {
-        console.log("Selected Store Index: " + newIndex + ". Store Name: " + newStore);
+        constant.debugLog("Selected Store Index: " + newIndex + ". Store Name: " + newStore);
         this.setState({
             selectedStoreName: newStore,
             selectedStoreIndex: newIndex,

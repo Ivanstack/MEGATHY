@@ -147,18 +147,19 @@ class SignUpScreen extends Component {
                 // Hide Loading View
                 this.setState({ visible: false });
 
-                AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data["data"]["userData"]));
-                AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data["data"]["settingData"]));
+                global.loginKey = result.data.data.userData.loginKey;
+                AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data.data.userData));
+                AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data.data.settingData));
                 AsyncStorage.removeItem(constant.keyCurrentStore);
-                console.log("User Login Success");
+                constant.debugLog("User Signup Success");
                 this.props.navigation.navigate("CityScreen");
             },
             error => {
                 // Hide Loading View
                 this.setState({ visible: false });
 
-                console.log("\nStatus Code: " + error.status);
-                console.log("\nError Message: " + error.message);
+                constant.debugLog("Status Code: " + error.status);
+                constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
                         alert(error.data["messageAr"]);
@@ -168,7 +169,7 @@ class SignUpScreen extends Component {
                         }, 200);
                     }
                 } else {
-                    console.log("Internal Server Error: " + error.data);
+                    constant.debugLog("Internal Server Error: " + error.data);
                     alert("Something went wrong, plese try again");
                 }
             }

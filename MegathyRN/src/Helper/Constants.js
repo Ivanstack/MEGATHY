@@ -2,8 +2,16 @@ var { EventEmitter } = require("fbemitter");
 
 module.exports = {
     emitter: new EventEmitter(),
-    LOGIN_STATUS: "false",
+    isLogin: "false",
+    loginListener: "loginListener",
     LOGOUT_EVENT: "logout",
+
+    /// Common Functions
+    debugLog: (log) => {
+        console.log("\n====================>");
+        console.log(log)
+        console.log("<====================\n");
+    },
 
     /// Async Storage Keys
     keyCurrentUser: "currentUser",
@@ -69,8 +77,8 @@ Network Utility API Call Template
             // Hide Loading View
             this.setState({ visible: false });
 
-            console.log("\nStatus Code: " + error.status);
-            console.log("\nError Message: " + error.message);
+            constants.debugLog("\nStatus Code: " + error.status);
+            constants.debugLog("\nError Message: " + error.message);
             if (error.status != 500) {
                 if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
                     alert(error.data["messageAr"]);
@@ -80,7 +88,7 @@ Network Utility API Call Template
                     }, 200);
                 }
             } else {
-                console.log("Internal Server Error: " + error.data);
+                constants.debugLog("Internal Server Error: " + error.data);
                 alert("Something went wrong, plese try again");
             }
         }

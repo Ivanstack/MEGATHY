@@ -36,14 +36,18 @@ export default class App extends Component {
 
         context = this;
         Constants.emitter.addListener(Constants.LOGOUT_EVENT, function(x) {
-            console.log("Logout: " + x);
+            Constants.debugLog("Logout: " + x);
             context.setState({ isLogin: false });
         });
+
+        Constants.emitter.addListener(Constants.loginListener, () => {
+            context.setState({isLogin: true});
+        })
     }
 
     // Life Cycle
     componentWillMount() {
-        AsyncStorage.getItem(Constants.LOGIN_STATUS).then(value => {
+        AsyncStorage.getItem(Constants.isLogin).then(value => {
             if (value === true) {
                 this.setState({
                     isLogin: true,

@@ -1,9 +1,9 @@
 var axios = require("axios");
+var axiosDefaults = require("axios/lib/defaults");
 var DeviceInfo = require("react-native-device-info");
 import constants from "./Constants";
 
 export function setDefaultAPIConfig() {
-    let axiosDefaults = require("axios/lib/defaults");
     axiosDefaults.baseURL = constants.baseURL;
     axiosDefaults.timeout = 60000;
     axiosDefaults.headers = {
@@ -25,6 +25,7 @@ export function getRequest(endPoint, parameters) {
     console.log("\n Request for URL: " + constants.baseURL);
     console.log("\n Endpoint: " + endPoint);
     console.log("\n Parameters: " + JSON.stringify(parameters));
+    console.log("\n Headers: " + JSON.stringify(axiosDefaults));
     console.log("<================\n\n");
 
     return new Promise((resolve, reject) => {
@@ -51,6 +52,7 @@ export function postRequest(endPoint, parameters) {
     console.log("\n Request for URL: " + constants.baseURL);
     console.log("\n Endpoint: " + endPoint);
     console.log("\n Parameters: " + JSON.stringify(parameters));
+    console.log("\n Headers: " + JSON.stringify(axiosDefaults));
     console.log("<================\n\n");
 
     return new Promise((resolve, reject) => {

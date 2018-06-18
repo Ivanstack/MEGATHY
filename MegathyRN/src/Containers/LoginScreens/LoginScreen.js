@@ -64,8 +64,8 @@ class LoginScreen extends Component {
     }
 
     componentDidUpdate() {
-        // console.log("Login Status : ", this.props.login);
-        // AsyncStorage.setItem(constant.LOGIN_STATUS, "true");
+        // constant.debugLog("Login Status : ", this.props.login);
+        // AsyncStorage.setItem(constant.isLogin, "true");
     }
 
     componentDidMount() {
@@ -103,19 +103,19 @@ class LoginScreen extends Component {
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
-
-                AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data["data"]["userData"]));
-                AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data["data"]["settingData"]));
+                global.loginKey = result.data.data.userData.loginKey;
+                AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data.data.userData));
+                AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data.data.settingData));
                 AsyncStorage.removeItem(constant.keyCurrentStore);
-                console.log("User Login Success");
+                constant.debugLog("User Login Success");
                 this.props.navigation.navigate("CityScreen");
             },
             error => {
                 // Hide Loading View
                 this.setState({ visible: false });
 
-                console.log("\nStatus Code: " + error.status);
-                console.log("\nError Message: " + error.message);
+                constant.debugLog("Status Code: " + error.status);
+                constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
                         alert(error.data["messageAr"]);
@@ -125,7 +125,7 @@ class LoginScreen extends Component {
                         }, 200);
                     }
                 } else {
-                    console.log("Internal Server Error: " + error.data);
+                    constant.debugLog("Internal Server Error: " + error.data);
                     alert("Something went wrong, plese try again");
                 }
             }
@@ -145,10 +145,10 @@ class LoginScreen extends Component {
 
                         const responseInfoCallback = (error, result) => {
                             if (error) {
-                                console.log(error);
+                                constant.debugLog(error);
                                 alert("Error fetching data: " + error.toString());
                             } else {
-                                console.log(result);
+                                constant.debugLog(result);
                                 this.props.navigation.navigate("SignUpScreen", { fbResult: result });
                             }
                         };
@@ -179,10 +179,10 @@ class LoginScreen extends Component {
 
     checkFBIdExistance = (error, fbResult) => {
         if (error) {
-            console.log(error);
+            constant.debugLog(error);
             alert("Error fetching data: " + error.toString());
         } else {
-            console.log(fbResult);
+            constant.debugLog(fbResult);
             var checkFBIdParameters = {
                 facebookId: fbResult["id"],
                 deviceType: Platform.OS === "ios" ? constant.deviceTypeiPhone : constant.deviceTypeAndroid,
@@ -199,13 +199,11 @@ class LoginScreen extends Component {
                     if (result.status == 206) {
                         this.props.navigation.navigate("SignUpScreen", { fbResult: fbResult });
                     } else {
-                        AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data["data"]["userData"]));
-                        AsyncStorage.setItem(
-                            constant.keyCurrentSettings,
-                            JSON.stringify(result.data["data"]["settingData"])
-                        );
+                        global.loginKey = result.data.data.userData.loginKey;
+                        AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data.data.userData));
+                        AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data.data.settingData));
                         AsyncStorage.removeItem(constant.keyCurrentStore);
-                        console.log("User Login Success");
+                        constant.debugLog("FB User Login Success");
                         this.props.navigation.navigate("CityScreen");
                     }
                 },
@@ -213,8 +211,8 @@ class LoginScreen extends Component {
                     // Show Loading View
                     this.setState({ visible: false });
 
-                    console.log("\nStatus Code: " + error.status);
-                    console.log("\nError Message: " + error.message);
+                    constant.debugLog("Status Code: " + error.status);
+                    constant.debugLog("Error Message: " + error.message);
                     if (error.status != 500) {
                         if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
                             alert(error.data["messageAr"]);
@@ -224,7 +222,7 @@ class LoginScreen extends Component {
                             }, 200);
                         }
                     } else {
-                        console.log("Internal Server Error: " + error.data);
+                        constant.debugLog("Internal Server Error: " + error.data);
                         alert("Something went wrong, plese try again");
                     }
                 }
@@ -255,11 +253,6 @@ class LoginScreen extends Component {
         ["email", "password"].map(name => ({ name, ref: this[name] })).forEach(({ name, ref }) => {
             if (ref.isFocused()) {
                 this.setState({ [name]: text });
-                if (name === "email") {
-                    console.log("\n\n" + this.state.email);
-                } else {
-                    console.log("\n\n" + this.state.password);
-                }
             }
         });
     }

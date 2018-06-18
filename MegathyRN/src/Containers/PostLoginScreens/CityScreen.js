@@ -54,8 +54,8 @@ class CityScreen extends Component {
                 // Hide Loading View
                 this.setState({ visible: false });
 
-                console.log("\nStatus Code: " + error.status);
-                console.log("\nError Message: " + error.message);
+                constant.debugLog("Status Code: " + error.status);
+                constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
                         alert(error.data["messageAr"]);
@@ -65,7 +65,7 @@ class CityScreen extends Component {
                         }, 200);
                     }
                 } else {
-                    console.log("Internal Server Error: " + error.data);
+                    constant.debugLog("Internal Server Error: " + error.data);
                     alert("Something went wrong, plese try again");
                 }
             }
@@ -79,7 +79,7 @@ class CityScreen extends Component {
     }
 
     onChangeCity(newCity, newIndex) {
-        console.log("Selected City Index: " + newIndex + ". City Name: " + newCity);
+        constant.debugLog("Selected City Index: " + newIndex + ". City Name: " + newCity);
         this.setState({
             selectedCityName: newCity,
             selectedCityIndex: newIndex,
