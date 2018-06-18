@@ -118,14 +118,21 @@ class StoreScreen extends Component {
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
-
                 AsyncStorage.setItem(
                     constant.keyCurrentUser,
-                    JSON.stringify(this.state.arrStores[this.state.selectedStoreIndex])
+                    JSON.stringify(this.state.arrStores[this.state.selectedStoreIndex]),
+                    () => {
+                        AsyncStorage.setItem(
+                            constant.keyCurrentStore,
+                            JSON.stringify(this.state.arrStores[this.state.selectedStoreIndex]),
+                            () => {
+                                global.currentStore = AsyncStorage.getItem(constant.keyCurrentStore)
+                                AsyncStorage.setItem(constant.isLogin, "true");
+                                constant.emitter.emit(constant.loginListener);
+                            }
+                        );
+                    }
                 );
-                constant.debugLog("Set Store Success");
-                AsyncStorage.setItem(constant.isLogin, "true");
-                constant.emitter.emit(constant.loginListener);
             },
             error => {
                 // Show Loading View

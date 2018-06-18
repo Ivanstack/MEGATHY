@@ -22,11 +22,13 @@ export default class App extends Component {
     constructor(props) {
         super(props);
 
+        // Set Statusbar Light Content for iOS
         StatusBar.setBarStyle("light-content", true);
         
         // Global Variables (App wise scope)        
         global.loginKey = "";
         global.currentUser = null;
+        global.currentStore = null;
         global.currentAppLanguage = "en";
 
         // States
