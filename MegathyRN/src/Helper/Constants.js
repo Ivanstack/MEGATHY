@@ -1,3 +1,5 @@
+// Localization
+import baseLocal from '../Resources/Localization/baseLocalization'
 var { EventEmitter } = require("fbemitter");
 
 module.exports = {
@@ -50,7 +52,7 @@ module.exports = {
     getSubCategory: "getSubCategory?page=1&categoryId=",
     getBanners: "banners",
     getProductList: "getProduct?categoryId=",
-    storeId: "&storeId="+global.currentStore.storeId,
+    storeId: "&storeId=" + (global.currentStore === undefined || global.currentStore === undefined) ? "" : global.currentStore.storeId,
 
     /// Colors
     themeColor: "#CF2526",

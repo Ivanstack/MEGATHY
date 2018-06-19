@@ -20,7 +20,7 @@ import * as actions from "../../AppRedux/Actions/actions";
 var DeviceInfo = require("react-native-device-info");
 
 // Common Utilities
-import CommonUtilities, { validateEmail } from "../../Helper/CommonUtilities";
+import * as CommonUtilities from '../../Helper/CommonUtilities'
 
 // Network Utility
 import * as networkUtility from "../../Helper/NetworkUtility";
@@ -41,7 +41,8 @@ const { LoginManager, GraphRequest, GraphRequestManager, AccessToken } = FBSDK;
 class LoginScreen extends Component {
     constructor(props) {
         super(props);
-        baseLocal.locale = 'ar'
+        
+        baseLocal.locale = global.currentAppLanguage
         KeyboardManager.setShouldResignOnTouchOutside(true);
         KeyboardManager.setToolbarPreviousNextButtonEnable(false);
 
@@ -80,13 +81,13 @@ class LoginScreen extends Component {
     }
 
     onPressLogin() {
-        if (!validateEmail(this.state.email)) {
-            Alert.alert(constant.alertTitle, "Invalid email id");
+        if (!CommonUtilities.validateEmail(this.state.email)) {
+            CommonUtilities.showAlert('Invalid email id')
             return;
         }
 
         if (this.state.password === "") {
-            Alert.alert(constant.alertTitle, "Password cannot be blank");
+            CommonUtilities.showAlert('Password cannot be blank')
             return;
         }
 
@@ -122,15 +123,15 @@ class LoginScreen extends Component {
                 constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        alert(error.data["messageAr"]);
+                        CommonUtilities.showAlert(error.data["messageAr"], false)
                     } else {
                         setTimeout(() => {
-                            alert(error.data["message"]);
+                            CommonUtilities.showAlert(error.data["message"], false)
                         }, 200);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                    alert("Something went wrong, plese try again");
+                    CommonUtilities.showAlert('Opps! something went wrong')
                 }
             }
         );
@@ -219,15 +220,15 @@ class LoginScreen extends Component {
                     constant.debugLog("Error Message: " + error.message);
                     if (error.status != 500) {
                         if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                            alert(error.data["messageAr"]);
+                            CommonUtilities.showAlert(error.data["messageAr"], false)
                         } else {
                             setTimeout(() => {
-                                alert(error.data["message"]);
+                                CommonUtilities.showAlert(error.data["message"], false)
                             }, 200);
                         }
                     } else {
                         constant.debugLog("Internal Server Error: " + error.data);
-                        alert("Something went wrong, plese try again");
+                        CommonUtilities.showAlert('Opps! something went wrong')
                     }
                 }
             );
@@ -322,7 +323,7 @@ class LoginScreen extends Component {
                                 source={require("../../Resources/Images/FBIcon.png")}
                             />
                             <Text style={{ color: "#405798", fontFamily: "Ebrima", fontWeight: "bold" }}>
-                                Login with facebook{" "}
+                                {baseLocal.t('Login with facebook')}
                             </Text>
                         </View>
                     </TouchableOpacity>
@@ -351,7 +352,7 @@ class LoginScreen extends Component {
                                 alignItems: "center",
                             }}
                         >
-                            <Text style={{ color: "#CF2526", fontFamily: "Ebrima", fontSize: 10 }}> OR </Text>
+                            <Text style={{ color: "#CF2526", fontFamily: "Ebrima", fontSize: 10 }}> {baseLocal.t('OR')} </Text>
                         </View>
                         <View style={{ width: "40%", height: 1, backgroundColor: "#EAEAEA", marginTop: 10 }}> </View>
                     </View>
@@ -360,7 +361,7 @@ class LoginScreen extends Component {
                         {/* // Email Text Field */}
                         <AppTextField
                             reference={this.emailRef}
-                            label="Email Id"
+                            label={baseLocal.t('Email Id')}
                             value={this.state.email}
                             returnKeyType="next"
                             keyboardType="email-address"
@@ -372,7 +373,7 @@ class LoginScreen extends Component {
                         {/* // Password Text Field */}
                         <AppTextField
                             reference={this.passwordRef}
-                            label="Password"
+                            label={baseLocal.t('Password')}
                             value={this.state.password}
                             returnKeyType="done"
                             clearTextOnFocus={true}
@@ -394,12 +395,12 @@ class LoginScreen extends Component {
                     >
                         {/* // Forgot Password Button */}
                         <TouchableOpacity onPress={this.onPressForgotPassword}>
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontSize: 15 }}>Forgot Password?</Text>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontSize: 15 }}>{baseLocal.t('Forgot Password?')}</Text>
                         </TouchableOpacity>
 
                         {/* // Signup Button */}
                         <TouchableOpacity onPress={this.onPressSignup}>
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontSize: 15 }}>Sign Up</Text>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontSize: 15 }}>{baseLocal.t('Sign Up')}</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -411,7 +412,7 @@ class LoginScreen extends Component {
                         }}
                     >
                         <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
-                            Continue as guest user
+                        {baseLocal.t('Continue as guest user')}
                         </Text>
                     </TouchableOpacity>
                 </ScrollView>

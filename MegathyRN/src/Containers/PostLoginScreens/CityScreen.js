@@ -21,10 +21,17 @@ import * as networkUtility from "../../Helper/NetworkUtility";
 // Loading View
 import Spinner from "react-native-loading-spinner-overlay";
 
+// Localization
+import baseLocal from '../../Resources/Localization/baseLocalization'
+
+// Common Utilities
+import * as CommonUtilities from '../../Helper/CommonUtilities'
+
 class CityScreen extends Component {
     constructor(props) {
         super(props);
 
+        baseLocal.locale = global.currentAppLanguage
         this.onPressOK = this.onPressOK.bind(this);
         this.onChangeCity = this.onChangeCity.bind(this);
 
@@ -58,15 +65,15 @@ class CityScreen extends Component {
                 constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        alert(error.data["messageAr"]);
+                        CommonUtilities.showAlert(error.data["messageAr"], false)
                     } else {
                         setTimeout(() => {
-                            alert(error.data["message"]);
+                            CommonUtilities.showAlert(error.data["message"], false)
                         }, 200);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                    alert("Something went wrong, plese try again");
+                    CommonUtilities.showAlert("Something went wrong, plese try again")
                 }
             }
         );
@@ -93,7 +100,8 @@ class CityScreen extends Component {
     render() {
         let { errors = {}, secureTextEntry, email, password } = this.state;
         let cityItems = this.state.arrCities.map((value, index) => {
-            return <Picker.Item key={index} value={value.cityName} label={value.cityName} />;
+            let cityNameTemp = global.currentAppLanguage === "en" ? value.cityName : value.cityNameAr
+            return <Picker.Item key={index} value={cityNameTemp} label={cityNameTemp} />;
         });
 
         return (
@@ -114,7 +122,7 @@ class CityScreen extends Component {
                         marginTop: 10,
                     }}
                 >
-                    SELECT CITY
+                    {baseLocal.t("SELECT CITY")}
                 </Text>
 
                 <Picker
@@ -130,7 +138,7 @@ class CityScreen extends Component {
                     {/* // Reset Button */}
                     <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressOK}>
                         <Text style={{ color: "white", fontFamily: "Ebrima", fontSize: 14, fontWeight: "bold" }}>
-                            OK
+                        {baseLocal.t("OK")}
                         </Text>
                     </TouchableOpacity>
                 </View>

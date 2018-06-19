@@ -30,7 +30,7 @@ import * as actions from "../../AppRedux/Actions/actions";
 var DeviceInfo = require("react-native-device-info");
 
 // Common Utilities
-import CommonUtilities, { validateEmail } from "../../Helper/CommonUtilities";
+import * as CommonUtilities from '../../Helper/CommonUtilities'
 
 // Network Utility
 import * as networkUtility from "../../Helper/NetworkUtility";
@@ -41,10 +41,14 @@ import Spinner from "react-native-loading-spinner-overlay";
 // IQKeyboard Manager
 import KeyboardManager from "react-native-keyboard-manager";
 
+// Localization
+import baseLocal from "../../Resources/Localization/baseLocalization";
+
 class ForgotPasswordScreen extends Component {
     constructor(props) {
         super(props);
 
+        baseLocal.locale = global.currentAppLanguage;
         KeyboardManager.setShouldResignOnTouchOutside(true);
         KeyboardManager.setToolbarPreviousNextButtonEnable(false);
 
@@ -64,8 +68,8 @@ class ForgotPasswordScreen extends Component {
     componentDidUpdate() {}
 
     onPressReset() {
-        if (!validateEmail(this.state.email)) {
-            Alert.alert(constant.alertTitle, "Invalid email id");
+        if (!CommonUtilities.validateEmail(this.state.email)) {
+            CommonUtilities.showAlert('Invalid email id')
             return;
         }
         var forgotPasswordParameters = {
@@ -80,7 +84,7 @@ class ForgotPasswordScreen extends Component {
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
-                this.props.navigation.navigate("VerifyCodeScreen",result.data.data)
+                this.props.navigation.navigate("VerifyCodeScreen", result.data.data);
             },
             error => {
                 // Hide Loading View
@@ -90,15 +94,15 @@ class ForgotPasswordScreen extends Component {
                 constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        alert(error.data["messageAr"]);
+                        CommonUtilities.showAlert(error.data["messageAr"], false)
                     } else {
                         setTimeout(() => {
-                            alert(error.data["message"]);
+                            CommonUtilities.showAlert(error.data["message"], false)
                         }, 200);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                    alert("Something went wrong, plese try again");
+                    CommonUtilities.showAlert("Opps! something went wrong")
                 }
             }
         );
@@ -165,14 +169,14 @@ class ForgotPasswordScreen extends Component {
                             marginTop: 10,
                         }}
                     >
-                        Forgot Password
+                        {baseLocal.t("Forgot Password")}
                     </Text>
 
                     <View style={{ width: "80%" }}>
                         {/* // Email Text Field */}
                         <AppTextField
                             reference={this.emailRef}
-                            label="Email Id"
+                            label={baseLocal.t("Email Id")}
                             value={this.state.email}
                             returnKeyType="next"
                             keyboardType="email-address"
@@ -188,12 +192,12 @@ class ForgotPasswordScreen extends Component {
                     >
                         {/* // Back Button */}
                         <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressBack}>
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Back</Text>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>{baseLocal.t('Back')}</Text>
                         </TouchableOpacity>
 
                         {/* // Reset Button */}
                         <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressReset}>
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Reset</Text>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>{baseLocal.t('Reset')}</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>

@@ -29,9 +29,6 @@ import * as actions from "../../AppRedux/Actions/actions";
 // Device Info
 var DeviceInfo = require("react-native-device-info");
 
-// Common Utilities
-import CommonUtilities, { validateEmail } from "../../Helper/CommonUtilities";
-
 // Network Utility
 import * as networkUtility from "../../Helper/NetworkUtility";
 
@@ -41,10 +38,17 @@ import Spinner from "react-native-loading-spinner-overlay";
 // IQKeyboard Manager
 import KeyboardManager from "react-native-keyboard-manager";
 
+// Localization
+import baseLocal from "../../Resources/Localization/baseLocalization";
+
+// Common Utilities
+import * as CommonUtilities from "../../Helper/CommonUtilities";
+
 class VerifyCodeScreen extends Component {
     constructor(props) {
         super(props);
 
+        baseLocal.locale = global.currentAppLanguage;
         KeyboardManager.setShouldResignOnTouchOutside(true);
         KeyboardManager.setToolbarPreviousNextButtonEnable(false);
 
@@ -63,7 +67,7 @@ class VerifyCodeScreen extends Component {
 
     onPressNext() {
         /*
-        if (!validateEmail(this.state.email)) {
+        if (!CommonUtilities.validateEmail(this.state.email)) {
             Alert.alert(constant.alertTitle, "Invalid email id");
             return;
         }
@@ -88,15 +92,15 @@ class VerifyCodeScreen extends Component {
                 constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        alert(error.data["messageAr"]);
+                                    CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
                         setTimeout(() => {
-                            alert(error.data["message"]);
+                                    CommonUtilities.showAlert(error.data["message"], false);
                         }, 200);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                    alert("Something went wrong, plese try again");
+                                CommonUtilities.showAlert("Something went wrong, plese try again");
                 }
             }
         );
@@ -130,15 +134,15 @@ class VerifyCodeScreen extends Component {
                 constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        alert(error.data["messageAr"]);
+                                    CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
                         setTimeout(() => {
-                            alert(error.data["message"]);
+                                    CommonUtilities.showAlert(error.data["message"], false);
                         }, 200);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                    alert("Something went wrong, plese try again");
+                                CommonUtilities.showAlert("Something went wrong, plese try again");
                 }
             }
         );
@@ -185,7 +189,17 @@ class VerifyCodeScreen extends Component {
                     textStyle={{ color: "#FFF" }}
                 />
                 {/* // Enter confirmation code Text */}
-                <View style={styles.navigationView} />
+                <View style={styles.navigationView}>
+                    <TouchableOpacity
+                        style={{ width: 60, height: 80, alignItems: "center", justifyContent: "center"}}
+                        onPress={this.onPressBack}
+                    >
+                        <Image
+                            style={{ width: 25, height: 25 }}
+                            source={require("../../Resources/Images/HomeScr/BtnBack.png")}
+                        />
+                    </TouchableOpacity>
+                </View>
 
                 <ScrollView style={{ width: "100%" }} contentContainerStyle={styles.scrollView}>
                     {/* // Enter confirmation code Text */}
@@ -198,14 +212,14 @@ class VerifyCodeScreen extends Component {
                             marginTop: 30,
                         }}
                     >
-                        Enter confirmation code
+                        {baseLocal.t("Enter confirmation code")}
                     </Text>
 
                     <View style={{ width: "80%" }}>
                         {/* // Email Text Field */}
                         <AppTextField
                             reference={this.codeRef}
-                            label="Confirmation code"
+                            label={baseLocal.t("Confirmation code")}
                             baseColor="#CF2526"
                             tintColor="#CF2526"
                             value={this.state.code}
@@ -223,17 +237,21 @@ class VerifyCodeScreen extends Component {
                     >
                         {/* // Next Button */}
                         <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressNext}>
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Next</Text>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                                {baseLocal.t("Next")}
+                            </Text>
                         </TouchableOpacity>
 
                         {/* // Call Me Button */}
                         <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressCallMe1}>
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Call Me</Text>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                                {baseLocal.t("CALL ME")}
+                            </Text>
                         </TouchableOpacity>
                     </View>
 
                     {/* // Enter confirmation code Text */}
-                    <TouchableOpacity style={{width:"80%"}} onPress={this.onPressNext}>
+                    <TouchableOpacity style={{ width: "80%" }} onPress={this.onPressNext}>
                         <Text
                             style={{
                                 fontFamily: "Ebrima",
@@ -243,8 +261,9 @@ class VerifyCodeScreen extends Component {
                                 textAlign: "center",
                             }}
                         >
-                            Didn’t receive Confirmation code? Please wait for 30 seconds and if you don’t receive it,
-                            then you can resend it or click on Call Me
+                            {baseLocal.t(
+                                "Didn’t receive Confirmation code? Please wait for 30 seconds and if you don’t receive it, then you can resend it or click on Call Me"
+                            )}
                         </Text>
                     </TouchableOpacity>
                 </ScrollView>
@@ -294,5 +313,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#CF2526",
         width: Dimensions.get("window").width,
         height: 64,
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
     },
 });
