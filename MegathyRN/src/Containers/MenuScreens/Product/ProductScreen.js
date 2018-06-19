@@ -34,7 +34,7 @@ import * as actions from "../../../AppRedux/Actions/actions";
 // Common file
 import CommonStyles from "../../../Helper/CommonStyle";
 import constant from "../../../Helper/Constants";
-import * as cartFunc from '../../../Helper/Functions/Cart'
+import * as cartFunc from "../../../Helper/Functions/Cart";
 
 // Lib
 import Icon from "react-native-vector-icons/EvilIcons";
@@ -184,7 +184,7 @@ class ProductScreen extends Component {
         if (oldArrCartItems !== null) {
           // We have data!!
           global.arrCartItems = JSON.parse(oldArrCartItems);
-
+          console.log("Get Array from AsynStorage :====>", global.arrCartItems);
           global.arrCartItems.map(cartItem => {
             this.state.subCategoryData.map(item => {
               if (cartItem.name === item.name) {
@@ -193,7 +193,7 @@ class ProductScreen extends Component {
               }
             });
           });
-          console.log("Get Array from AsynStorage :====>", oldArrCartItems);
+
           this.forceUpdate();
         }
       }
@@ -205,6 +205,7 @@ class ProductScreen extends Component {
   }
 
   _onRefresh() {
+
     // this.setState({ isRefreshing: true });
     // this.getCategoryAndBannerData();
     // fetchData().then(() => {
@@ -217,20 +218,27 @@ class ProductScreen extends Component {
       ? item.totalAddedProduct + 1
       : 1;
     this.setState({ productQuentity: this.state.productQuentity + 1 });
-    global.arrCartItems.map((cartItem)=>{
-      if (cartItem.name === item.name) {
+
+    let oldCartItem = cartFunc.findCartItem(item.name);
+
+    if (global.arrCartItems.length > 0) {
+      if (oldCartItem) {
         console.log("Item is available in arr");
         console.log("Array before replace : ====> ", global.arrCartItems);
-  
-        // let itemIdx = global.arrCartItems.indexOf(item)
-        // global.arrCartItems.splice(itemIdx, 1, item)
+        let itemIdx = global.arrCartItems.indexOf(oldCartItem);
+        global.arrCartItems.splice(itemIdx, 1, item);
         // console.log("Array after replace : ====> ",global.arrCartItems);
       } else {
         console.log("Item is not available in arr");
         global.arrCartItems.push(item);
       }
-    })
-    
+    } else {
+      console.log("Item is not available in arr");
+      global.arrCartItems.push(item);
+    }
+
+    // }
+
     // item["totalAddedProduct"] = item.totalAddedProduct
     //   ? item["totalAddedProduct"] + 1
     //   : 1;
@@ -241,6 +249,23 @@ class ProductScreen extends Component {
     if (item.totalAddedProduct > 0) {
       item.totalAddedProduct = item.totalAddedProduct - 1;
       this.setState({ productQuentity: this.state.productQuentity - 1 });
+      let oldCartItem = cartFunc.findCartItem(item.name);
+
+      if (global.arrCartItems.length > 0) {
+        if (oldCartItem) {
+          console.log("Item is available in arr");
+          console.log("Array before replace : ====> ", global.arrCartItems);
+          let itemIdx = global.arrCartItems.indexOf(oldCartItem);
+          global.arrCartItems.splice(itemIdx, 1, item);
+          // console.log("Array after replace : ====> ",global.arrCartItems);
+        } else {
+          console.log("Item is not available in arr");
+          global.arrCartItems.push(item);
+        }
+      } else {
+        console.log("Item is not available in arr");
+        global.arrCartItems.push(item);
+      }
     }
   };
 
