@@ -18,11 +18,17 @@ export function setDefaultAPIConfig() {
     // };
 }
 
-export function getRequest(endPoint, parameters) {
+export function getRequest(endPoint, parameters = "") {
     setDefaultAPIConfig();
 
-    if(parameters.storeId === undefined && global.currentStore != null){
-        parameters["storeId"] = global.currentStore.storeId
+    if (parameters.storeId === undefined && global.currentStore != null) {
+        if (parameters === "") {
+            parameters = {
+                storeId: global.currentStore.storeId,
+            };
+        } else {
+            parameters["storeId"] = global.currentStore.storeId;
+        }
     }
 
     console.log("\n\n ================>");
@@ -49,11 +55,17 @@ export function getRequest(endPoint, parameters) {
     });
 }
 
-export function postRequest(endPoint, parameters) {
+export function postRequest(endPoint, parameters = "") {
     setDefaultAPIConfig();
 
-    if(parameters.storeId === undefined && global.currentStore != null){
-        parameters["storeId"] = global.currentStore.storeId
+    if (parameters.storeId === undefined && global.currentStore != null) {
+        if (parameters === "") {
+            parameters = {
+                storeId: global.currentStore.storeId,
+            };
+        } else {
+            parameters["storeId"] = global.currentStore.storeId;
+        }
     }
 
     console.log("\n\n ================>");

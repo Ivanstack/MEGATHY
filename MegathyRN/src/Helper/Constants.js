@@ -17,6 +17,7 @@ module.exports = {
     keyCurrentUser: "currentUser",
     keyCurrentSettings: "currentSettings",
     keyCurrentStore: "currentStore",
+    keyCurrentAppLanguage: "currentAppLanguage",
 
     /// Common API request parameters
     deviceTypeiPhone: "IPHONE",

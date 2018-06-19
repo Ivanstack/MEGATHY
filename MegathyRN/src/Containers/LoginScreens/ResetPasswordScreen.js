@@ -41,7 +41,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 // IQKeyboard Manager
 import KeyboardManager from "react-native-keyboard-manager";
 
-class ForgotPasswordScreen extends Component {
+class ResetPasswordScreen extends Component {
     constructor(props) {
         super(props);
 
@@ -80,7 +80,6 @@ class ForgotPasswordScreen extends Component {
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
-                this.props.navigation.navigate("VerifyCodeScreen",result.data.data)
             },
             error => {
                 // Hide Loading View

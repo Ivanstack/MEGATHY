@@ -18,6 +18,9 @@ import LoginRouter from "./src/Router/LoginRouter";
 // Constant
 import Constants from "./src/Helper/Constants";
 
+// Common Utilities
+import utilities, {setInitialGlobalValues} from './src/Helper/CommonUtilities'
+
 export default class App extends Component {
     constructor(props) {
         super(props);
@@ -25,11 +28,8 @@ export default class App extends Component {
         // Set Statusbar Light Content for iOS
         StatusBar.setBarStyle("light-content", true);
         
-        // Global Variables (App wise scope)        
-        global.loginKey = "";
-        global.currentUser = null;
-        global.currentStore = null;
-        global.currentAppLanguage = "en";
+        // Global Variables (App wise scope)
+        setInitialGlobalValues()
 
         // States
         this.state = {

@@ -119,20 +119,27 @@ class StoreScreen extends Component {
                 // Hide Loading View
                 this.setState({ visible: false });
                 AsyncStorage.setItem(
-                    constant.keyCurrentUser,
-                    JSON.stringify(this.state.arrStores[this.state.selectedStoreIndex]),
-                    () => {
-                        AsyncStorage.setItem(
-                            constant.keyCurrentStore,
-                            JSON.stringify(this.state.arrStores[this.state.selectedStoreIndex]),
-                            () => {
-                                global.currentStore = AsyncStorage.getItem(constant.keyCurrentStore)
-                                AsyncStorage.setItem(constant.isLogin, "true");
-                                constant.emitter.emit(constant.loginListener);
-                            }
-                        );
-                    }
-                );
+                    constant.keyCurrentStore,
+                    JSON.stringify(this.state.arrStores[this.state.selectedStoreIndex])
+                ).then(() => {
+                    AsyncStorage.getItem(constant.keyCurrentStore).then(val => {
+                        global.currentStore = this.state.arrStores[this.state.selectedStoreIndex];
+                        AsyncStorage.setItem(constant.isLogin, "true");
+                        constant.emitter.emit(constant.loginListener);
+                    });
+                });
+
+                // AsyncStorage.setItem(
+                //     constant.keyCurrentStore,
+                //     JSON.stringify(this.state.arrStores[this.state.selectedStoreIndex]),
+                //     () => {
+                //         AsyncStorage.getItem(constant.keyCurrentStore, val => {
+                //             global.currentStore = value;
+                //             AsyncStorage.setItem(constant.isLogin, "true");
+                //             constant.emitter.emit(constant.loginListener);
+                //         });
+                //     }
+                // );
             },
             error => {
                 // Show Loading View
