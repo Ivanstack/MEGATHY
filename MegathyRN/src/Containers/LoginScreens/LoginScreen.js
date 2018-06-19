@@ -31,6 +31,9 @@ import KeyboardManager from "react-native-keyboard-manager";
 // Loading View
 import Spinner from "react-native-loading-spinner-overlay";
 
+// Localization
+import baseLocal from '../../Resources/Localization/baseLocalization'
+
 // FBSDK
 const FBSDK = require("react-native-fbsdk");
 const { LoginManager, GraphRequest, GraphRequestManager, AccessToken } = FBSDK;
@@ -38,6 +41,7 @@ const { LoginManager, GraphRequest, GraphRequestManager, AccessToken } = FBSDK;
 class LoginScreen extends Component {
     constructor(props) {
         super(props);
+        baseLocal.locale = 'ar'
         KeyboardManager.setShouldResignOnTouchOutside(true);
         KeyboardManager.setToolbarPreviousNextButtonEnable(false);
 
@@ -117,7 +121,7 @@ class LoginScreen extends Component {
                 constant.debugLog("Status Code: " + error.status);
                 constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
-                    if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
+                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
                         alert(error.data["messageAr"]);
                     } else {
                         setTimeout(() => {
@@ -214,7 +218,7 @@ class LoginScreen extends Component {
                     constant.debugLog("Status Code: " + error.status);
                     constant.debugLog("Error Message: " + error.message);
                     if (error.status != 500) {
-                        if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
+                        if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
                             alert(error.data["messageAr"]);
                         } else {
                             setTimeout(() => {
@@ -381,7 +385,7 @@ class LoginScreen extends Component {
 
                     {/* // Login Button */}
                     <TouchableOpacity style={styles.loginButtonStyle} onPress={this.onPressLogin}>
-                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Login</Text>
+                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>{baseLocal.t('Login')}</Text>
                     </TouchableOpacity>
 
                     {/* // Forgot Password and Signup Buttons View */}

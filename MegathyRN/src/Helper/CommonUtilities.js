@@ -37,7 +37,7 @@ export function setInitialGlobalValues(){
     
     AsyncStorage.getItem(constant.keyCurrentAppLanguage).then((val) => {
         if(val === undefined || val === null){
-            global.currentAppLanguage = "en"
+            global.currentAppLanguage = constant.languageEnglish
         }else{
             global.currentAppLanguage = val
         }

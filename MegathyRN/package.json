@@ -13,6 +13,7 @@
         "react-native": "0.55.3",
         "react-native-device-info": "^0.21.5",
         "react-native-fbsdk": "^0.7.0",
+        "react-native-i18n": "^2.0.12",
         "react-native-image-placeholder": "^1.0.14",
         "react-native-keyboard-manager": "^4.0.13-7",
         "react-native-loading-spinner-overlay": "^0.5.2",

@@ -87,7 +87,7 @@ class VerifyCodeScreen extends Component {
                 constant.debugLog("Status Code: " + error.status);
                 constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
-                    if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
+                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
                         alert(error.data["messageAr"]);
                     } else {
                         setTimeout(() => {
@@ -129,7 +129,7 @@ class VerifyCodeScreen extends Component {
                 constant.debugLog("Status Code: " + error.status);
                 constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
-                    if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
+                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
                         alert(error.data["messageAr"]);
                     } else {
                         setTimeout(() => {

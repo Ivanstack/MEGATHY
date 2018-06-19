@@ -1,9 +1,13 @@
 var { EventEmitter } = require("fbemitter");
 
 module.exports = {
+    /// Other Misc Constants
+    alertTitle: "Megathy",
     emitter: new EventEmitter(),
     isLogin: "false",
     loginListener: "loginListener",
+    languageEnglish:"en",
+    languageArabic:"ar",
     LOGOUT_EVENT: "logout",
 
     /// Common Functions
@@ -45,9 +49,8 @@ module.exports = {
     getCategory: "getCategory?page=",
     getSubCategory: "getSubCategory?page=1&categoryId=",
     getBanners: "banners",
-
-    /// Other Misc Constants
-    alertTitle: "Megathy",
+    getProductList: "getProduct?categoryId=",
+    storeId: "&storeId="+global.currentStore.storeId,
 
     /// Colors
     themeColor: "#CF2526",
