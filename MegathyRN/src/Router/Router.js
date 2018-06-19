@@ -25,6 +25,7 @@ import SideMenu from '../Containers/MenuScreens/SideMenu'
 
 import HomeScreen from '../Containers/MenuScreens/HomeScreen'
 import ProductScreen from '../Containers/MenuScreens/Product/ProductScreen'
+import CartScreen from '../Containers/MenuScreens/CartScreen/CartScreen'
 import FirstScreen from '../Containers/MenuScreens/FirstSreen'
 import SecondScreen from '../Containers/MenuScreens/SecondScreen'
 
@@ -35,6 +36,7 @@ import constant from '../Helper/Constants'
 const HomeScreenNav = StackNavigator({
 	HomeScreen: { screen: HomeScreen },
 	ProductScreen: { screen: ProductScreen },
+	CartScreen: { screen: CartScreen },
 }, {
 	headerMode:'screen',
 })

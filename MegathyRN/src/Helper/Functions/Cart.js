@@ -20,11 +20,21 @@ export function findCartItem(cartItemName) {
   //   })
   let findCartItem = null;
   global.arrCartItems.map((cartItem, itemIdx) => {
-    constant.debugLog("Find Cart Item : ==> ", cartItem);
-    if (cartItem.name === cartItemName) {
+    // constant.debugLog("Find Cart Item : ==> ", cartItem);
+    if (cartItem.PkId === cartItemName) {
       findCartItem = cartItem;
     }
   });
 
   return findCartItem;
+}
+
+export function getTotalPriceCartItems() {
+    let totalPrice = 0.0
+    global.arrCartItems.map((cartItem, itemIdx) => {
+        constant.debugLog("Find Cart Item : ==> ", cartItem.product_price);
+        totalPrice = totalPrice + cartItem.product_price[0].price * cartItem.totalAddedProduct
+      });
+
+      return totalPrice;
 }
