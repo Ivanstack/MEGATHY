@@ -30,7 +30,7 @@ import * as actions from "../../AppRedux/Actions/actions";
 var DeviceInfo = require("react-native-device-info");
 
 // Common Utilities
-import CommonUtilities, { validateEmail } from "../../Helper/CommonUtilities";
+import * as CommonUtilities from '../../Helper/CommonUtilities'
 
 // Network Utility
 import * as networkUtility from "../../Helper/NetworkUtility";
@@ -41,10 +41,14 @@ import Spinner from "react-native-loading-spinner-overlay";
 // IQKeyboard Manager
 import KeyboardManager from "react-native-keyboard-manager";
 
+// Localization
+import baseLocal from '../../Resources/Localization/baseLocalization'
+
 class SignUpScreen extends Component {
     constructor(props) {
         super(props);
 
+        baseLocal.locale = global.currentAppLanguage
         KeyboardManager.setShouldResignOnTouchOutside(true);
         KeyboardManager.setToolbarPreviousNextButtonEnable(false);
 
@@ -94,28 +98,28 @@ class SignUpScreen extends Component {
 
     onPressSignUp() {
         if (this.state.fullName.trim() === "") {
-            Alert.alert(constant.alertTitle, "Full Name cannot be blank");
+            CommonUtilities.showAlert('Full Name cannot be blank')
             return;
         }
 
-        if (!validateEmail(this.state.email)) {
-            Alert.alert(constant.alertTitle, "Invalid email id");
+        if (!CommonUtilities.validateEmail(this.state.email)) {
+            CommonUtilities.showAlert('Invalid email id')
             return;
         }
 
         if (this.state.phone === "") {
-            Alert.alert(constant.alertTitle, "Please register phone number first");
+            CommonUtilities.showAlert('Please register phone number first')
             return;
         }
 
         if (this.props.navigation.getParam("fbResult") === undefined) {
             if (this.state.password === "") {
-                Alert.alert(constant.alertTitle, "Password cannot be blank");
+                CommonUtilities.showAlert('Password cannot be blank')
                 return;
             }
 
             if (this.state.password != this.state.confirmPassword) {
-                Alert.alert(constant.alertTitle, "Password and Confirm Password do not match");
+                CommonUtilities.showAlert('Password and confirm password do not match')
                 return;
             }
         }
@@ -162,15 +166,15 @@ class SignUpScreen extends Component {
                 constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        alert(error.data["messageAr"]);
+                        CommonUtilities.showAlert(error.data["messageAr"], false)
                     } else {
                         setTimeout(() => {
-                            alert(error.data["message"]);
+                            CommonUtilities.showAlert(error.data["message"], false)
                         }, 200);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                    alert("Something went wrong, plese try again");
+                    CommonUtilities.showAlert('Opps! something went wrong')
                 }
             }
         );
@@ -278,14 +282,14 @@ class SignUpScreen extends Component {
                             marginTop: 10,
                         }}
                     >
-                        Sign Up
+                        {baseLocal.t('Sign Up')}
                     </Text>
 
                     <View style={{ width: "80%" }}>
                         {/* // Full Name Text Field */}
                         <AppTextField
                             reference={this.fullNameRef}
-                            label="Full Name"
+                            label={baseLocal.t('Full Name')}
                             value={this.state.fullName}
                             returnKeyType="next"
                             onSubmitEditing={this.onSubmitFullName}
@@ -296,7 +300,7 @@ class SignUpScreen extends Component {
                         {/* // Email Text Field */}
                         <AppTextField
                             reference={this.emailRef}
-                            label="Email Id"
+                            label={baseLocal.t('Email Id')}
                             value={this.state.email}
                             returnKeyType="next"
                             keyboardType="email-address"
@@ -308,7 +312,7 @@ class SignUpScreen extends Component {
                         {/* // Phone No Text Field */}
                         <AppTextField
                             reference={this.phoneRef}
-                            label="Phone No"
+                            label={baseLocal.t('Phone No')}
                             value={this.state.phone}
                             returnKeyType="next"
                             keyboardType="numeric"
@@ -322,7 +326,7 @@ class SignUpScreen extends Component {
                             <View>
                                 <AppTextField
                                     reference={this.passwordRef}
-                                    label="Password"
+                                    label={baseLocal.t('Password')}
                                     value={this.state.password}
                                     returnKeyType="next"
                                     clearTextOnFocus={true}
@@ -334,7 +338,7 @@ class SignUpScreen extends Component {
                                 // {/* // Confirm Password Text Field */}
                                 <AppTextField
                                     reference={this.confirmPasswordRef}
-                                    label="Confirm Password"
+                                    label={baseLocal.t('Confirm Password')}
                                     value={this.state.confirmPassword}
                                     returnKeyType="done"
                                     clearTextOnFocus={true}
@@ -353,12 +357,12 @@ class SignUpScreen extends Component {
                     >
                         {/* // Back Button */}
                         <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressBack}>
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Back</Text>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>{baseLocal.t('Back')}</Text>
                         </TouchableOpacity>
 
                         {/* // Sign Up Button */}
                         <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressSignUp}>
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Sign Up</Text>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>{baseLocal.t('Sign Up')}</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>

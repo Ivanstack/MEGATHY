@@ -31,10 +31,17 @@ import * as networkUtility from "../../Helper/NetworkUtility";
 // Loading View
 import Spinner from "react-native-loading-spinner-overlay";
 
+// Localization
+import baseLocal from "../../Resources/Localization/baseLocalization";
+
+// Common Utilities
+import * as CommonUtilities from "../../Helper/CommonUtilities";
+
 class StoreScreen extends Component {
     constructor(props) {
         super(props);
 
+        baseLocal.locale = global.currentAppLanguage;
         this.onPressOK = this.onPressOK.bind(this);
         this.onPressBack = this.onPressBack.bind(this);
         this.onChangeStore = this.onChangeStore.bind(this);
@@ -87,15 +94,15 @@ class StoreScreen extends Component {
                             constant.debugLog("Error Message: " + error.message);
                             if (error.status != 500) {
                                 if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                                    alert(error.data["messageAr"]);
+                                    CommonUtilities.showAlert(error.data["messageAr"], false);
                                 } else {
                                     setTimeout(() => {
-                                        alert(error.data["message"]);
+                                        CommonUtilities.showAlert(error.data["message"], false);
                                     }, 200);
                                 }
                             } else {
                                 constant.debugLog("Internal Server Error: " + error.data);
-                                alert("Something went wrong, plese try again");
+                                CommonUtilities.showAlert("Something went wrong, plese try again");
                             }
                         }
                     );
@@ -128,18 +135,6 @@ class StoreScreen extends Component {
                         constant.emitter.emit(constant.loginListener);
                     });
                 });
-
-                // AsyncStorage.setItem(
-                //     constant.keyCurrentStore,
-                //     JSON.stringify(this.state.arrStores[this.state.selectedStoreIndex]),
-                //     () => {
-                //         AsyncStorage.getItem(constant.keyCurrentStore, val => {
-                //             global.currentStore = value;
-                //             AsyncStorage.setItem(constant.isLogin, "true");
-                //             constant.emitter.emit(constant.loginListener);
-                //         });
-                //     }
-                // );
             },
             error => {
                 // Show Loading View
@@ -149,15 +144,15 @@ class StoreScreen extends Component {
                 constant.debugLog("\nError Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        alert(error.data["messageAr"]);
+                        CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
                         setTimeout(() => {
-                            alert(error.data["message"]);
+                            CommonUtilities.showAlert(error.data["message"], false);
                         }, 200);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                    alert("Something went wrong, plese try again");
+                    CommonUtilities.showAlert("Something went wrong, plese try again");
                 }
             }
         );
@@ -178,7 +173,8 @@ class StoreScreen extends Component {
     render() {
         let { errors = {}, secureTextEntry, email, password } = this.state;
         let storeItems = this.state.arrStores.map((value, index) => {
-            return <Picker.Item key={index} value={value.storeName} label={value.storeName} />;
+            let storeNameTemp = global.currentAppLanguage === "en" ? value.storeName : value.storeNameAr;
+            return <Picker.Item key={index} value={storeNameTemp} label={storeNameTemp} />;
         });
 
         return (
@@ -199,7 +195,7 @@ class StoreScreen extends Component {
                         marginTop: 10,
                     }}
                 >
-                    {this.state.selectedArea != null ? this.state.selectedArea.areaName : ""}
+                    {this.state.selectedArea != null ? (global.currentAppLanguage === "en" ? this.state.selectedArea.areaName : this.state.selectedArea.areaNameAr) : ""}
                 </Text>
                 {/* // Select Store Text */}
                 <Text
@@ -210,7 +206,7 @@ class StoreScreen extends Component {
                         marginTop: 10,
                     }}
                 >
-                    SELECT STORE
+                    {baseLocal.t("SELECT STORE")}
                 </Text>
 
                 <Picker
@@ -225,12 +221,12 @@ class StoreScreen extends Component {
                 <View style={{ width: "80%", flexDirection: "row", justifyContent: "space-around", marginTop: 100 }}>
                     {/* // Back Button */}
                     <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressBack}>
-                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Back</Text>
+                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>{baseLocal.t("Back")}</Text>
                     </TouchableOpacity>
 
                     {/* // Sign Up Button */}
                     <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressOK}>
-                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>OK</Text>
+                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>{baseLocal.t("OK")}</Text>
                     </TouchableOpacity>
                 </View>
             </View>

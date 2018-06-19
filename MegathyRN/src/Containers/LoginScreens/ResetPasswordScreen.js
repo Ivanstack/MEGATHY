@@ -214,7 +214,7 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(ForgotPasswordScreen);
+)(ResetPasswordScreen);
 
 const styles = StyleSheet.create({
     container: {

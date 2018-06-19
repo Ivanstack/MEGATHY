@@ -21,10 +21,17 @@ import * as networkUtility from "../../Helper/NetworkUtility";
 // Loading View
 import Spinner from "react-native-loading-spinner-overlay";
 
+// Localization
+import baseLocal from "../../Resources/Localization/baseLocalization";
+
+// Common Utilities
+import * as CommonUtilities from "../../Helper/CommonUtilities";
+
 class AreaScreen extends Component {
     constructor(props) {
         super(props);
 
+        baseLocal.locale = global.currentAppLanguage;
         this.onPressOK = this.onPressOK.bind(this);
         this.onPressBack = this.onPressBack.bind(this);
         this.onChangeArea = this.onChangeArea.bind(this);
@@ -71,16 +78,19 @@ class AreaScreen extends Component {
                             constant.debugLog("Status Code: " + error.status);
                             constant.debugLog("Error Message: " + error.message);
                             if (error.status != 500) {
-                                if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                                    alert(error.data["messageAr"]);
+                                if (
+                                    global.currentAppLanguage === constant.languageArabic &&
+                                    error.data["messageAr"] != undefined
+                                ) {
+                                    CommonUtilities.showAlert(error.data["messageAr"], false);
                                 } else {
                                     setTimeout(() => {
-                                        alert(error.data["message"]);
+                                        CommonUtilities.showAlert(error.data["message"], false);
                                     }, 200);
                                 }
                             } else {
                                 constant.debugLog("Internal Server Error: " + error.data);
-                                alert("Something went wrong, plese try again");
+                                CommonUtilities.showAlert("Something went wrong, plese try again");
                             }
                         }
                     );
@@ -115,7 +125,8 @@ class AreaScreen extends Component {
     render() {
         let { errors = {}, secureTextEntry, email, password } = this.state;
         let areaItems = this.state.arrAreas.map((value, index) => {
-            return <Picker.Item key={index} value={value.areaName} label={value.areaName} />;
+            let areaNameTemp = global.currentAppLanguage === "en" ? value.areaName : value.areaNameAr;
+            return <Picker.Item key={index} value={areaNameTemp} label={areaNameTemp} />;
         });
 
         return (
@@ -136,7 +147,11 @@ class AreaScreen extends Component {
                         marginTop: 10,
                     }}
                 >
-                    {this.state.selectedCity != null ? this.state.selectedCity.cityName : ""}
+                    {this.state.selectedCity != null
+                        ? global.currentAppLanguage === "en"
+                            ? this.state.selectedCity.cityName
+                            : this.state.selectedCity.cityNameAr
+                        : ""}
                 </Text>
                 {/* // Select Area Text */}
                 <Text
@@ -147,7 +162,7 @@ class AreaScreen extends Component {
                         marginTop: 10,
                     }}
                 >
-                    SELECT AREA
+                    {baseLocal.t("SELECT AREA")}
                 </Text>
 
                 <Picker
@@ -162,12 +177,16 @@ class AreaScreen extends Component {
                 <View style={{ width: "80%", flexDirection: "row", justifyContent: "space-around", marginTop: 100 }}>
                     {/* // Back Button */}
                     <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressBack}>
-                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Back</Text>
+                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                            {baseLocal.t("Back")}
+                        </Text>
                     </TouchableOpacity>
 
                     {/* // Sign Up Button */}
                     <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressOK}>
-                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>OK</Text>
+                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                            {baseLocal.t("OK")}
+                        </Text>
                     </TouchableOpacity>
                 </View>
             </View>
