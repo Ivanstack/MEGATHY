@@ -44,13 +44,18 @@ export default class App extends Component {
 
         Constants.emitter.addListener(Constants.loginListener, () => {
             context.setState({isLogin: true});
+            try {
+                AsyncStorage.setItem(isLogin, 'true');
+              } catch (error) {
+                // Error saving data
+              }
         })
     }
 
     // Life Cycle
     componentWillMount() {
         AsyncStorage.getItem(Constants.isLogin).then(value => {
-            if (value === true) {
+            if (value === "true") {
                 this.setState({
                     isLogin: true,
                 });
@@ -88,5 +93,11 @@ export default class App extends Component {
                 </Provider>
             );
         }
+
+        // return (
+        //     <Provider store={store}>
+        //         <Router onPressLogout={this.onLogout} />
+        //     </Provider>
+        // );
     }
 }
