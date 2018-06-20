@@ -21,6 +21,7 @@ export default class AppTextField extends Component {
                     tintColor={this.props.tintColor === undefined ? "white" : this.props.tintColor}
                     returnKeyType={this.props.returnKeyType === undefined ? "" : this.props.returnKeyType}
                     keyboardType={this.props.keyboardType === undefined ? "default" : this.props.keyboardType}
+                    autoFocus={this.props.autoFocus === undefined ? false : this.props.autoFocus}
                     autoCapitalize={this.props.autoCapitalize === undefined ? "none" : this.props.autoCapitalize}
                     autoCorrect={this.props.autoCorrect === undefined ? false : this.props.autoCorrect}
                     clearTextOnFocus={this.props.clearTextOnFocus === undefined ? false : this.props.clearTextOnFocus}

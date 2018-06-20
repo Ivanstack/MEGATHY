@@ -30,7 +30,7 @@ import * as actions from "../../AppRedux/Actions/actions";
 var DeviceInfo = require("react-native-device-info");
 
 // Common Utilities
-import CommonUtilities, { validateEmail } from "../../Helper/CommonUtilities";
+import * as CommonUtilities from "../../Helper/CommonUtilities";
 
 // Network Utility
 import * as networkUtility from "../../Helper/NetworkUtility";
@@ -41,45 +41,84 @@ import Spinner from "react-native-loading-spinner-overlay";
 // IQKeyboard Manager
 import KeyboardManager from "react-native-keyboard-manager";
 
+// Localization
+import baseLocal from "../../Resources/Localization/baseLocalization";
+
 class ResetPasswordScreen extends Component {
     constructor(props) {
         super(props);
 
+        baseLocal.locale = global.currentAppLanguage;
         KeyboardManager.setShouldResignOnTouchOutside(true);
         KeyboardManager.setToolbarPreviousNextButtonEnable(false);
 
         this.onPressBack = this.onPressBack.bind(this);
-        this.onPressReset = this.onPressReset.bind(this);
+        this.onPressSave = this.onPressSave.bind(this);
         this.onFocus = this.onFocus.bind(this);
         this.onChangeText = this.onChangeText.bind(this);
-        this.onSubmitEmail = this.onSubmitEmail.bind(this);
-        this.emailRef = this.updateRef.bind(this, "email");
+        this.onAccessoryPress = this.onAccessoryPress.bind(this);
+        this.renderPasswordAccessory = this.renderPasswordAccessory.bind(this);
+
+        this.onSubmitPassword = this.onSubmitPassword.bind(this);
+        this.onSubmitConfirmPassword = this.onSubmitConfirmPassword.bind(this);
+
+        this.passwordRef = this.updateRef.bind(this, "password");
+        this.confirmPasswordRef = this.updateRef.bind(this, "confirmPassword");
 
         this.state = {
-            email: "",
+            secureTextEntry: true,
+            password: "",
+            confirmPassword: "",
             visible: false,
         };
     }
 
     componentDidUpdate() {}
 
-    onPressReset() {
-        if (!validateEmail(this.state.email)) {
-            Alert.alert(constant.alertTitle, "Invalid email id");
+    componentDidMount() {}
+
+    onPressSave() {
+        if (this.state.password === "") {
+            CommonUtilities.showAlert("Password cannot be blank");
             return;
         }
-        var forgotPasswordParameters = {
-            email: this.state.email,
+
+        if (this.state.password != this.state.confirmPassword) {
+            CommonUtilities.showAlert("Password and confirm password do not match");
+            return;
+        }
+
+        let registeredEmail = this.props.navigation.getParam("registeredEmail", "");
+        if (registeredEmail === "") {
+            constant.debugLog("Something is wrong with response from previous screen");
+            return;
+        }
+
+        var resetPasswordParameters = {
+            email: registeredEmail,
             vendorId: DeviceInfo.getUniqueID(),
+            password: this.state.password,
         };
 
         // Show Loading View
         this.setState({ visible: true });
 
-        networkUtility.postRequest(constant.forgotPassword, forgotPasswordParameters).then(
+        networkUtility.putRequest(constant.updatePassword, resetPasswordParameters).then(
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
+
+                if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
+                    setTimeout(() => {
+                        CommonUtilities.showAlert(result.data.messageAr, false);
+                        this.props.navigation.popToTop();
+                    }, 200);
+                } else {
+                    setTimeout(() => {
+                        CommonUtilities.showAlert(result.data.message, false);
+                        this.props.navigation.popToTop();
+                    }, 200);
+                }
             },
             error => {
                 // Hide Loading View
@@ -89,15 +128,15 @@ class ResetPasswordScreen extends Component {
                 constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        alert(error.data["messageAr"]);
+                        CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
                         setTimeout(() => {
-                            alert(error.data["message"]);
+                            CommonUtilities.showAlert(error.data["message"], false);
                         }, 200);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                    alert("Something went wrong, plese try again");
+                    CommonUtilities.showAlert("Opps! something went wrong");
                 }
             }
         );
@@ -119,16 +158,39 @@ class ResetPasswordScreen extends Component {
     }
 
     onChangeText(text) {
-        ["email"].map(name => ({ name, ref: this[name] })).forEach(({ name, ref }) => {
+        var arrTextFieldRef = ["password", "confirmPassword"];
+        arrTextFieldRef.map(name => ({ name, ref: this[name] })).forEach(({ name, ref }) => {
             if (ref.isFocused()) {
                 this.setState({ [name]: text });
             }
         });
     }
 
-    onSubmitEmail() {
-        this.email.blur();
-        this.onPressReset();
+    onSubmitPassword() {
+        this.confirmPassword.focus();
+    }
+
+    onSubmitConfirmPassword() {
+        this.confirmPassword.blur();
+        this.onPressSave();
+    }
+
+    onAccessoryPress() {
+        this.setState(({ secureTextEntry }) => ({ secureTextEntry: !secureTextEntry }));
+    }
+
+    renderPasswordAccessory() {
+        let { secureTextEntry } = this.state;
+        let name = secureTextEntry ? "visibility" : "visibility-off";
+        return (
+            <MaterialIcon
+                size={24}
+                name={name}
+                color={TextField.defaultProps.baseColor}
+                onPress={this.onAccessoryPress}
+                suppressHighlighting
+            />
+        );
     }
 
     updateRef(name, ref) {
@@ -136,7 +198,7 @@ class ResetPasswordScreen extends Component {
     }
 
     render() {
-        let { errors = {}, secureTextEntry, email, password } = this.state;
+        let { errors = {}, secureTextEntry, password, confirmPassword } = this.state;
 
         return (
             // Main View (Container)
@@ -164,35 +226,52 @@ class ResetPasswordScreen extends Component {
                             marginTop: 10,
                         }}
                     >
-                        Forgot Password
+                        {baseLocal.t("Change Password")}
                     </Text>
 
                     <View style={{ width: "80%" }}>
-                        {/* // Email Text Field */}
+                        // {/* // Password Text Field */}
                         <AppTextField
-                            reference={this.emailRef}
-                            label="Email Id"
-                            value={this.state.email}
+                            reference={this.passwordRef}
+                            label={baseLocal.t("Password")}
+                            value={this.state.password}
                             returnKeyType="next"
-                            keyboardType="email-address"
-                            onSubmitEditing={this.onSubmitEmail}
+                            clearTextOnFocus={true}
+                            secureTextEntry={secureTextEntry}
+                            onSubmitEditing={this.onSubmitPassword}
+                            onChangeText={this.onChangeText}
+                            onFocus={this.onFocus}
+                        />
+                        // {/* // Confirm Password Text Field */}
+                        <AppTextField
+                            reference={this.confirmPasswordRef}
+                            label={baseLocal.t("Confirm Password")}
+                            value={this.state.confirmPassword}
+                            returnKeyType="done"
+                            clearTextOnFocus={true}
+                            secureTextEntry={secureTextEntry}
+                            onSubmitEditing={this.onSubmitConfirmPassword}
                             onChangeText={this.onChangeText}
                             onFocus={this.onFocus}
                         />
                     </View>
 
-                    {/* // Back and Reset Buttons View */}
+                    {/* // Back and SignU[] Buttons View */}
                     <View
                         style={{ width: "80%", flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}
                     >
                         {/* // Back Button */}
                         <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressBack}>
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Back</Text>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                                {baseLocal.t("Back")}
+                            </Text>
                         </TouchableOpacity>
 
-                        {/* // Reset Button */}
-                        <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressReset}>
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>Reset</Text>
+                        {/* // Sign Up Button */}
+                        <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressSave}>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                                {baseLocal.t("Save")}
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>

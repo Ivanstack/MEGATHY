@@ -11,7 +11,7 @@ export function setDefaultAPIConfig() {
         Authorization: global.loginKey === null ? "" : global.loginKey,
         "Accept-Language": global.currentAppLanguage,
         AppVersion: DeviceInfo.AppVersion,
-        "User-Agent": DeviceInfo.getUserAgent.name,
+        "User-Agent": DeviceInfo.getUserAgent(),
     };
     // ValidityState = status => {
     //     return status >= 200 && status < 300;
@@ -36,7 +36,7 @@ export function getRequest(endPoint, parameters = "") {
     console.log("\n Request for URL: " + constants.baseURL);
     console.log("\n Endpoint: " + endPoint);
     console.log("\n Parameters: " + JSON.stringify(parameters));
-    console.log("\n Headers: " + JSON.stringify(axiosDefaults));
+    console.log("\n Headers: " + JSON.stringify(axiosDefaults.headers));
     console.log("<================\n\n");
 
     return new Promise((resolve, reject) => {
@@ -73,12 +73,47 @@ export function postRequest(endPoint, parameters = "") {
     console.log("\n Request for URL: " + constants.baseURL);
     console.log("\n Endpoint: " + endPoint);
     console.log("\n Parameters: " + JSON.stringify(parameters));
-    console.log("\n Headers: " + JSON.stringify(axiosDefaults));
+    console.log("\n Headers: " + JSON.stringify(axiosDefaults.headers));
     console.log("<================\n\n");
 
     return new Promise((resolve, reject) => {
         axios
             .post(endPoint, parameters)
+            .then(response => {
+                console.log(response);
+                resolve(response);
+            })
+            .catch(error => {
+                console.log(error.response);
+                reject(error.response);
+            });
+    });
+}
+
+export function putRequest(endPoint, parameters = "") {
+    setDefaultAPIConfig();
+
+    if (parameters.storeId === undefined && global.currentStore != null) {
+        if (parameters === "") {
+            parameters = {
+                storeId: global.currentStore.storeId,
+            };
+        } else {
+            parameters["storeId"] = global.currentStore.storeId;
+        }
+    }
+
+    console.log("\n\n ================>");
+    console.log("\n HTTP Method: Post");
+    console.log("\n Request for URL: " + constants.baseURL);
+    console.log("\n Endpoint: " + endPoint);
+    console.log("\n Parameters: " + JSON.stringify(parameters));
+    console.log("\n Headers: " + JSON.stringify(axiosDefaults.headers));
+    console.log("<================\n\n");
+
+    return new Promise((resolve, reject) => {
+        axios
+            .put(endPoint, parameters)
             .then(response => {
                 console.log(response);
                 resolve(response);

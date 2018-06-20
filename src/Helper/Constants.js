@@ -31,10 +31,14 @@ module.exports = {
     notifyId: "0123456789",
     timeZone: "Asia/Riyadh",
 
+    APIConfirmationTypeRegister: "Register",
+    APIConfirmationTypeForgotPassword: "Forgot Password",
+    APIConfirmationTypeAddress: "Address Conformation",
+
     /// Rest API details
     // Base URL
-    // baseURL: "http://192.168.0.3/megathylaravel/public/api/v1/", // Jay Kaneriya
-    baseURL: "http://192.168.0.11/Megathy/MegathyLaravel/public/api/v1/", // BharatBhai
+    baseURL: "http://192.168.0.3/megathylaravel/public/api/v1/", // Jay Kaneriya
+    // baseURL: "http://192.168.0.11/Megathy/MegathyLaravel/public/api/v1/", // BharatBhai
     // baseURL: "http://192.168.0.2/MegathyLaravel/public/api/v1/", //Chintan Adatiya
 
     /// End Points
@@ -47,6 +51,9 @@ module.exports = {
     getArea: "getArea",
     getStore: "getStore",
     setStore: "setStore",
+    verifyPhoneCode: "verifyPhoneCode",
+    requestVerifyPhones: "requestVerifyPhones",
+    updatePassword: "updatePassword",
 
     /// Menu Screens
     getCategory: "getCategory?page=",
@@ -57,7 +64,8 @@ module.exports = {
 
     /// Colors
     themeColor: "#CF2526",
-    ProdCategoryBGColor: "#EFEDE9",
+    prodCategoryBGColor: "#EFEDE9",
+    buttonDisableColor: "#939393",
 
     /// Font Family
     themeFont: "Ebrima",

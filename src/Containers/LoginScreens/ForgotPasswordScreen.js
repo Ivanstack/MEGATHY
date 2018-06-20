@@ -30,7 +30,7 @@ import * as actions from "../../AppRedux/Actions/actions";
 var DeviceInfo = require("react-native-device-info");
 
 // Common Utilities
-import * as CommonUtilities from '../../Helper/CommonUtilities'
+import * as CommonUtilities from "../../Helper/CommonUtilities";
 
 // Network Utility
 import * as networkUtility from "../../Helper/NetworkUtility";
@@ -69,7 +69,7 @@ class ForgotPasswordScreen extends Component {
 
     onPressReset() {
         if (!CommonUtilities.validateEmail(this.state.email)) {
-            CommonUtilities.showAlert('Invalid email id')
+            CommonUtilities.showAlert("Invalid email id");
             return;
         }
         var forgotPasswordParameters = {
@@ -84,7 +84,11 @@ class ForgotPasswordScreen extends Component {
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
-                this.props.navigation.navigate("VerifyCodeScreen", result.data.data);
+                this.props.navigation.navigate("VerifyCodeScreen", {
+                    forgotPasswordResponse: result.data.data,
+                    confirmationType: constant.APIConfirmationTypeForgotPassword,
+                    registeredEmail: this.state.email,
+                });
             },
             error => {
                 // Hide Loading View
@@ -94,15 +98,15 @@ class ForgotPasswordScreen extends Component {
                 constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        CommonUtilities.showAlert(error.data["messageAr"], false)
+                        CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
                         setTimeout(() => {
-                            CommonUtilities.showAlert(error.data["message"], false)
+                            CommonUtilities.showAlert(error.data["message"], false);
                         }, 200);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Opps! something went wrong")
+                    CommonUtilities.showAlert("Opps! something went wrong");
                 }
             }
         );
@@ -192,12 +196,16 @@ class ForgotPasswordScreen extends Component {
                     >
                         {/* // Back Button */}
                         <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressBack}>
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>{baseLocal.t('Back')}</Text>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                                {baseLocal.t("Back")}
+                            </Text>
                         </TouchableOpacity>
 
                         {/* // Reset Button */}
                         <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressReset}>
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>{baseLocal.t('Reset')}</Text>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                                {baseLocal.t("Reset")}
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>

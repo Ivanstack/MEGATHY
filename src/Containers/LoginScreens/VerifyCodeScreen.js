@@ -48,6 +48,7 @@ class VerifyCodeScreen extends Component {
     constructor(props) {
         super(props);
 
+        const initialCounterValue = 10;
         baseLocal.locale = global.currentAppLanguage;
         KeyboardManager.setShouldResignOnTouchOutside(true);
         KeyboardManager.setToolbarPreviousNextButtonEnable(false);
@@ -55,34 +56,84 @@ class VerifyCodeScreen extends Component {
         this.onPressBack = this.onPressBack.bind(this);
         this.onPressNext = this.onPressNext.bind(this);
         this.onPressCallMe = this.onPressCallMe.bind(this);
+        this.onPressResend = this.onPressResend.bind(this);
         this.onFocus = this.onFocus.bind(this);
         this.onChangeText = this.onChangeText.bind(this);
+        this.changeTimeInterval = this.changeTimeInterval.bind(this);
         this.codeRef = this.updateRef.bind(this, "code");
 
         this.state = {
             code: "",
             visible: false,
+            timer: null,
+            counter: initialCounterValue,
         };
+    }
+
+    componentDidMount() {
+        let timer = setInterval(this.changeTimeInterval, 1000);
+        this.setState({ timer });
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.state.timer);
+    }
+
+    changeTimeInterval() {
+        if (this.state.counter == 0) {
+            clearInterval(this.state.timer);
+            return;
+        }
+        this.setState({
+            counter: this.state.counter - 1,
+        });
     }
 
     onPressNext() {
-        /*
-        if (!CommonUtilities.validateEmail(this.state.email)) {
-            Alert.alert(constant.alertTitle, "Invalid email id");
+        if (this.state.code.trim() === "") {
+            CommonUtilities.showAlert("Please enter confirmation code");
             return;
         }
-        var forgotPasswordParameters = {
-            email: this.state.email,
+
+        let forgotPasswordResponse = this.props.navigation.getParam("forgotPasswordResponse", "");
+        let APIConfirmationType = this.props.navigation.getParam("confirmationType", "");
+        let registeredEmail = this.props.navigation.getParam("registeredEmail", "");
+
+        if (forgotPasswordResponse === "" || APIConfirmationType === "" || registeredEmail === "") {
+            constant.debugLog("Something is wrong with response from previous screen");
+            return;
+        }
+
+        var verifyCodeParameters = {
+            phone: forgotPasswordResponse.phone,
             vendorId: DeviceInfo.getUniqueID(),
+            type: APIConfirmationType,
+            code: this.state.code,
         };
 
         // Show Loading View
         this.setState({ visible: true });
 
-        networkUtility.postRequest(constant.forgotPassword, forgotPasswordParameters).then(
+        networkUtility.postRequest(constant.verifyPhoneCode, verifyCodeParameters).then(
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
+
+                if (result.status === 200) {
+                    this.props.navigation.navigate("ResetPasswordScreen", {
+                        registeredEmail: registeredEmail,
+                    });
+                } else {
+                    if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
+                        setTimeout(() => {
+                            CommonUtilities.showAlert(result.data.messageAr, false);
+                        }, 200);
+                    } else {
+                        setTimeout(() => {
+                            CommonUtilities.showAlert(result.data.message, false);
+                        }, 200);
+                    }
+                }
             },
             error => {
                 // Hide Loading View
@@ -92,39 +143,64 @@ class VerifyCodeScreen extends Component {
                 constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                                    CommonUtilities.showAlert(error.data["messageAr"], false);
+                        CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
                         setTimeout(() => {
-                                    CommonUtilities.showAlert(error.data["message"], false);
+                            CommonUtilities.showAlert(error.data["message"], false);
                         }, 200);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                                CommonUtilities.showAlert("Something went wrong, plese try again");
+                    CommonUtilities.showAlert("Something went wrong, plese try again");
                 }
             }
         );
-        */
     }
 
     onPressCallMe() {
-        /*
-        if (!validateEmail(this.state.email)) {
-            Alert.alert(constant.alertTitle, "Invalid email id");
+        let forgotPasswordResponse = this.props.navigation.getParam("forgotPasswordResponse", "");
+        let APIConfirmationType = this.props.navigation.getParam("confirmationType", "");
+        if (forgotPasswordResponse === "" || APIConfirmationType === "") {
+            CommonUtilities.showAlert("Something is wrong with response from previous screen", false);
+        }
+
+        if (this.state.counter > 0) {
             return;
         }
-        var forgotPasswordParameters = {
-            email: this.state.email,
+
+        var resendCodeParameters = {
+            phone: forgotPasswordResponse.phone,
             vendorId: DeviceInfo.getUniqueID(),
+            type: APIConfirmationType,
+            requestBy: "call",
         };
 
         // Show Loading View
         this.setState({ visible: true });
 
-        networkUtility.postRequest(constant.forgotPassword, forgotPasswordParameters).then(
+        networkUtility.postRequest(constant.requestVerifyPhones, resendCodeParameters).then(
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
+
+                if (result.status === 206) {
+                    setTimeout(() => {
+                        CommonUtilities.showAlert("This number is already verified");
+                        // setTimeout(() => {
+                        this.props.navigation.goBack();
+                        // }, 200);
+                    }, 200);
+                } else {
+                    if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
+                        setTimeout(() => {
+                            CommonUtilities.showAlert(result.data.messageAr, false);
+                        }, 200);
+                    } else {
+                        setTimeout(() => {
+                            CommonUtilities.showAlert(result.data.message, false);
+                        }, 200);
+                    }
+                }
             },
             error => {
                 // Hide Loading View
@@ -134,19 +210,84 @@ class VerifyCodeScreen extends Component {
                 constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                                    CommonUtilities.showAlert(error.data["messageAr"], false);
+                        CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
                         setTimeout(() => {
-                                    CommonUtilities.showAlert(error.data["message"], false);
+                            CommonUtilities.showAlert(error.data["message"], false);
                         }, 200);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                                CommonUtilities.showAlert("Something went wrong, plese try again");
+                    CommonUtilities.showAlert("Something went wrong, plese try again");
                 }
             }
         );
-        */
+    }
+
+    onPressResend() {
+        let forgotPasswordResponse = this.props.navigation.getParam("forgotPasswordResponse", "");
+        let APIConfirmationType = this.props.navigation.getParam("confirmationType", "");
+        if (forgotPasswordResponse === "" || APIConfirmationType === "") {
+            CommonUtilities.showAlert("Something is wrong with response from previous screen", false);
+        }
+
+        if (this.state.counter > 0) {
+            return;
+        }
+
+        var resendCodeParameters = {
+            phone: forgotPasswordResponse.phone,
+            vendorId: DeviceInfo.getUniqueID(),
+            type: APIConfirmationType,
+        };
+
+        // Show Loading View
+        this.setState({ visible: true });
+
+        networkUtility.postRequest(constant.requestVerifyPhones, resendCodeParameters).then(
+            result => {
+                // Hide Loading View
+                this.setState({ visible: false });
+
+                if (result.status === 206) {
+                    setTimeout(() => {
+                        CommonUtilities.showAlert("This number is already verified");
+                        // setTimeout(() => {
+                        this.props.navigation.goBack();
+                        // }, 200);
+                    }, 200);
+                } else {
+                    if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
+                        setTimeout(() => {
+                            CommonUtilities.showAlert(result.data.messageAr, false);
+                        }, 200);
+                    } else {
+                        setTimeout(() => {
+                            CommonUtilities.showAlert(result.data.message, false);
+                        }, 200);
+                    }
+                }
+            },
+            error => {
+                // Hide Loading View
+                this.setState({ visible: false });
+
+                constant.debugLog("Status Code: " + error.status);
+                constant.debugLog("Error Message: " + error.message);
+                if (error.status != 500) {
+                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
+                        CommonUtilities.showAlert(error.data["messageAr"], false);
+                    } else {
+                        setTimeout(() => {
+                            CommonUtilities.showAlert(error.data["message"], false);
+                        }, 200);
+                    }
+                } else {
+                    constant.debugLog("Internal Server Error: " + error.data);
+                    CommonUtilities.showAlert("Something went wrong, plese try again");
+                }
+            }
+        );
     }
 
     onPressBack() {
@@ -178,6 +319,8 @@ class VerifyCodeScreen extends Component {
 
     render() {
         let { errors = {}, code } = this.state;
+        let countDownValue = this.state.counter > 0 ? " " + this.state.counter : "";
+        let callMeBGColor = this.state.counter > 0 ? constant.buttonDisableColor : constant.themeColor;
 
         return (
             // Main View (Container)
@@ -191,7 +334,7 @@ class VerifyCodeScreen extends Component {
                 {/* // Enter confirmation code Text */}
                 <View style={styles.navigationView}>
                     <TouchableOpacity
-                        style={{ width: 60, height: 80, alignItems: "center", justifyContent: "center"}}
+                        style={{ width: 60, height: 80, alignItems: "center", justifyContent: "center" }}
                         onPress={this.onPressBack}
                     >
                         <Image
@@ -220,14 +363,16 @@ class VerifyCodeScreen extends Component {
                         <AppTextField
                             reference={this.codeRef}
                             label={baseLocal.t("Confirmation code")}
-                            baseColor="#CF2526"
-                            tintColor="#CF2526"
+                            baseColor={constant.themeColor}
+                            tintColor={constant.themeColor}
+                            textColor={constant.themeColor}
                             value={this.state.code}
                             returnKeyType="next"
                             keyboardType="numeric"
                             onSubmitEditing={this.onSubmitCode}
                             onChangeText={this.onChangeText}
                             onFocus={this.onFocus}
+                            autoFocus={true}
                         />
                     </View>
 
@@ -243,20 +388,23 @@ class VerifyCodeScreen extends Component {
                         </TouchableOpacity>
 
                         {/* // Call Me Button */}
-                        <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressCallMe1}>
+                        <TouchableOpacity
+                            style={[styles.signUpButtonStyle, { backgroundColor: callMeBGColor }]}
+                            onPress={this.onPressCallMe}
+                        >
                             <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
-                                {baseLocal.t("CALL ME")}
+                                {baseLocal.t("CALL ME") + countDownValue}
                             </Text>
                         </TouchableOpacity>
                     </View>
 
                     {/* // Enter confirmation code Text */}
-                    <TouchableOpacity style={{ width: "80%" }} onPress={this.onPressNext}>
+                    <TouchableOpacity style={{ width: "80%" }} onPress={this.onPressResend}>
                         <Text
                             style={{
                                 fontFamily: "Ebrima",
                                 fontSize: 13,
-                                color: constant.themeColor,
+                                color: callMeBGColor,
                                 marginTop: 20,
                                 textAlign: "center",
                             }}
@@ -297,10 +445,10 @@ const styles = StyleSheet.create({
     signUpButtonStyle: {
         width: "45%",
         marginTop: 20,
-        backgroundColor: "#99050D",
         height: 40,
         alignItems: "center",
         justifyContent: "center",
+        backgroundColor: constant.themeColor,
         borderRadius: 20,
     },
     scrollView: {
@@ -310,7 +458,7 @@ const styles = StyleSheet.create({
         // height: Dimensions.get("window").height,
     },
     navigationView: {
-        backgroundColor: "#CF2526",
+        backgroundColor: constant.themeColor,
         width: Dimensions.get("window").width,
         height: 64,
         alignItems: "flex-start",
