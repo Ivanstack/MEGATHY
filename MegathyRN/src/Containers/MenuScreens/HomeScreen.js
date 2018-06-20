@@ -44,7 +44,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 import * as networkUtility from "../../Helper/NetworkUtility";
 
 // Localization
-import baseLocal from '../../Resources/Localization/baseLocalization'
+import baseLocal from "../../Resources/Localization/baseLocalization";
 
 // const AppSocket = new SocketIO('http://192.168.0.7:1339');
 
@@ -63,6 +63,8 @@ class HomeScreen extends Component {
           ? true
           : false
     };
+
+    this.callLoadMore = this.callLoadMore.bind(this);
 
     // Class Props
     (this.currentPage = 1),
@@ -150,11 +152,13 @@ class HomeScreen extends Component {
     // AppSocket.connect()
   };
 
-  callLoadMore = () => {
+  callLoadMore() {
+    console.log("Call Load More .....");
+
     if (this.currentPage < this.lastPage) {
       this.getCategoryAndBannerData(true);
     }
-  };
+  }
 
   getCategoryData() {
     let getCategoryUrl = constant.getCategory + categoryPage;
@@ -243,7 +247,10 @@ class HomeScreen extends Component {
         console.log("Get Category :======> ", resultData);
         this.currentPage = resultData.current_page;
         this.lastPage = resultData.last_page;
-        let newArrCategory = [...this.state.categoryData, ...resultData.data].filter((val,id,array) => array.indexOf(val) === id)
+        let newArrCategory = [
+          ...this.state.categoryData,
+          ...resultData.data
+        ].filter((val, id, array) => array.indexOf(val) === id);
         this.setState({
           categoryData: newArrCategory,
           isRefreshing: false,
@@ -329,7 +336,7 @@ class HomeScreen extends Component {
 
   _onRefresh() {
     this.currentPage = 1;
-    constant.debugLog("On Refresh call....")
+    constant.debugLog("On Refresh call....");
     this.setState(
       // { isRefreshing: true, currentPage: 1, categoryData: [] },
       { isRefreshing: true, categoryData: [] },
@@ -349,25 +356,74 @@ class HomeScreen extends Component {
     }
   }
 
-  _renderFooter() {
-    if (this.currentPage < this.lastPage) {
-      return (
-        <View style={styles.footer}>
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={this.callLoadMore}
-            style={styles.loadMoreBtn}
-          >
-            <Text style={styles.btnText}>Load More</Text>
-            {this.state.fetching_from_server ? (
-              <ActivityIndicator color="white" style={{ marginLeft: 8 }} />
-            ) : null}
-          </TouchableOpacity>
-        </View>
-      );
-    } else {
-      return <View />;
-    }
+  // _renderFooter() {
+  //   if (this.currentPage < this.lastPage) {
+  //     return (
+  //       <View style={styles.footer}>
+  //         <TouchableOpacity
+  //           activeOpacity={0.9}
+  //           onPress={this.callLoadMore}
+  //           style={styles.loadMoreBtn}
+  //         >
+  //           <Text style={styles.btnText}>Load More</Text>
+  //           {this.state.fetching_from_server ? (
+  //             <ActivityIndicator color="white" style={{ marginLeft: 8 }} />
+  //           ) : null}
+  //         </TouchableOpacity>
+  //       </View>
+  //     );
+  //   } else {
+  //     return <View />;
+  //   }
+  // }
+
+  _renderHeader() {
+    {this.state.isSubCategoryScr ? null : (
+      <View>
+        <Swiper
+          style={styles.bannerWrapper}
+          showPagination
+          autoplay={true}
+          autoplayTimeout={3}
+          autoplayDirection={true}
+          loop={true}
+          // index={0}
+          // onIndexChanged={index => {console.log("Change Swipe Index :==> ", index)}}
+          onMomentumScrollEnd={(e, state, context) => {}}
+          dot={<View style={styles.dot} />}
+          activeDot={<View style={styles.activeDot} />}
+          paginationStyle={styles.pagination}
+        >
+          {this.state.bannerData.length > 0
+            ? this.state.bannerData.map((value, index) => {
+                return (
+                  <View
+                    key={index}
+                    style={{ height: "100%", margin: 10 }}
+                  >
+                    <ImageLoad
+                      style={styles.image}
+                      isShowActivity={false}
+                      placeholderSource={require("../../Resources/Images/DefaultProductImage.png")}
+                      source={{ uri: value.banner_image_url }}
+                    />
+                  </View>
+                );
+              })
+            : // <View/>
+              this.items.map((value, index) => {
+                return (
+                  <View key={index} style={{ height: 200, margin: 10 }}>
+                    <Image
+                      style={styles.image}
+                      source={require("../../Resources/Images/DefaultProductImage.png")}
+                    />
+                  </View>
+                );
+              })}
+        </Swiper>
+      </View>
+    )}
   }
 
   _renderCategoryItem = ({ item, index }) => {
@@ -487,63 +543,28 @@ class HomeScreen extends Component {
     );
   };
 
+  _onScrollViewEndReached(e) {
+    var windowHeight = Dimensions.get("window").height,
+      height = e.nativeEvent.contentSize.height,
+      offset = e.nativeEvent.contentOffset.y;
+    if (windowHeight + offset >= height) {
+      console.log("End Scroll");
+    }
+  }
+
   render() {
     return (
       <View>
-        <ScrollView
+        {/* <ScrollView
+          onScroll={this._onScrollViewEndReached}
           refreshControl={
             <RefreshControl
               refreshing={this.state.isRefreshing}
               onRefresh={this._onRefresh.bind(this)}
             />
           }
-        >
-          {this.state.isSubCategoryScr ? null : (
-            <View>
-              <Swiper
-                style={styles.bannerWrapper}
-                showPagination
-                autoplay={true}
-                autoplayTimeout={3}
-                autoplayDirection={true}
-                loop={true}
-                // index={0}
-                // onIndexChanged={index => {console.log("Change Swipe Index :==> ", index)}}
-                onMomentumScrollEnd={(e, state, context) => {}}
-                dot={<View style={styles.dot} />}
-                activeDot={<View style={styles.activeDot} />}
-                paginationStyle={styles.pagination}
-              >
-                {this.state.bannerData.length > 0
-                  ? this.state.bannerData.map((value, index) => {
-                      return (
-                        <View
-                          key={index}
-                          style={{ height: "100%", margin: 10 }}
-                        >
-                          <ImageLoad
-                            style={styles.image}
-                            isShowActivity={false}
-                            placeholderSource={require("../../Resources/Images/DefaultProductImage.png")}
-                            source={{ uri: value.banner_image_url }}
-                          />
-                        </View>
-                      );
-                    })
-                  : // <View/>
-                    this.items.map((value, index) => {
-                      return (
-                        <View key={index} style={{ height: 200, margin: 10 }}>
-                          <Image
-                            style={styles.image}
-                            source={require("../../Resources/Images/DefaultProductImage.png")}
-                          />
-                        </View>
-                      );
-                    })}
-              </Swiper>
-            </View>
-          )}
+        > */}
+          
 
           <View style={{ backgroundColor: "pink", flex: 1, marginTop: 10 }}>
             <SafeAreaView style={styles.container}>
@@ -563,7 +584,14 @@ class HomeScreen extends Component {
                   showsHorizontalScrollIndicator={false}
                   removeClippedSubviews={false}
                   directionalLockEnabled
-                  onEndReached={this.callLoadMore.bind(this)}
+                  onEndReached={
+                    // console.log(" onEndReached :========> ")
+
+                    () => {
+                      this.callLoadMore;
+                    }
+                  }
+                  ListHeaderComponent={this._renderHeader.bind(this)}
                   // ListFooterComponent={this._renderFooter.bind(this)}
                 />
               ) : (
@@ -575,7 +603,7 @@ class HomeScreen extends Component {
               )}
             </SafeAreaView>
           </View>
-        </ScrollView>
+        {/* </ScrollView> */}
       </View>
     );
   }

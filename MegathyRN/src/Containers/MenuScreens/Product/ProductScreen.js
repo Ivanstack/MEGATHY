@@ -114,6 +114,11 @@ class ProductScreen extends Component {
   }
 
   // Mics Methods
+
+  handleOnNavigateBack = () => {
+    this.forceUpdate()
+  }
+
   async getSubCategoryData() {
     let subCategoryApi =
       constant.getSubCategory +
@@ -429,7 +434,7 @@ class ProductScreen extends Component {
           ) : null}
 
           <View style={ProductStyles.cartContainer}>
-            <TouchableWithoutFeedback onPress={()=>this.props.navigation.navigate("CartScreen",{prdtScrContex:this})}>
+            <TouchableWithoutFeedback onPress={()=>this.props.navigation.navigate("CartScreen",{onNavigateBack: this.handleOnNavigateBack.bind(this)})}>
               <View
                 style={{
                   backgroundColor: "white",
@@ -437,7 +442,7 @@ class ProductScreen extends Component {
                   flex: 1,
                   marginTop: 1
                 }}
-                onPress={() => this.props.navigation.navigate("CartScreen",{prdtScrContex:this})}
+                onPress={() => this.props.navigation.navigate("CartScreen",{onNavigateBack: this.handleOnNavigateBack.bind(this)})}
               >
                 <View
                   style={{
@@ -494,7 +499,7 @@ class ProductScreen extends Component {
               </View>
             </TouchableWithoutFeedback>
 
-            <TouchableWithoutFeedback onPress={()=>this.props.navigation.navigate("CartScreen",{prdtScrContex:this})}>
+            <TouchableWithoutFeedback onPress={()=>this.props.navigation.navigate("CartScreen",{onNavigateBack: this.handleOnNavigateBack.bind(this)})}>
               <View
                 style={{
                   backgroundColor: "transparent",

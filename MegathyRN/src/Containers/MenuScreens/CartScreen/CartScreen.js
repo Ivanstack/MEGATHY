@@ -63,7 +63,8 @@ class CartScreen extends Component {
         <View style={{ flexDirection: "row" }}>
           <TouchableOpacity
             onPress={() => {
-            //   navigation.state.params.prdtScrContex.setState({ isReload: true });
+              //   navigation.state.params.prdtScrContex.setState({ isReload: true });
+              navigation.state.params.onNavigateBack();
               navigation.goBack(null);
             }}
           >
