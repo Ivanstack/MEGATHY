@@ -11,13 +11,6 @@ export default StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#F5FCFF"
   },
-  btnStyle: {
-    textAlign: "center",
-    color: "#333333",
-    // fontSize: 17,
-    fontFamily: constant.themeFont,
-    margin: 5
-  },
   headerText: {
     color: "white",
     marginTop: 4,
@@ -32,23 +25,8 @@ export default StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    opacity: 0.3,
+    opacity: 0.5,
     backgroundColor: "black"
-  },
-  bannerWrapper: {
-    height: 170,
-    backgroundColor: "transparent"
-  },
-  slide: {
-    width: Dimensions.get("window").width - 10,
-    // height:200,
-    // justifyContent: "center",
-    backgroundColor: "green"
-  },
-  image: {
-    width: Dimensions.get("window").width - 20,
-    height: "100%"
-    // flex: 1,
   },
   addProductImg: {
     width: 18,
@@ -56,7 +34,7 @@ export default StyleSheet.create({
     margin: 4
   },
   addProductBtn: {
-    backgroundColor: "transparent",
+    backgroundColor: "transparent"
     // marginTop: 20,
     // marginRight: 10
   },
@@ -76,7 +54,7 @@ export default StyleSheet.create({
   },
   cartProductNameLbl: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontFamily: constant.themeFont,
     color: constant.themeColor,
     marginLeft: 10
@@ -91,7 +69,7 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     // width: "100%",
-    flexDirection: 'row',
+    flexDirection: "row",
     // marginLeft: 5,
     marginBottom: 1
   },
@@ -108,17 +86,6 @@ export default StyleSheet.create({
     height: "20%",
     justifyContent: "space-between",
     flexDirection: "row"
-  },
-  showSelectedProductQuentityView: {
-    width: 24,
-    height: 24,
-    margin: 4,
-    backgroundColor: "green",
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: "transparent",
-    justifyContent: "center",
-    alignItems: "center"
   },
   cartImg: {
     width: 30,
@@ -151,5 +118,16 @@ export default StyleSheet.create({
     fontSize: 9,
     fontWeight: "bold",
     color: "white"
+  },
+  scheduleAndOrderBtns: {
+    width: 150,
+    height: 40,
+    backgroundColor: constant.themeColor,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: "transparent",
+    marginBottom: 10,
   }
 });

@@ -82,12 +82,14 @@ export default StyleSheet.create({
   },
   productImg: {
     width: "100%",
-    height: 200,
+    height: width/2*0.75,
     backgroundColor: "transparent"
   },
   productCountainer: {
+    flex:1,
     backgroundColor: "white",
-    width: "48%",
+    width: "58%",
+    height: width/2+80,
     marginLeft: 5,
     marginBottom: 5
   },

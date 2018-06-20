@@ -378,58 +378,61 @@ class HomeScreen extends Component {
   // }
 
   _renderHeader() {
-    {this.state.isSubCategoryScr ? null : (
+    return (
       <View>
-        <Swiper
-          style={styles.bannerWrapper}
-          showPagination
-          autoplay={true}
-          autoplayTimeout={3}
-          autoplayDirection={true}
-          loop={true}
-          // index={0}
-          // onIndexChanged={index => {console.log("Change Swipe Index :==> ", index)}}
-          onMomentumScrollEnd={(e, state, context) => {}}
-          dot={<View style={styles.dot} />}
-          activeDot={<View style={styles.activeDot} />}
-          paginationStyle={styles.pagination}
-        >
-          {this.state.bannerData.length > 0
-            ? this.state.bannerData.map((value, index) => {
-                return (
-                  <View
-                    key={index}
-                    style={{ height: "100%", margin: 10 }}
-                  >
-                    <ImageLoad
-                      style={styles.image}
-                      isShowActivity={false}
-                      placeholderSource={require("../../Resources/Images/DefaultProductImage.png")}
-                      source={{ uri: value.banner_image_url }}
-                    />
-                  </View>
-                );
-              })
-            : // <View/>
-              this.items.map((value, index) => {
-                return (
-                  <View key={index} style={{ height: 200, margin: 10 }}>
-                    <Image
-                      style={styles.image}
-                      source={require("../../Resources/Images/DefaultProductImage.png")}
-                    />
-                  </View>
-                );
-              })}
-        </Swiper>
+        {this.state.isSubCategoryScr ? (
+          <View />
+        ) : (
+          <View>
+            <Swiper
+              style={styles.bannerWrapper}
+              showPagination
+              autoplay={true}
+              autoplayTimeout={3}
+              autoplayDirection={true}
+              loop={true}
+              // index={0}
+              // onIndexChanged={index => {console.log("Change Swipe Index :==> ", index)}}
+              onMomentumScrollEnd={(e, state, context) => {}}
+              dot={<View style={styles.dot} />}
+              activeDot={<View style={styles.activeDot} />}
+              paginationStyle={styles.pagination}
+            >
+              {this.state.bannerData.length > 0
+                ? this.state.bannerData.map((value, index) => {
+                    return (
+                      <View key={index} style={{ height: "100%", margin: 10 }}>
+                        <ImageLoad
+                          style={styles.image}
+                          isShowActivity={false}
+                          placeholderSource={require("../../Resources/Images/DefaultProductImage.png")}
+                          source={{ uri: value.banner_image_url }}
+                        />
+                      </View>
+                    );
+                  })
+                : // <View/>
+                  this.items.map((value, index) => {
+                    return (
+                      <View key={index} style={{ height: 200, margin: 10 }}>
+                        <Image
+                          style={styles.image}
+                          source={require("../../Resources/Images/DefaultProductImage.png")}
+                        />
+                      </View>
+                    );
+                  })}
+            </Swiper>
+          </View>
+        )}
       </View>
-    )}
+    );
   }
 
   _renderCategoryItem = ({ item, index }) => {
     return (
       <TouchableOpacity
-        style={{ backgroundColor: constant.ProdCategoryBGColor }}
+        style={{ backgroundColor: constant.prodCategoryBGColor }}
         onPress={() => this._onPressCategory(item)}
       >
         <View
@@ -452,7 +455,9 @@ class HomeScreen extends Component {
               }}
             >
               {" "}
-              {item.categoryName}{" "}
+              {global.currentAppLanguage === constant.languageArabic
+                ? item.categoryNameAr
+                : item.categoryName}{" "}
             </Text>
             <Text
               style={{
@@ -554,8 +559,8 @@ class HomeScreen extends Component {
 
   render() {
     return (
-      <View>
-        {/* <ScrollView
+      // <View>
+      /* <ScrollView
           onScroll={this._onScrollViewEndReached}
           refreshControl={
             <RefreshControl
@@ -563,48 +568,49 @@ class HomeScreen extends Component {
               onRefresh={this._onRefresh.bind(this)}
             />
           }
-        > */}
-          
+        > */
 
-          <View style={{ backgroundColor: "pink", flex: 1, marginTop: 10 }}>
-            <SafeAreaView style={styles.container}>
-              {this.state.categoryData.length > 0 ? (
-                <FlatList
-                  style={{
-                    width: "100%",
-                    height: "100%"
-                    // backgroundColor: "orange"
-                  }}
-                  ref={flatList => {
-                    this.categoryList = flatList;
-                  }}
-                  data={this.state.categoryData}
-                  keyExtractor={(item, index) => item.PkId.toString()}
-                  renderItem={this._renderCategoryItem.bind(this)}
-                  showsHorizontalScrollIndicator={false}
-                  removeClippedSubviews={false}
-                  directionalLockEnabled
-                  onEndReached={
-                    // console.log(" onEndReached :========> ")
-
-                    () => {
-                      this.callLoadMore;
-                    }
-                  }
-                  ListHeaderComponent={this._renderHeader.bind(this)}
-                  // ListFooterComponent={this._renderFooter.bind(this)}
+      // <View style={{ backgroundColor: constant.prodCategoryBGColor, flex: 1, marginTop: 10 }}>
+      <View style={{ flex: 1 }}>
+        <SafeAreaView style={styles.container}>
+          {this.state.categoryData.length > 0 ? (
+            <FlatList
+              style={{
+                width: "100%",
+                height: "100%"
+                // backgroundColor: "orange"
+              }}
+              ref={flatList => {
+                this.categoryList = flatList;
+              }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.isRefreshing}
+                  onRefresh={this._onRefresh.bind(this)}
                 />
-              ) : (
-                <Spinner
-                  visible={this.state.visible}
-                  cancelable={true}
-                  textStyle={{ color: "#FFF" }}
-                />
-              )}
-            </SafeAreaView>
-          </View>
-        {/* </ScrollView> */}
+              }
+              data={this.state.categoryData}
+              keyExtractor={(item, index) => item.PkId.toString()}
+              renderItem={this._renderCategoryItem.bind(this)}
+              showsHorizontalScrollIndicator={false}
+              removeClippedSubviews={false}
+              directionalLockEnabled
+              onEndReached={this.callLoadMore}
+              onEndReachedThreshold={0.5}
+              ListHeaderComponent={this._renderHeader.bind(this)}
+              // ListFooterComponent={this._renderFooter.bind(this)}
+            />
+          ) : (
+            <Spinner
+              visible={this.state.visible}
+              cancelable={true}
+              textStyle={{ color: "#FFF" }}
+            />
+          )}
+        </SafeAreaView>
       </View>
+      /* </ScrollView> */
+      // </View>
     );
   }
 }

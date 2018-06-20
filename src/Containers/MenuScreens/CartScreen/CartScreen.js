@@ -16,7 +16,8 @@ import {
   AppState,
   SafeAreaView,
   FlatList,
-  AsyncStorage
+  AsyncStorage,
+  Animated
 } from "react-native";
 
 // Redux
@@ -42,19 +43,24 @@ import CartStyle from "./CartScreenStyle";
 // Localization
 import baseLocal from "../../../Resources/Localization/baseLocalization";
 
+// Variable
+const isCrntLanguageAR =
+  global.currentAppLanguage === constant.languageArabic ? true : false;
+
 class CartScreen extends Component {
   constructor(props) {
     super(props);
     // Class Props
     (this.currentPage = 1),
       (this.lastPage = 0),
-      //Class State
-      (this.state = {
-        productDataList: [],
-        isRefreshing: false,
-        productQuentity: 0,
-        hideDiscountLbl: true
-      });
+      (this.y_translate = new Animated.Value(0));
+    //Class State
+    this.state = {
+      productDataList: [],
+      isRefreshing: false,
+      productQuentity: 0,
+      hideDiscountLbl: true
+    };
   }
 
   static navigationOptions = ({ navigation }) => ({
@@ -85,7 +91,6 @@ class CartScreen extends Component {
   });
 
   // App Life Cycle Methods
-
   async componentDidMount() {
     console.log("App State: ", AppState.currentState);
     this.GetOrSaveCartItem(false);
@@ -96,9 +101,10 @@ class CartScreen extends Component {
     this.GetOrSaveCartItem(true);
   }
 
-  componentDidUpdate() {
+  componentWillUpdate() {
     // console.log('props data :', this.props.firstComp);
     // this.props.navigation.navigate('FirstScrElement');
+    this.GetOrSaveCartItem(true);
   }
 
   // Mics Methods
@@ -164,17 +170,18 @@ class CartScreen extends Component {
     console.log("totalAddedProduct :===> ", item);
   };
 
-  _onPressRemoveProduct = item => {
+  _onPressRemoveProduct = (item, removeFromList) => {
     if (item.totalAddedProduct > 0) {
       item.totalAddedProduct = item.totalAddedProduct - 1;
-      this.setState({ productQuentity: this.state.productQuentity - 1 });
       let oldCartItem = cartFunc.findCartItem(item.PkId);
+      let itemIdx = global.arrCartItems.indexOf(oldCartItem);
 
       if (global.arrCartItems.length > 0) {
-        if (oldCartItem) {
+        if (item.totalAddedProduct === 0 || removeFromList) {
+          global.arrCartItems.splice(itemIdx, 1);
+        } else if (oldCartItem) {
           console.log("Item is available in arr");
           console.log("Array before replace : ====> ", global.arrCartItems);
-          let itemIdx = global.arrCartItems.indexOf(oldCartItem);
           global.arrCartItems.splice(itemIdx, 1, item);
           // console.log("Array after replace : ====> ",global.arrCartItems);
         } else {
@@ -185,7 +192,92 @@ class CartScreen extends Component {
         console.log("Item is not available in arr");
         global.arrCartItems.push(item);
       }
+      this.setState({ productQuentity: this.state.productQuentity - 1 });
     }
+  };
+
+  _onPressRemoveCartItemFromList = item => {
+    Alert.alert(
+      "Megathy",
+      "Are you sure want to remove this item from the cart?",
+      [
+        {
+          text: "No",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: () => {
+            this._onPressRemoveProduct(item, true);
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  _renderOrderNowModel = () => {
+    let animateValue = new Animated.Value(0);
+    const top = animateValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, -300]
+    });
+
+    return (
+      <View
+        style={{
+          flex: 1,
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0
+        }}
+      >
+        <Animated.View
+          style={{
+            width: "100%",
+            height: 100,
+            backgroundColor: "white",
+            justifyContent: "space-around",
+            alignItems: "center",
+            flexDirection: "row",
+            transform: [{ translateY: top }]
+          }}
+        >
+          <TouchableOpacity
+            style={[CartStyle.scheduleAndOrderBtns, { marginLeft: 20 }]}
+          >
+            <Text
+              style={{
+                fontFamily: constant.themeFont,
+                fontWeight: "bold",
+                color: "white"
+              }}
+            >
+              {" "}
+              Schedule{" "}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[CartStyle.scheduleAndOrderBtns, { marginRight: 20 }]}
+          >
+            <Text
+              style={{
+                fontFamily: constant.themeFont,
+                fontWeight: "bold",
+                color: "white"
+              }}
+            >
+              {" "}
+              Order Now{" "}
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
+      </View>
+    );
   };
 
   _renderCartItem = ({ item, index }) => {
@@ -227,16 +319,25 @@ class CartScreen extends Component {
           >
             <View style={{ marginTop: 3 }}>
               <Text style={CartStyle.cartProductNameLbl} numberOfLines={2}>
-                {item.productName}
+                {global.currentAppLanguage === constant.languageArabic
+                  ? item.productNameAr
+                  : item.productName}
               </Text>
               <Text style={CartStyle.cartProductQuentityLbl}>
-                {item.productQuntity} {item.productUnit}
+                {item.productQuntity}{" "}
+                {global.currentAppLanguage === constant.languageArabic
+                  ? item.productUnitAr
+                  : item.productUnit}
               </Text>
             </View>
 
             <TouchableOpacity
-              style={{ marginRight: 10, marginTop: 3 }}
-              onPress={this._onPressRemoveProduct.bind(this, item)}
+              style={{ position: "absolute", top: 3, right: 10 }}
+              onPress={this._onPressRemoveCartItemFromList.bind(
+                this,
+                item,
+                true
+              )}
             >
               <Image
                 style={CartStyle.selectedProductQuentity}
@@ -282,7 +383,7 @@ class CartScreen extends Component {
               }}
             >
               <TouchableOpacity
-                onPress={this._onPressRemoveProduct.bind(this, item)}
+                onPress={this._onPressRemoveProduct.bind(this, item, false)}
               >
                 <Image
                   style={CartStyle.selectedProductQuentity}
@@ -338,7 +439,7 @@ class CartScreen extends Component {
           {global.arrCartItems.length > 0 ? (
             <FlatList
               style={{
-                // backgroundColor: constant.ProdCategoryBGColor,
+                // backgroundColor: constant.prodCategoryBGColor,
                 marginTop: 5,
                 marginBottom: 10
               }}
@@ -346,14 +447,24 @@ class CartScreen extends Component {
                 this.cartList = flatList;
               }}
               data={global.arrCartItems}
-              keyExtractor={item => item.PkId}
+              keyExtractor={item => item.PkId.toString()}
               renderItem={this._renderCartItem.bind(this)}
               showsHorizontalScrollIndicator={false}
               removeClippedSubviews={false}
               directionalLockEnabled
               //   numColumns={2}
             />
-          ) : null}
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <Text style={{ fontSize: 17 }}> Your cart is empty</Text>
+            </View>
+          )}
 
           <View style={CartStyle.cartContainer}>
             <View
@@ -436,6 +547,7 @@ class CartScreen extends Component {
               />
             </View>
           </View>
+          {this._renderOrderNowModel()}
         </SafeAreaView>
       </View>
     );
