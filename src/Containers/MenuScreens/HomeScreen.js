@@ -505,7 +505,7 @@ class HomeScreen extends Component {
               uri: item.categoryImageUrl
             }}
           />
-          <View style={styles.overlayLayer} />
+          {/* <View style={styles.overlayLayer} /> */}
           <View
             style={[
               styles.overlayLayer,
