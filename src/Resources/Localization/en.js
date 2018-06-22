@@ -163,8 +163,7 @@ export default {
     // Contact Us
 
     "How can we help you": "How can we help you",
-    "You are already logged into another device. Please login again":
-        "You are already logged into another device. Please login again",
+    "You are already logged into another device. Please login again": "You are already logged into another device. Please login again",
 
     // Customer File 2
 

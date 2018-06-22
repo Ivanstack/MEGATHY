@@ -23,7 +23,7 @@ export default class SideMenu extends Component {
                 Section 1
               </Text>
               <View style={styles.navSectionStyle}>
-                <Text style={styles.navItemStyle} onPress={this.navigateToScreen('FirstScreen')}>
+                <Text style={styles.navItemStyle} onPress={this.navigateToScreen('AddressListScreen')}>
                 Page1
                 </Text>
               </View>

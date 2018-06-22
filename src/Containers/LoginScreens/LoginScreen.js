@@ -6,7 +6,7 @@
 
 import React, { Component } from "react";
 import { Platform, StyleSheet, AsyncStorage, Dimensions } from "react-native";
-import { Text, View, Image, Button, TouchableOpacity, Alert, ScrollView } from "react-native";
+import { Text, View, Image, TouchableOpacity, Alert, ScrollView } from "react-native";
 
 import AppTextField from "../../Components/AppTextField";
 import constant from "../../Helper/Constants";
@@ -108,7 +108,8 @@ class LoginScreen extends Component {
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
-                global.loginKey = result.data.data.userData.loginKey;
+
+                global.currentUser = result.data.data.userData
                 AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data.data.userData));
                 AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data.data.settingData));
                 AsyncStorage.removeItem(constant.keyCurrentStore);

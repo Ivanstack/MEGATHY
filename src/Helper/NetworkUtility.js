@@ -1,5 +1,6 @@
 import constants from "./Constants";
 import { AsyncStorage } from "react-native";
+import * as CommonUtilities from "./CommonUtilities";
 var axios = require("axios");
 var axiosDefaults = require("axios/lib/defaults");
 var DeviceInfo = require("react-native-device-info");
@@ -8,7 +9,7 @@ export function setDefaultAPIConfig() {
     axiosDefaults.baseURL = constants.baseURL;
     axiosDefaults.timeout = 60000;
     axiosDefaults.headers = {
-        Authorization: global.loginKey === null ? "" : global.loginKey,
+        Authorization: global.loginKey === null ? "" : global.currentUser.loginKey,
         "Accept-Language": global.currentAppLanguage,
         AppVersion: DeviceInfo.AppVersion,
         "User-Agent": DeviceInfo.getUserAgent(),
@@ -50,7 +51,11 @@ export function getRequest(endPoint, parameters = "") {
             })
             .catch(function(error) {
                 console.log(error);
-                reject(error.response);
+                if (error.response.status === 403) {
+                    logout();
+                } else {
+                    reject(error.response);
+                }
             });
     });
 }
@@ -85,7 +90,11 @@ export function postRequest(endPoint, parameters = "") {
             })
             .catch(error => {
                 console.log(error.response);
-                reject(error.response);
+                if (error.response.status === 403) {
+                    logout();
+                } else {
+                    reject(error.response);
+                }
             });
     });
 }
@@ -120,7 +129,17 @@ export function putRequest(endPoint, parameters = "") {
             })
             .catch(error => {
                 console.log(error.response);
-                reject(error.response);
+                if (error.response.status === 403) {
+                    logout();
+                } else {
+                    reject(error.response);
+                }
             });
     });
+}
+
+export function logout() {
+    CommonUtilities.showAlert("You are already logged into another device. Please login again", false);
+    AsyncStorage.removeItem(constants.isLogin);
+    constants.emitter.emit(constants.LOGOUT_EVENT, "AuthProblem");
 }
