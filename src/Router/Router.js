@@ -82,7 +82,7 @@ const SecondScreenNav = StackNavigator(
 const AppDrawer = DrawerNavigator(
   {
     CategoryScreen: { screen: CategoryScreenNav },
-    FirstScreen: { screen: FirstScreenNav },
+    FirstScreen: { screen: DeliveryDetailsNav },
     SecondScreen: { screen: SecondScreenNav }
   },
   {
