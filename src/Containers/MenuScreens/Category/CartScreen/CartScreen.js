@@ -17,35 +17,36 @@ import {
   SafeAreaView,
   FlatList,
   AsyncStorage,
-  Animated
+  Animated,
+  Dimensions,
+  TextInput,
 } from "react-native";
 
 // Redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as actions from "../../../AppRedux/Actions/actions";
+import * as actions from "../../../../AppRedux/Actions/actions";
 
 // Common file
-import CommonStyles from "../../../Helper/CommonStyle";
-import constant from "../../../Helper/Constants";
-import * as cartFunc from "../../../Helper/Functions/Cart";
+import CommonStyles from "../../../../Helper/CommonStyle";
+import * as constant from "../../../../Helper/Constants";
+import * as cartFunc from "../../../../Helper/Functions/Cart";
 
 // Lib
 import Icon from "react-native-vector-icons/EvilIcons";
 import ImageLoad from "react-native-image-placeholder";
 
 // Network Utility
-import * as networkUtility from "../../../Helper/NetworkUtility";
+import * as networkUtility from "../../../../Helper/NetworkUtility";
 
 // Components Style
 import CartStyle from "./CartScreenStyle";
 
 // Localization
-import baseLocal from "../../../Resources/Localization/baseLocalization";
+import baseLocal from "../../../../Resources/Localization/baseLocalization";
+const orderNowViewHeight = (12 * Dimensions.get("window").height) / 100;
 
 // Variable
-const isCrntLanguageAR =
-  global.currentAppLanguage === constant.languageArabic ? true : false;
 
 class CartScreen extends Component {
   constructor(props) {
@@ -59,7 +60,8 @@ class CartScreen extends Component {
       productDataList: [],
       isRefreshing: false,
       productQuentity: 0,
-      hideDiscountLbl: true
+      hideDiscountLbl: true,
+      showScheduleOrderNow: false
     };
   }
 
@@ -94,6 +96,10 @@ class CartScreen extends Component {
   async componentDidMount() {
     console.log("App State: ", AppState.currentState);
     this.GetOrSaveCartItem(false);
+
+    Animated.spring(this.y_translate, {
+      toValue: orderNowViewHeight
+    }).start();
   }
 
   componentWillUnmount() {
@@ -108,7 +114,6 @@ class CartScreen extends Component {
   }
 
   // Mics Methods
-
   async GetOrSaveCartItem(isSaveCartItem) {
     try {
       if (isSaveCartItem) {
@@ -217,66 +222,100 @@ class CartScreen extends Component {
     );
   };
 
-  _renderOrderNowModel = () => {
-    let animateValue = new Animated.Value(0);
-    const top = animateValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, -300]
-    });
+  _onPressShowHideScheduleOrderNowBtns = () => {
+    constant.debugLog("orderNow Called ...");
 
+    if (!this.state.showScheduleOrderNow) {
+      this.setState(
+        {
+          showScheduleOrderNow: true
+        },
+        () => {
+          this.y_translate.setValue(0);
+          Animated.spring(this.y_translate, {
+            toValue: -1 * orderNowViewHeight
+            // friction: 3
+          }).start();
+        }
+      );
+    } else {
+      this.setState(
+        {
+          showScheduleOrderNow: false
+        },
+        () => {
+          this.y_translate.setValue(-1 * orderNowViewHeight);
+          Animated.spring(this.y_translate, {
+            toValue: orderNowViewHeight,
+            friction: 5
+            // speed: 0.5
+          }).start();
+        }
+      );
+    }
+  };
+
+  _renderOrderNowModel = () => {
     return (
-      <View
-        style={{
-          flex: 1,
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0
-        }}
+      // <View>
+      //   {this.state.showScheduleOrderNow ? (
+      <TouchableWithoutFeedback
+        onPress={this._onPressShowHideScheduleOrderNowBtns.bind(this)}
       >
-        <Animated.View
+        <View
           style={{
-            width: "100%",
-            height: 100,
-            backgroundColor: "white",
-            justifyContent: "space-around",
-            alignItems: "center",
-            flexDirection: "row",
-            transform: [{ translateY: top }]
+            flex: 1,
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: -1 * orderNowViewHeight
+            // backgroundColor: "orange"
           }}
         >
-          <TouchableOpacity
-            style={[CartStyle.scheduleAndOrderBtns, { marginLeft: 20 }]}
+          <Animated.View
+            style={[
+              CartStyle.ScheduleAndOrderNowViewStyle,
+              {
+                transform: [{ translateY: this.y_translate }]
+              }
+            ]}
           >
-            <Text
-              style={{
-                fontFamily: constant.themeFont,
-                fontWeight: "bold",
-                color: "white"
-              }}
+            <TouchableOpacity
+              style={[CartStyle.scheduleAndOrderBtns, { marginLeft: 20 }]}
+              onPress={this._onPressShowHideScheduleOrderNowBtns.bind(this)}
             >
-              {" "}
-              Schedule{" "}
-            </Text>
-          </TouchableOpacity>
+              <Text
+                style={{
+                  fontFamily: constant.themeFont,
+                  fontWeight: "bold",
+                  color: "white"
+                }}
+              >
+                {" "}
+                Schedule{" "}
+              </Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[CartStyle.scheduleAndOrderBtns, { marginRight: 20 }]}
-          >
-            <Text
-              style={{
-                fontFamily: constant.themeFont,
-                fontWeight: "bold",
-                color: "white"
-              }}
+            <TouchableOpacity
+              style={[CartStyle.scheduleAndOrderBtns, { marginRight: 20 }]}
+              onPress={()=>this.props.navigation.navigate("OrderMasterScreen")}
             >
-              {" "}
-              Order Now{" "}
-            </Text>
-          </TouchableOpacity>
-        </Animated.View>
-      </View>
+              <Text
+                style={{
+                  fontFamily: constant.themeFont,
+                  fontWeight: "bold",
+                  color: "white"
+                }}
+              >
+                {" "}
+                Order Now{" "}
+              </Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
+      </TouchableWithoutFeedback>
+      //   ) : null}
+      // </View>
     );
   };
 
@@ -288,11 +327,10 @@ class CartScreen extends Component {
         <ImageLoad
           style={CartStyle.cartProductImg}
           isShowActivity={false}
-          placeholderSource={require("../../../Resources/Images/DefaultProductImage.png")}
-          // placeholderSource={require("../../../Resources/Images/defaultImg.jpg")}
-          // source={require("../../../Resources/Images/defaultImg.jpg")}
+          placeholderSource={require("../../../../Resources/Images/DefaultProductImage.png")}
+          // placeholderSource={require("../../../../Resources/Images/defaultImg.jpg")}
+          // source={require("../../../../Resources/Images/defaultImg.jpg")}
           // resizeMode={"contain"}
-          // loadingStyle={{ size: "large", color: "blue" }}
           source={{
             uri: item.productImageUrl
           }}
@@ -303,7 +341,6 @@ class CartScreen extends Component {
             marginBottom: 5,
             backgroundColor: "transparent",
             // backgroundColor: "yellow",
-            // width:"100%",
             flex: 1,
             flexDirection: "column"
           }}
@@ -341,7 +378,7 @@ class CartScreen extends Component {
             >
               <Image
                 style={CartStyle.selectedProductQuentity}
-                source={require("../../../Resources/Images/CartScr/BtnRemoveAllProductFromCart.png")}
+                source={require("../../../../Resources/Images/CartScr/BtnRemoveAllProductFromCart.png")}
               />
             </TouchableOpacity>
           </View>
@@ -387,7 +424,7 @@ class CartScreen extends Component {
               >
                 <Image
                   style={CartStyle.selectedProductQuentity}
-                  source={require("../../../Resources/Images/CartScr/BtnRemoveFromCart.png")}
+                  source={require("../../../../Resources/Images/CartScr/BtnRemoveFromCart.png")}
                 />
               </TouchableOpacity>
 
@@ -408,7 +445,7 @@ class CartScreen extends Component {
               >
                 <Image
                   style={CartStyle.addProductImg}
-                  source={require("../../../Resources/Images/CartScr/BtnAddToCart.png")}
+                  source={require("../../../../Resources/Images/CartScr/BtnAddToCart.png")}
                 />
               </TouchableOpacity>
             </View>
@@ -424,10 +461,11 @@ class CartScreen extends Component {
 
   render() {
     return (
+      // <KeyboardAvoidingView behavior='position' style={{ flex: 1 }}>
       <View
         style={{
           flex: 1,
-          backgroundColor: "#D4D4D4"
+          backgroundColor: constant.darkGrayBGColor
         }}
       >
         <SafeAreaView
@@ -465,91 +503,145 @@ class CartScreen extends Component {
               <Text style={{ fontSize: 17 }}> Your cart is empty</Text>
             </View>
           )}
-
+          {/* <TouchableWithoutFeedback
+            onPress={this._onPressShowHideScheduleOrderNowBtns.bind(this)}
+          > */}
           <View style={CartStyle.cartContainer}>
             <View
               style={{
                 backgroundColor: "white",
-                width: "85%",
+                width: "45%",
                 flex: 1,
-                marginTop: 1
+                marginTop: 1,
+                flexDirection: "row"
               }}
             >
-              <View
-                style={{
-                  backgroundColor: "#F5F5F5",
-                  width: "45%",
-                  flex: 1,
-                  flexDirection: "row",
-                  justifyContent: "space-between"
-                }}
+              <TouchableWithoutFeedback
+                onPress={this._onPressShowHideScheduleOrderNowBtns.bind(this)}
               >
                 <View
-                  style={{ justifyContent: "center", alignItems: "center" }}
-                >
-                  <Image
-                    style={CartStyle.cartImg}
-                    source={require("../../../Resources/Images/ProductScr/CartImageRed.png")}
-                  />
-                  {/* {this.state.cartItems > 0 ? ( */}
-                  <View style={CartStyle.cartBadge}>
-                    <Text style={CartStyle.cartItemLbl}>
-                      {cartFunc.getCartItemsCount()}
-                    </Text>
-                  </View>
-                  {/* ) : null} */}
-                </View>
-
-                <View
                   style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "column"
+                    backgroundColor: "#F5F5F5",
+                    width: "45%",
+                    flex: 1,
+                    flexDirection: "row",
+                    justifyContent: "space-between"
                   }}
                 >
-                  <Text
-                    style={{ fontFamily: constant.themeFont, fontSize: 10 }}
-                  >
-                    {" "}
-                    SAR{" "}
-                  </Text>
-                  <Text
+                  <View
                     style={{
-                      fontFamily: constant.themeFont,
-                      fontSize: 16,
-                      fontWeight: "bold"
+                      justifyContent: "center",
+                      alignItems: "center"
                     }}
                   >
-                    {" "}
-                    {cartFunc.getTotalPriceCartItems()}{" "}
-                  </Text>
-                </View>
+                    <Image
+                      style={CartStyle.cartImg}
+                      source={require("../../../../Resources/Images/ProductScr/CartImageRed.png")}
+                    />
+                    {this.state.cartItems > 0 ? (
+                      <View style={CartStyle.cartBadge}>
+                        <Text style={CartStyle.cartItemLbl}>
+                          {cartFunc.getCartItemsCount()}
+                        </Text>
+                      </View>
+                    ) : null}
+                  </View>
 
-                <View style={{ width: 2, backgroundColor: "lightgray" }} />
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      flexDirection: "column"
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontFamily: constant.themeFont,
+                        fontSize: 10
+                      }}
+                    >
+                      {" "}
+                      SAR{" "}
+                    </Text>
+                    <Text
+                      style={{
+                        fontFamily: constant.themeFont,
+                        fontSize: 16,
+                        fontWeight: "bold"
+                      }}
+                    >
+                      {" "}
+                      {cartFunc.getTotalPriceCartItems()}{" "}
+                    </Text>
+                  </View>
+
+                  <View style={{ width: 2, backgroundColor: "lightgray" }} />
+                </View>
+              </TouchableWithoutFeedback>
+
+
+              <View style={{
+                    width: "60%",}}>
+                <TextInput
+                  style={{
+                    // width: "50%",
+                    height: "100%",
+                    borderColor: "gray",
+                    borderWidth: 1
+                  }}
+                  // onChangeText={text => this.setState({ text })}
+                  // value={this.state.text}
+                />
               </View>
             </View>
 
-            <View
-              style={{
-                backgroundColor: "transparent",
-                width: "15%",
-                // flex: 1,
-                justifyContent: "center",
-                alignItems: "center"
-                // marginTop: 1
-              }}
-            >
-              <Icon
-                name="arrow-right"
-                // style={{ marginLeft: 15 }}
-                size={35}
-                color="white"
+            {/* <View>
+              <TextInput
+                style={{
+                  width: "100%",
+                  height: 40,
+                  borderColor: "gray",
+                  borderWidth: 1
+                }}
+                // onChangeText={text => this.setState({ text })}
+                // value={this.state.text}
               />
-            </View>
+            </View> */}
+
+            <TouchableWithoutFeedback
+              onPress={this._onPressShowHideScheduleOrderNowBtns.bind(this)}
+            >
+              <View
+                style={{
+                  backgroundColor: "transparent",
+                  width: "15%",
+                  // flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center"
+                  // marginTop: 1
+                }}
+              >
+                <Icon
+                  name="arrow-right"
+                  // style={{ marginLeft: 15 }}
+                  size={35}
+                  color="white"
+                />
+              </View>
+            </TouchableWithoutFeedback>
           </View>
+          {/* </TouchableWithoutFeedback> */}
+          {this.state.showScheduleOrderNow ? (
+            <TouchableWithoutFeedback
+              onPress={this._onPressShowHideScheduleOrderNowBtns.bind(this)}
+            >
+              <View style={CartStyle.overlayLayer} />
+            </TouchableWithoutFeedback>
+          ) : null}
           {this._renderOrderNowModel()}
         </SafeAreaView>
       </View>
+      // </KeyboardAvoidingView>
     );
   }
 }

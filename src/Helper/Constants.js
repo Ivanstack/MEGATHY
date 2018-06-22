@@ -1,74 +1,83 @@
 // Localization
-import baseLocal from '../Resources/Localization/baseLocalization'
+import baseLocal from "../Resources/Localization/baseLocalization";
 var { EventEmitter } = require("fbemitter");
 
 module.exports = {
-    /// Other Misc Constants
-    alertTitle: "Megathy",
-    emitter: new EventEmitter(),
-    isLogin: "false",
-    loginListener: "loginListener",
-    languageEnglish:"en",
-    languageArabic:"ar",
-    LOGOUT_EVENT: "logout",
+  /// Other Misc Constants
+  alertTitle: "Megathy",
+  emitter: new EventEmitter(),
+  isLogin: "false",
+  loginListener: "loginListener",
+  languageEnglish: "en",
+  languageArabic: "ar",
+  LOGOUT_EVENT: "logout",
 
-    /// Common Functions
-    debugLog: (log) => {
-        console.log("\n====================>");
-        console.log(log)
-        console.log("<====================\n");
-    },
+  /// Common Functions
+  debugLog: log => {
+    console.log("\n====================>");
+    console.log(log);
+    console.log("<====================\n");
+  },
 
-    /// Async Storage Keys
-    keyCurrentUser: "currentUser",
-    keyCurrentSettings: "currentSettings",
-    keyCurrentStore: "currentStore",
-    keyCurrentAppLanguage: "currentAppLanguage",
+  /// Async Storage Keys
+  keyCurrentUser: "currentUser",
+  keyCurrentSettings: "currentSettings",
+  keyCurrentStore: "currentStore",
+  keyCurrentAppLanguage: "currentAppLanguage",
 
-    /// Common API request parameters
-    deviceTypeiPhone: "IPHONE",
-    deviceTypeAndroid: "ANDROID",
-    notifyId: "0123456789",
-    timeZone: "Asia/Riyadh",
+  /// Common API request parameters
+  deviceTypeiPhone: "IPHONE",
+  deviceTypeAndroid: "ANDROID",
+  notifyId: "0123456789",
+  timeZone: "Asia/Riyadh",
 
-    APIConfirmationTypeRegister: "Register",
-    APIConfirmationTypeForgotPassword: "Forgot Password",
-    APIConfirmationTypeAddress: "Address Conformation",
+  APIConfirmationTypeRegister: "Register",
+  APIConfirmationTypeForgotPassword: "Forgot Password",
+  APIConfirmationTypeAddress: "Address Conformation",
 
-    /// Rest API details
-    // Base URL
-    baseURL: "http://192.168.0.3/megathylaravel/public/api/v1/", // Jay Kaneriya
-    // baseURL: "http://192.168.0.11/Megathy/MegathyLaravel/public/api/v1/", // BharatBhai
-    // baseURL: "http://192.168.0.2/MegathyLaravel/public/api/v1/", //Chintan Adatiya
+  /// Rest API details
+  // Base URL
+  baseURL: "http://192.168.0.3/megathylaravel/public/api/v1/", // Jay Kaneriya
+  // baseURL: "http://192.168.0.11/Megathy/MegathyLaravel/public/api/v1/", // BharatBhai
+  // baseURL: "http://192.168.0.2/MegathyLaravel/public/api/v1/", //Chintan Adatiya
 
-    /// End Points
-    // Login/Signup
-    login: "userLogin",
-    register: "registerUser",
-    forgotPassword: "requestForgotPassword",
-    verifyFBId: "verifyfacebookId",
-    getCity: "getCity",
-    getArea: "getArea",
-    getStore: "getStore",
-    setStore: "setStore",
-    verifyPhoneCode: "verifyPhoneCode",
-    requestVerifyPhones: "requestVerifyPhones",
-    updatePassword: "updatePassword",
+  /// End Points
+  // Login/Signup
+  login: "userLogin",
+  register: "registerUser",
+  forgotPassword: "requestForgotPassword",
+  verifyFBId: "verifyfacebookId",
+  getCity: "getCity",
+  getArea: "getArea",
+  getStore: "getStore",
+  setStore: "setStore",
+  verifyPhoneCode: "verifyPhoneCode",
+  requestVerifyPhones: "requestVerifyPhones",
+  updatePassword: "updatePassword",
+  
 
-    /// Menu Screens
-    getCategory: "getCategory?page=",
-    getSubCategory: "getSubCategory?page=1&categoryId=",
-    getBanners: "banners",
-    getProductList: "getProduct?categoryId=",
-    storeId: "&storeId=" + (global.currentStore === undefined || global.currentStore === undefined) ? "" : global.currentStore.storeId,
+  /// Menu Screens
+  getCategory: "getCategory",
+  getSubCategory: "getSubCategory",
+  getBanners: "banners",
+  getProductList: "getProduct",
+  getStoreTimeZone: "getStoreTimeZone",
+  address: "address",
+  
+  storeId:
+    "&storeId=" +
+    (global.currentStore === undefined || global.currentStore === undefined)
+      ? ""
+      : global.currentStore.storeId,
 
-    /// Colors
-    themeColor: "#CF2526",
-    prodCategoryBGColor: "#EFEDE9",
-    buttonDisableColor: "#939393",
+  /// Colors
+  themeColor: "#CF2526",
+  prodCategoryBGColor: "#EFEDE9",
+  buttonDisableColor: "#939393",
+  darkGrayBGColor: "#D4D4D4",
 
-    /// Font Family
-    themeFont: "Ebrima",
+  /// Font Family
+  themeFont: "Ebrima"
 };
 
 /*

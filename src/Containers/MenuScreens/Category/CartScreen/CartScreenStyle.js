@@ -1,8 +1,9 @@
 import { StyleSheet, Dimensions } from "react-native";
 
-import * as constant from "../../../Helper/Constants";
+import * as constant from "../../../../Helper/Constants";
 
 const { width, height } = Dimensions.get("window");
+const orderNowViewHeight = (12 * height) / 100;
 
 export default StyleSheet.create({
   container: {
@@ -10,13 +11,6 @@ export default StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#F5FCFF"
-  },
-  btnStyle: {
-    textAlign: "center",
-    color: "#333333",
-    // fontSize: 17,
-    fontFamily: constant.themeFont,
-    margin: 5
   },
   headerText: {
     color: "white",
@@ -32,70 +26,57 @@ export default StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    opacity: 0.3,
+    opacity: 0.5,
     backgroundColor: "black"
   },
-  bannerWrapper: {
-    height: 170,
-    backgroundColor: "transparent"
-  },
-  slide: {
-    width: Dimensions.get("window").width - 10,
-    // height:200,
-    // justifyContent: "center",
-    backgroundColor: "green"
-  },
-  image: {
-    width: Dimensions.get("window").width - 20,
-    height: "100%"
-    // flex: 1,
-  },
   addProductImg: {
-    width: 20,
-    height: 20,
-    marginBottom: 2
+    width: 18,
+    height: 18,
+    margin: 4
   },
   addProductBtn: {
-    backgroundColor: "transparent",
-    marginTop: 20,
-    marginRight: 10
+    backgroundColor: "transparent"
+    // marginTop: 20,
+    // marginRight: 10
   },
-  productPriceLbl: {
-    fontSize: 13,
+  cartProductPriceLbl: {
+    fontSize: 14,
     fontFamily: constant.themeFont,
     fontWeight: "bold",
     marginLeft: 10,
     marginTop: 5
   },
-  productQuentityLbl: {
-    fontSize: 13,
+  cartProductQuentityLbl: {
+    fontSize: 14,
     fontFamily: constant.themeFont,
-    color: "gray",
+    // color: "gray",
     marginLeft: 10,
-    marginTop: 5
+    marginTop: 2
   },
-  productNameLbl: {
-    fontSize: 15,
+  cartProductNameLbl: {
+    fontSize: 16,
+    fontWeight: "bold",
     fontFamily: constant.themeFont,
-    color: "black",
+    color: constant.themeColor,
     marginLeft: 10
   },
-  productImg: {
-    width: "100%",
-    height: width/2*0.75,
+  cartProductImg: {
+    width: 100,
+    height: 100,
+    marginBottom: 5,
     backgroundColor: "transparent"
   },
-  productCountainer: {
-    flex:1,
+  cartItemCountainer: {
+    flex: 1,
     backgroundColor: "white",
-    width: "58%",
-    height: width/2+80,
-    marginLeft: 5,
-    marginBottom: 5
+    // width: "100%",
+    flexDirection: "row",
+    // marginLeft: 5,
+    marginBottom: 1
   },
   selectedProductQuentity: {
-    width: 24,
-    height: 24,
+    width: 18,
+    height: 18,
     margin: 4
   },
   productSelectBtns: {
@@ -107,29 +88,21 @@ export default StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row"
   },
-  showSelectedProductQuentityView: {
-    width: 24,
-    height: 24,
-    margin: 4,
-    backgroundColor: "green",
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: "transparent",
-    justifyContent: "center",
-    alignItems: "center"
-  },
   cartImg: {
     width: 30,
     height: 30,
-    marginLeft: 20,
+    marginLeft: 20
     // margin: 5
   },
   cartContainer: {
-    backgroundColor: constant.themeColor,//"#F5F5F5",
+    // position: "absolute",
+    // bottom:0,
+    backgroundColor: constant.themeColor, //"#F5F5F5",
     width: "100%",
     height: "8%",
     // justifyContent:"space-between",
-    flexDirection: 'row',
+    flexDirection: "row"
+    // marginBottom: 50,
   },
   cartBadge: {
     position: "absolute",
@@ -141,14 +114,32 @@ export default StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "transparent",
-    justifyContent: 'center',
-    alignItems: 'center',
-
+    justifyContent: "center",
+    alignItems: "center"
   },
   cartItemLbl: {
     fontFamily: constant.themeFont,
-    fontSize:9,
-    fontWeight: 'bold',
+    fontSize: 9,
+    fontWeight: "bold",
     color: "white"
+  },
+  scheduleAndOrderBtns: {
+    width: 150,
+    height: 40,
+    backgroundColor: constant.themeColor,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: "transparent"
+    // marginBottom: 10,
+  },
+  ScheduleAndOrderNowViewStyle: {
+    width: "100%",
+    height: orderNowViewHeight,
+    backgroundColor: "#f5f5f5",
+    justifyContent: "space-around",
+    alignItems: "center",
+    flexDirection: "row",
   }
 });

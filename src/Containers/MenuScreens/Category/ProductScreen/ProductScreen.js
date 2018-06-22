@@ -17,18 +17,19 @@ import {
   SafeAreaView,
   FlatList,
   RefreshControl,
-  AsyncStorage
+  AsyncStorage,
+  Dimensions
 } from "react-native";
 
 // Redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as actions from "../../../AppRedux/Actions/actions";
+import * as actions from "../../../../AppRedux/Actions/actions";
 
 // Common file
-import CommonStyles from "../../../Helper/CommonStyle";
-import * as constant from "../../../Helper/Constants";
-import * as cartFunc from "../../../Helper/Functions/Cart";
+import CommonStyles from "../../../../Helper/CommonStyle";
+import * as constant from "../../../../Helper/Constants";
+import * as cartFunc from "../../../../Helper/Functions/Cart";
 
 // Lib
 import Icon from "react-native-vector-icons/EvilIcons";
@@ -36,13 +37,13 @@ import ImageLoad from "react-native-image-placeholder";
 import Spinner from "react-native-loading-spinner-overlay";
 
 // Network Utility
-import * as networkUtility from "../../../Helper/NetworkUtility";
+import * as networkUtility from "../../../../Helper/NetworkUtility";
 
 // Components Style
 import ProductStyles from "./ProductScrStyle";
 
 // Localization
-import baseLocal from "../../../Resources/Localization/baseLocalization";
+import baseLocal from "../../../../Resources/Localization/baseLocalization";
 
 class ProductScreen extends Component {
   constructor(props) {
@@ -183,66 +184,82 @@ class ProductScreen extends Component {
 
   getProductList() {
     // getProduct?categoryId=39&storeId=23&page=1
-    let productListUrl =
-      constant.getProductList +
-      this.props.navigation.state.params.category.PkId +
-      constant.storeId +
-      "&page=1"; //+this.state.current_page
+    // let productListUrl =
+    //   constant.getProductList +
+    //   this.props.navigation.state.params.category.PkId +
+    //   constant.storeId +
+    //   "&page=1"; //+this.state.current_page
 
-    let productData = networkUtility.getRequest(productListUrl).then(
-      result => {
-        // Hide Loading View
+    var productParameters = {
+      page: this.currentPage,
+      categoryId: this.props.navigation.state.params.category.PkId
+    };
+    if (this.props.navigation.state.params.category.FkCategoryId) {
+      productParameters[
+        "subCategoryId"
+      ] = this.props.navigation.state.params.category.PkId;
+      productParameters[
+        "categoryId"
+      ] = this.props.navigation.state.params.category.FkCategoryId;
+    }
+    console.log("getCategory Parameters :===> ", productParameters);
 
-        let resultData = result.data.data;
-        console.log("Get Products :======> ", resultData.data);
-        this.currentPage = resultData.current_page;
-        this.lastPage = resultData.last_page;
-        // let newArrCategory = [...this.state.categoryData, ...resultData.data].filter((val,id,array) => array.indexOf(val) === id)
-        this.setState(
-          {
-            productDataList: resultData.data,
-            isRefreshing: false,
-            visible: false
-          },
-          () => {
-            this.GetOrSaveCartItem(false);
-          }
-        );
+    let productData = networkUtility
+      .getRequest(constant.getProductList, productParameters)
+      .then(
+        result => {
+          // Hide Loading View
 
-        // Show Loading View
-        // setTimeout(() => {
-        //     this.setState({ visible: false });
-        // }, 200);
-      },
-      error => {
-        // Show Loading View
-        constants.debugLog("\nStatus Code: " + error.status);
-        constants.debugLog("\nError Message: " + error);
-        // Show Loading View
+          let resultData = result.data.data;
+          console.log("Get Products :======> ", resultData.data);
+          this.currentPage = resultData.current_page;
+          this.lastPage = resultData.last_page;
+          // let newArrCategory = [...this.state.categoryData, ...resultData.data].filter((val,id,array) => array.indexOf(val) === id)
+          this.setState(
+            {
+              productDataList: resultData.data,
+              isRefreshing: false,
+              visible: false
+            },
+            () => {
+              this.GetOrSaveCartItem(false);
+            }
+          );
 
-        this.setState({ visible: false });
+          // Show Loading View
+          // setTimeout(() => {
+          //     this.setState({ visible: false });
+          // }, 200);
+        },
+        error => {
+          // Show Loading View
+          constants.debugLog("\nStatus Code: " + error.status);
+          constants.debugLog("\nError Message: " + error);
+          // Show Loading View
 
-        if (error.status != 500) {
-          if (
-            global.currentAppLanguage === constant.languageArabic &&
-            error.data["messageAr"] != undefined
-          ) {
-            setTimeout(() => {
-              alert(error.data["messageAr"]);
-            }, 200);
+          this.setState({ visible: false });
+
+          if (error.status != 500) {
+            if (
+              global.currentAppLanguage === constant.languageArabic &&
+              error.data["messageAr"] != undefined
+            ) {
+              setTimeout(() => {
+                alert(error.data["messageAr"]);
+              }, 200);
+            } else {
+              setTimeout(() => {
+                alert(error.data["message"]);
+              }, 200);
+            }
           } else {
+            constants.debugLog("Internal Server Error: " + error.data);
             setTimeout(() => {
-              alert(error.data["message"]);
+              alert("Something went wrong, plese try again");
             }, 200);
           }
-        } else {
-          constants.debugLog("Internal Server Error: " + error.data);
-          setTimeout(() => {
-            alert("Something went wrong, plese try again");
-          }, 200);
         }
-      }
-    );
+      );
   }
 
   _onRefresh() {
@@ -312,116 +329,126 @@ class ProductScreen extends Component {
     console.log("global array :===> ", global.arrCartItems);
 
     return (
-      <View style={ProductStyles.productCountainer}>
-        <TouchableWithoutFeedback
-          onPress={this._onPressAddProduct.bind(this, item)}
-        >
-          <View style={{ flex: 1 }}>
-            <View
-              style={{
-                flex: 1,
-                marginTop: 10,
-                backgroundColor: "transparent",
-                justifyContent: "space-between",
-                flexDirection: "column"
-              }}
-            >
-              <View>
-                <ImageLoad
-                  style={ProductStyles.productImg}
-                  isShowActivity={false}
-                  placeholderSource={require("../../../Resources/Images/DefaultProductImage.png")}
-                  // placeholderSource={require("../../../Resources/Images/defaultImg.jpg")}
-                  // source={require("../../../Resources/Images/defaultImg.jpg")}
-                  // resizeMode={"contain"}
-                  // loadingStyle={{ size: "large", color: "blue" }}
-                  source={{
-                    uri: item.productImageUrl
-                  }}
-                />
-
-                <View>
-                  <Text style={ProductStyles.productNameLbl} numberOfLines={2}>
-                    {global.currentAppLanguage === constant.languageArabic
-                      ? item.productNameAr
-                      : item.productName}
-                  </Text>
-                  <Text style={ProductStyles.productQuentityLbl}>
-                    {item.productQuntity}{" "}
-                    {global.currentAppLanguage === constant.languageArabic
-                      ? item.productUnitAr
-                      : item.productUnit}
-                  </Text>
-                </View>
-              </View>
-
+      <View
+        style={{
+          width: "50%",
+          height: Dimensions.get("window").width / 2 + 80
+        }}
+      >
+        <View style={ProductStyles.productCountainer}>
+          <TouchableWithoutFeedback
+            onPress={this._onPressAddProduct.bind(this, item)}
+          >
+            <View style={{ flex: 1 }}>
               <View
                 style={{
-                  // paddingTop: 20,
-                  // flex:1,
-                  // marginTop: 20,
-                  marginBottom: 5,
-                  flexDirection: "row",
+                  flex: 1,
+                  marginTop: 10,
+                  backgroundColor: "transparent",
                   justifyContent: "space-between",
-                  height: 40
-                  // backgroundColor: "red",
-                  // position: "relative",
-                  // left:0,
-                  // bottom:5,
+                  flexDirection: "column"
                 }}
               >
                 <View>
-                  <Text style={ProductStyles.productPriceLbl}>
-                    SAR {item.product_price[0].price}
-                  </Text>
-                </View>
-
-                {/* <View style={{ backgroundColor: "blue",marginBottom: 2,marginLeft:5 }}> */}
-                <TouchableOpacity
-                  style={ProductStyles.addProductBtn}
-                  onPress={this._onPressAddProduct.bind(this, item)}
-                >
-                  <Image
-                    style={ProductStyles.addProductImg}
-                    source={require("../../../Resources/Images/HomeScr/BtnAddProductWithPlus.png")}
+                  <ImageLoad
+                    style={ProductStyles.productImg}
+                    isShowActivity={false}
+                    placeholderSource={require("../../../../Resources/Images/DefaultProductImage.png")}
+                    // placeholderSource={require("../../../../Resources/Images/defaultImg.jpg")}
+                    // source={require("../../../Resources/../Images/defaultImg.jpg")}
+                    // resizeMode={"contain"}
+                    // loadingStyle={{ size: "large", color: "blue" }}
+                    source={{
+                      uri: item.productImageUrl
+                    }}
                   />
-                </TouchableOpacity>
-                {/* </View> */}
-              </View>
-            </View>
 
-            {item.totalAddedProduct > 0 && global.arrCartItems.length > 0 ? (
-              <View style={ProductStyles.productSelectBtns}>
-                <TouchableOpacity
-                  onPress={this._onPressRemoveProduct.bind(this, item)}
-                >
-                  <Image
-                    style={ProductStyles.selectedProductQuentity}
-                    source={require("../../../Resources/Images/HomeScr/BtnRemoveProduct.png")}
-                  />
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={this._onPressAddProduct.bind(this, item)}
-                >
-                  <View style={ProductStyles.showSelectedProductQuentityView}>
+                  <View>
                     <Text
-                      style={{
-                        fontSize: 12,
-                        fontFamily: constant.themeFont,
-                        color: "white",
-                        fontWeight: "400"
-                      }}
+                      style={ProductStyles.productNameLbl}
+                      numberOfLines={2}
                     >
-                      {" "}
-                      x{item.totalAddedProduct}{" "}
+                      {global.currentAppLanguage === constant.languageArabic
+                        ? item.productNameAr
+                        : item.productName}
+                    </Text>
+                    <Text style={ProductStyles.productQuentityLbl}>
+                      {item.productQuntity}{" "}
+                      {global.currentAppLanguage === constant.languageArabic
+                        ? item.productUnitAr
+                        : item.productUnit}
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </View>
+
+                <View
+                  style={{
+                    // paddingTop: 20,
+                    // flex:1,
+                    // marginTop: 20,
+                    marginBottom: 5,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    height: 40
+                    // backgroundColor: "red",
+                    // position: "relative",
+                    // left:0,
+                    // bottom:5,
+                  }}
+                >
+                  <View>
+                    <Text style={ProductStyles.productPriceLbl}>
+                      SAR {item.product_price[0].price}
+                    </Text>
+                  </View>
+
+                  {/* <View style={{ backgroundColor: "blue",marginBottom: 2,marginLeft:5 }}> */}
+                  <TouchableOpacity
+                    style={ProductStyles.addProductBtn}
+                    onPress={this._onPressAddProduct.bind(this, item)}
+                  >
+                    <Image
+                      style={ProductStyles.addProductImg}
+                      source={require("../../../../Resources/Images/HomeScr/BtnAddProductWithPlus.png")}
+                    />
+                  </TouchableOpacity>
+                  {/* </View> */}
+                </View>
               </View>
-            ) : null}
-          </View>
-        </TouchableWithoutFeedback>
+
+              {item.totalAddedProduct > 0 && global.arrCartItems.length > 0 ? (
+                <View style={ProductStyles.productSelectBtns}>
+                  <TouchableOpacity
+                    onPress={this._onPressRemoveProduct.bind(this, item)}
+                  >
+                    <Image
+                      style={ProductStyles.selectedProductQuentity}
+                      source={require("../../../../Resources/Images/HomeScr/BtnRemoveProduct.png")}
+                    />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={this._onPressAddProduct.bind(this, item)}
+                  >
+                    <View style={ProductStyles.showSelectedProductQuentityView}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontFamily: constant.themeFont,
+                          color: "white",
+                          fontWeight: "400"
+                        }}
+                      >
+                        {" "}
+                        x{item.totalAddedProduct}{" "}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ) : null}
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
       </View>
     );
   };
@@ -519,7 +546,7 @@ class ProductScreen extends Component {
                       >
                         <Image
                           style={ProductStyles.cartImg}
-                          source={require("../../../Resources/Images/ProductScr/CartImageRed.png")}
+                          source={require("../../../../Resources/Images/ProductScr/CartImageRed.png")}
                         />
                         {this.state.cartItems > 0 ? (
                           <View style={ProductStyles.cartBadge}>
