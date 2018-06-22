@@ -34,6 +34,9 @@ import Icon from "react-native-vector-icons/EvilIcons";
 import ImageLoad from "react-native-image-placeholder";
 import Swiper from "react-native-swiper";
 import StepIndicator from "react-native-step-indicator";
+import Moment from "moment";
+import { observable } from "mobx";
+import { observer } from "mobx-react";
 
 // Network Utility
 import * as networkUtility from "../../../Helper/NetworkUtility";
@@ -73,16 +76,20 @@ const customStyles = {
   currentStepLabelColor: constant.themeColor
 };
 
+@observer
 class OrderMasterScreen extends Component {
   constructor(props) {
     super(props);
     //Class State
     this.state = {
       currentPosition: 0,
-      visible: false
+      visible: false,
+      storeTime: ""
     };
     classContext = this;
   }
+
+  @observable storeCurrentTime = "";
 
   static navigationOptions = ({ navigation }) => ({
     headerLeft: (
@@ -150,11 +157,14 @@ class OrderMasterScreen extends Component {
   // App Life Cycle Methods
   async componentDidMount() {
     console.log("App State: ", AppState.currentState);
-    this._getStoreTime()
+    // this._getStoreTime();
+
+    this.interval = setInterval(this._getStoreTime, 1000);
   }
 
   componentWillUnmount() {
     console.log("App State: ", AppState.currentState);
+    clearInterval(this.interval);
   }
 
   componentWillUpdate() {
@@ -174,11 +184,19 @@ class OrderMasterScreen extends Component {
       .getRequest(constant.getStoreTimeZone)
       .then(
         result => {
-          console.log("Get storeTime :======> ", result);
+          let responseData = result.data.data;
+          console.log("Get storeTime :======> ", responseData);
+
+          let storeCrtTime = responseData.storeTime;
+          storeCrtTime = Moment(storeCrtTime).format("hh:mm:ss ");
+          console.log("Get storeTime after convert :======> ", storeCrtTime);
+
+          this.storeCurrentTime = storeCrtTime;
 
           // Hide Loading View
           this.setState({
-            visible: false
+            visible: false,
+            storeTime: responseData.storeTime
           });
         },
         error => {
@@ -284,6 +302,21 @@ class OrderMasterScreen extends Component {
                 );
               }}
             />
+
+            <View style={{flex:1}}> 
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontFamily: constant.themeFont,
+                  color: constant.themeColor,
+                  fontWeight: "bold",
+                  alignSelf:"flex-end"
+                }}
+              >
+                {" "}
+                Store Current Time : {this.storeCurrentTime}{" "}
+              </Text>
+            </View>
           </View>
 
           <View

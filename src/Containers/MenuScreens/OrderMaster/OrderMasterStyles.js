@@ -37,7 +37,8 @@ export default StyleSheet.create({
     width: "100%",
     height: "12.5%",
     backgroundColor: "white",
-    justifyContent: "center"
+    justifyContent: "center",
+    padding: 5,
     // alignItems: 'center',
   },
   swipeViewWrapper: {
