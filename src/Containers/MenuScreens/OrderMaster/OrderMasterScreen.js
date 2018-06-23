@@ -37,6 +37,7 @@ import StepIndicator from "react-native-step-indicator";
 import Moment from "moment";
 import { observable } from "mobx";
 import { observer } from "mobx-react";
+import autobind from "autobind-decorator";
 
 // Network Utility
 import * as networkUtility from "../../../Helper/NetworkUtility";
@@ -44,13 +45,17 @@ import * as networkUtility from "../../../Helper/NetworkUtility";
 // Components Style
 import OrderMasterStyles from "./OrderMasterStyles";
 
+// Screen
+import AddressListScreen from "../DeliveryDetails/AddressList/AddressListScreen";
+// import AddressListScreen from "../Category/CartScreen/CartScreen";
+
 // Localization
 import baseLocal from "../../../Resources/Localization/baseLocalization";
 
 // Variable
 const activeIndicatorViewHeight = 20;
 const inactiveIndicatorViewHeight = 15;
-const labels = ["Select Address", "Select Time", "Payment Method"];
+const labels = ["Select Address", "Select Time", "Payment"];
 const classContext = null;
 const customStyles = {
   stepIndicatorSize: inactiveIndicatorViewHeight,
@@ -66,8 +71,6 @@ const customStyles = {
   stepIndicatorFinishedColor: constant.themeColor,
   stepIndicatorUnFinishedColor: "#ffffff",
   stepIndicatorCurrentColor: "#ffffff",
-  // stepIndicatorLabelFontSize: 13,
-  // currentStepIndicatorLabelFontSize: 15,
   stepIndicatorLabelCurrentColor: constant.themeColor,
   stepIndicatorLabelFinishedColor: constant.themeColor,
   stepIndicatorLabelUnFinishedColor: "#aaaaaa",
@@ -90,6 +93,7 @@ class OrderMasterScreen extends Component {
   }
 
   @observable storeCurrentTime = "";
+  @observable storeCurrentTimeInSeconds = "";
 
   static navigationOptions = ({ navigation }) => ({
     headerLeft: (
@@ -101,50 +105,44 @@ class OrderMasterScreen extends Component {
           alignItems: "center"
         }}
       >
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: "row", width: "50%", marginLeft: 10 }}>
           <TouchableOpacity
             onPress={() => {
-              //   navigation.state.params.prdtScrContex.setState({ isReload: true });
-              //   navigation.state.params.onNavigateBack();
-              navigation.goBack();
-              //   navigation.navigate('CartScreen');
+              navigation.goBack(null);
             }}
           >
-            <Icon
-              name="close-o"
-              style={{ marginLeft: 10 }}
-              size={30}
-              color="white"
-            />
+            <Icon name="close-o" size={30} color="white" />
           </TouchableOpacity>
         </View>
-        <Text style={OrderMasterStyles.headerText}> Select Address </Text>
-        <View style={{ flexDirection: "row" }}>
+        <View>
+          {/* {classContext ? (
+            <Text style={OrderMasterStyles.headerText}>
+              {labels[classContext.statecurrentPosition]}
+            </Text>
+          ) : ( */}
+          <Text style={OrderMasterStyles.headerText}> Select Address </Text>
+          {/* )} */}
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            width: "50%",
+            justifyContent: "flex-end"
+          }}
+        >
           <TouchableOpacity
             onPress={() => {
               classContext._onPressBackBtn();
             }}
           >
-            <Icon
-              name="arrow-left"
-              // style={{ marginLeft: 10 }}
-              size={30}
-              color="white"
-            />
+            <Icon name="arrow-left" size={30} color="white" />
           </TouchableOpacity>
-        </View>
-        <View style={{ flexDirection: "row" }}>
           <TouchableOpacity
             onPress={() => {
               classContext._onPressNextBtn();
             }}
           >
-            <Icon
-              name="arrow-right"
-              // style={{ marginLeft: 10 }}
-              size={30}
-              color="white"
-            />
+            <Icon name="arrow-right" size={30} color="white" />
           </TouchableOpacity>
         </View>
       </View>
@@ -155,24 +153,42 @@ class OrderMasterScreen extends Component {
   });
 
   // App Life Cycle Methods
-  async componentDidMount() {
+  @autobind
+  componentDidMount() {
     console.log("App State: ", AppState.currentState);
     this._getStoreTime();
-
-    // this.interval = setInterval(this._getStoreTime, 1000);
   }
 
   componentWillUnmount() {
     console.log("App State: ", AppState.currentState);
-    // clearInterval(this.interval);
+    clearInterval(this.storeCrntTimeInterval);
   }
 
-  componentWillUpdate() {
-    // console.log('props data :', this.props.firstComp);
-    // this.props.navigation.navigate('FirstScrElement');
-  }
+  componentWillUpdate() {}
 
   // Mics Methods
+
+  _timerForStoreCurrentTime = () => {
+    if (this.storeCurrentTimeInSeconds === "") {
+      this.storeCurrentTimeInSeconds =
+        new Date(this.state.storeTime).getTime() + 1000; // Get Time in ms
+    }
+    this.storeCurrentTimeInSeconds = this.storeCurrentTimeInSeconds + 1000;
+    // console.log("Get storeTime TimeStemp :======> ", this.storeCurrentTimeInSeconds);
+
+    let dateFromTimeStamp = Moment(this.storeCurrentTimeInSeconds).format(
+      "hh:mm:ss A"
+    );
+    // console.log(
+    //   "Get storeTime before convert from TimeStemp :======> ",
+    //   this.storeCurrentTime
+    // );
+    // console.log(
+    //   "Get storeTime after convert from TimeStemp :======> ",
+    //   dateFromTimeStamp
+    // );
+    this.storeCurrentTime = dateFromTimeStamp;
+  };
 
   _getStoreTime = () => {
     console.log("Call get storeTime .....");
@@ -180,53 +196,54 @@ class OrderMasterScreen extends Component {
     // Show Loading View
     this.setState({ visible: true });
 
-    let storeTime = networkUtility
-      .getRequest(constant.getStoreTimeZone)
-      .then(
-        result => {
-          let responseData = result.data.data;
-          console.log("Get storeTime :======> ", responseData);
+    let storeTime = networkUtility.getRequest(constant.getStoreTimeZone).then(
+      result => {
+        let responseData = result.data.data;
+        console.log("Get storeTime :======> ", responseData);
 
-          let storeCrtTime = responseData.storeTime;
-          storeCrtTime = Moment(storeCrtTime).format("hh:mm:ss A");
-          console.log("Get storeTime after convert :======> ", storeCrtTime);
+        let storeCrtTime = responseData.storeTime;
+        storeCrtTime = Moment(storeCrtTime).format("hh:mm:ss A");
 
-          this.storeCurrentTime = storeCrtTime;
+        // Hide Loading View
+        this.setState({
+          visible: false,
+          storeTime: responseData.storeTime
+        });
 
-          // Hide Loading View
-          this.setState({
-            visible: false,
-            storeTime: responseData.storeTime
-          });
-        },
-        error => {
-          constants.debugLog("\nStatus Code: " + error.status);
-          constants.debugLog("\nError Message: " + error);
+        this.storeCurrentTime = storeCrtTime;
+        this.storeCrntTimeInterval = setInterval(
+          this._timerForStoreCurrentTime,
+          1000
+        );
+      },
+      error => {
+        constants.debugLog("\nStatus Code: " + error.status);
+        constants.debugLog("\nError Message: " + error);
 
-          // Hide Loading View
-          this.setState({ visible: false });
+        // Hide Loading View
+        this.setState({ visible: false });
 
-          if (error.status != 500) {
-            if (
-              global.currentAppLanguage === constant.languageArabic &&
-              error.data["messageAr"] != undefined
-            ) {
-              setTimeout(() => {
-                alert(error.data["messageAr"]);
-              }, 200);
-            } else {
-              setTimeout(() => {
-                alert(error.data["message"]);
-              }, 200);
-            }
-          } else {
-            constants.debugLog("Internal Server Error: " + error.data);
+        if (error.status != 500) {
+          if (
+            global.currentAppLanguage === constant.languageArabic &&
+            error.data["messageAr"] != undefined
+          ) {
             setTimeout(() => {
-              alert("Something went wrong, plese try again");
+              alert(error.data["messageAr"]);
+            }, 200);
+          } else {
+            setTimeout(() => {
+              alert(error.data["message"]);
             }, 200);
           }
+        } else {
+          constants.debugLog("Internal Server Error: " + error.data);
+          setTimeout(() => {
+            alert("Something went wrong, plese try again");
+          }, 200);
         }
-      );
+      }
+    );
   };
 
   _onPageChange(position) {
@@ -238,17 +255,15 @@ class OrderMasterScreen extends Component {
   }
 
   _onPressNextBtn = () => {
-    this._swiper.scrollBy(1);
-    // if (this.state.currentPosition < labels.length - 1) {
-    //   this.setState({ currentPosition: this.state.currentPosition + 1 });
-    // }
+    if (this.state.currentPosition < labels.length - 1) {
+      this._swiper.scrollBy(1);
+    }
   };
 
   _onPressBackBtn = () => {
-    this._swiper.scrollBy(-1);
-    // if (this.state.currentPosition < labels.length - 1) {
-    //   this.setState({ currentPosition: this.state.currentPosition + 1 });
-    // }
+    if (this.state.currentPosition > 0) {
+      this._swiper.scrollBy(-1);
+    }
   };
 
   render() {
@@ -266,55 +281,56 @@ class OrderMasterScreen extends Component {
           }}
         >
           <View style={OrderMasterStyles.orderActionView}>
-            <StepIndicator
-              customStyles={customStyles}
-              currentPosition={this.state.currentPosition}
-              labels={labels}
-              onPress={position => this._onPageChange(position)}
-              stepCount={labels.length}
-              renderStepIndicator={item => {
-                // console.log("indicator :=> ", item);
-                let source = "";
-                if (item.stepStatus === "current") {
-                  source = require("../../../Resources/Images/OrderStatus/CurrentState.png");
-                } else if (item.stepStatus === "finished") {
-                  source = require("../../../Resources/Images/OrderStatus/CompleteState.png");
-                } else if (item.stepStatus === "unfinished") {
-                  source = require("../../../Resources/Images/OrderStatus/PandingState.png");
-                }
-                return (
-                  <View>
-                    <Image
-                      style={{
-                        width:
-                          item.stepStatus === "current"
-                            ? activeIndicatorViewHeight
-                            : inactiveIndicatorViewHeight,
-                        height:
-                          item.stepStatus === "current"
-                            ? activeIndicatorViewHeight
-                            : inactiveIndicatorViewHeight
-                        // flex: 1,
-                      }}
-                      source={source}
-                    />
-                  </View>
-                );
-              }}
-            />
-
-            <View style={{flex:1}}> 
+            <View style={{ marginTop: 8 }}>
+              <StepIndicator
+                
+                customStyles={customStyles}
+                currentPosition={this.state.currentPosition}
+                labels={labels}
+                onPress={position => this._onPageChange(position)}
+                stepCount={labels.length}
+                renderStepIndicator={item => {
+                  // console.log("indicator :=> ", item);
+                  let source = "";
+                  if (item.stepStatus === "current") {
+                    source = require("../../../Resources/Images/OrderStatus/CurrentState.png");
+                  } else if (item.stepStatus === "finished") {
+                    source = require("../../../Resources/Images/OrderStatus/CompleteState.png");
+                  } else if (item.stepStatus === "unfinished") {
+                    source = require("../../../Resources/Images/OrderStatus/PandingState.png");
+                  }
+                  return (
+                    <View>
+                      <Image
+                        style={{
+                          width:
+                            item.stepStatus === "current"
+                              ? activeIndicatorViewHeight
+                              : inactiveIndicatorViewHeight,
+                          height:
+                            item.stepStatus === "current"
+                              ? activeIndicatorViewHeight
+                              : inactiveIndicatorViewHeight
+                          // flex: 1,
+                        }}
+                        source={source}
+                      />
+                    </View>
+                  );
+                }}
+              />
+            </View>
+            <View style={{ flex: 1, marginRight: 3, marginTop: 7 }}>
               <Text
                 style={{
-                  fontSize: 14,
+                  fontSize: 13,
                   fontFamily: constant.themeFont,
                   color: constant.themeColor,
                   fontWeight: "bold",
-                  alignSelf:"flex-end"
+                  alignSelf: "flex-end"
                 }}
               >
-                {" "}
-                Store Current Time : {this.storeCurrentTime}{" "}
+                Store Current Time : {this.storeCurrentTime}
               </Text>
             </View>
           </View>
@@ -346,11 +362,11 @@ class OrderMasterScreen extends Component {
                 style={{
                   flex: 1,
                   justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "blue"
+                  alignItems: "center"
+                  // backgroundColor: "blue"
                 }}
               >
-                <Text> Select Address </Text>
+                <AddressListScreen />
               </View>
               <View
                 style={{

@@ -19,7 +19,7 @@ import {
   AsyncStorage,
   Animated,
   Dimensions,
-  TextInput,
+  TextInput
 } from "react-native";
 
 // Redux
@@ -35,6 +35,7 @@ import * as cartFunc from "../../../../Helper/Functions/Cart";
 // Lib
 import Icon from "react-native-vector-icons/EvilIcons";
 import ImageLoad from "react-native-image-placeholder";
+import autobind from "autobind-decorator";
 
 // Network Utility
 import * as networkUtility from "../../../../Helper/NetworkUtility";
@@ -93,7 +94,8 @@ class CartScreen extends Component {
   });
 
   // App Life Cycle Methods
-  async componentDidMount() {
+  @autobind
+  componentDidMount() {
     console.log("App State: ", AppState.currentState);
     this.GetOrSaveCartItem(false);
 
@@ -105,6 +107,7 @@ class CartScreen extends Component {
   componentWillUnmount() {
     console.log("App State: ", AppState.currentState);
     this.GetOrSaveCartItem(true);
+    this._onPressShowHideScheduleOrderNowBtns();
   }
 
   componentWillUpdate() {
@@ -291,14 +294,16 @@ class CartScreen extends Component {
                   color: "white"
                 }}
               >
-                {" "}
-                Schedule{" "}
+                Schedule
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[CartStyle.scheduleAndOrderBtns, { marginRight: 20 }]}
-              onPress={()=>this.props.navigation.navigate("OrderMasterScreen")}
+              onPress={() => {
+                this._onPressShowHideScheduleOrderNowBtns();
+                this.props.navigation.navigate(constant.kOrderMasterScreen);
+              }}
             >
               <Text
                 style={{
@@ -307,8 +312,7 @@ class CartScreen extends Component {
                   color: "white"
                 }}
               >
-                {" "}
-                Order Now{" "}
+                Order Now
               </Text>
             </TouchableOpacity>
           </Animated.View>
@@ -361,7 +365,7 @@ class CartScreen extends Component {
                   : item.productName}
               </Text>
               <Text style={CartStyle.cartProductQuentityLbl}>
-                {item.productQuntity}{" "}
+                {item.productQuntity}
                 {global.currentAppLanguage === constant.languageArabic
                   ? item.productUnitAr
                   : item.productUnit}
@@ -435,8 +439,7 @@ class CartScreen extends Component {
                   margin: 2
                 }}
               >
-                {" "}
-                {item.totalAddedProduct}{" "}
+                {item.totalAddedProduct}
               </Text>
 
               <TouchableOpacity
@@ -560,8 +563,7 @@ class CartScreen extends Component {
                         fontSize: 10
                       }}
                     >
-                      {" "}
-                      SAR{" "}
+                      SAR
                     </Text>
                     <Text
                       style={{
@@ -570,8 +572,7 @@ class CartScreen extends Component {
                         fontWeight: "bold"
                       }}
                     >
-                      {" "}
-                      {cartFunc.getTotalPriceCartItems()}{" "}
+                      {cartFunc.getTotalPriceCartItems()}
                     </Text>
                   </View>
 
@@ -579,9 +580,11 @@ class CartScreen extends Component {
                 </View>
               </TouchableWithoutFeedback>
 
-
-              <View style={{
-                    width: "60%",}}>
+              <View
+                style={{
+                  width: "60%"
+                }}
+              >
                 <TextInput
                   style={{
                     // width: "50%",

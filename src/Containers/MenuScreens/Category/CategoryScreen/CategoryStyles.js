@@ -3,6 +3,7 @@ import { StyleSheet, Dimensions } from "react-native";
 import * as constant from "../../../../Helper/Constants";
 
 const { width, height } = Dimensions.get("window");
+const totalCartItemsViewHeight = 20;
 
 export default StyleSheet.create({
   container: {
@@ -111,5 +112,25 @@ export default StyleSheet.create({
     fontSize: 16,
     fontFamily: constant.themeFont,
     color: "gray"
+  },
+  cartTotalItemsView: {
+    // justifyContent: "flex-end",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    height: totalCartItemsViewHeight,
+    width: totalCartItemsViewHeight,
+    top: 12,
+    right: 12,
+    backgroundColor: constant.themeColor,
+    borderRadius: totalCartItemsViewHeight / 2,
+    borderWidth: 1,
+    borderColor: "transparent"
+  },
+  cartTotalItemsTxt: {
+    fontFamily: constant.themeFont,
+    fontSize: 11,
+    fontWeight: "bold",
+    color: "white"
   }
 });

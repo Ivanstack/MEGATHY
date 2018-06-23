@@ -35,7 +35,7 @@ export default StyleSheet.create({
   orderActionView: {
     //   flex: 1,
     width: "100%",
-    height: "12.5%",
+    height: "14%",
     backgroundColor: "white",
     justifyContent: "center",
     padding: 5,

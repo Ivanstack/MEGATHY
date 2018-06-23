@@ -24,6 +24,13 @@ module.exports = {
   keyCurrentSettings: "currentSettings",
   keyCurrentStore: "currentStore",
   keyCurrentAppLanguage: "currentAppLanguage",
+  keyCurrentCartItems: "cartItems",
+
+  //Screen Name Keys
+  kCategoryScreen: "CategoryScreen",
+  kProductScreen: "ProductScreen",
+  kCartScreen: "CartScreen",
+  kOrderMasterScreen: "OrderMasterScreen",
 
   /// Common API request parameters
   deviceTypeiPhone: "IPHONE",
@@ -77,7 +84,13 @@ module.exports = {
   darkGrayBGColor: "#D4D4D4",
 
   /// Font Family
-  themeFont: "Ebrima"
+  themeFont: "Ebrima",
+
+  //Product Key
+  kProductDiscountActive:"Active",
+  kProductDiscountInactive:"Inactive",
+  kProductDiscountType:"fixed",
+  kProductDiscountPercentage:"percentage",
 };
 
 /*

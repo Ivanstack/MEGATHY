@@ -67,6 +67,14 @@ export default StyleSheet.create({
     marginLeft: 10,
     marginTop: 5
   },
+  productPriceCutView: {
+    width: "80%",
+    height: 1.5,
+    position: "absolute",
+    bottom: 7,
+    left: 10,
+    backgroundColor: constant.themeColor
+  },
   productQuentityLbl: {
     fontSize: 13,
     fontFamily: constant.themeFont,
@@ -82,11 +90,11 @@ export default StyleSheet.create({
   },
   productImg: {
     width: "100%",
-    height: width/2*0.75,
+    height: (width / 2) * 0.75,
     backgroundColor: "transparent"
   },
   productCountainer: {
-    flex:1,
+    flex: 1,
     backgroundColor: "white",
     // width: "58%",
     // height: width/2+80,
@@ -121,16 +129,16 @@ export default StyleSheet.create({
   cartImg: {
     width: 30,
     height: 30,
-    marginLeft: 20,
+    marginLeft: 20
     // margin: 5
   },
   cartContainer: {
-    backgroundColor: constant.themeColor,//"#F5F5F5",
+    backgroundColor: constant.themeColor, //"#F5F5F5",
     width: "100%",
     height: "8%",
     // justifyContent:"space-between",
-    flexDirection: 'row',
-    bottom:50
+    flexDirection: "row",
+    bottom: 50
   },
   cartBadge: {
     position: "absolute",
@@ -142,14 +150,13 @@ export default StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "transparent",
-    justifyContent: 'center',
-    alignItems: 'center',
-
+    justifyContent: "center",
+    alignItems: "center"
   },
   cartItemLbl: {
     fontFamily: constant.themeFont,
-    fontSize:9,
-    fontWeight: 'bold',
+    fontSize: 9,
+    fontWeight: "bold",
     color: "white"
   }
 });

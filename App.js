@@ -33,7 +33,7 @@ export default class App extends Component {
 
         // States
         this.state = {
-            isLogin: false,
+            isLogin: null,
         };
 
         context = this;
@@ -86,12 +86,14 @@ export default class App extends Component {
                     <Router onPressLogout={this.onLogout} />
                 </Provider>
             );
-        } else {
+        } else if(!this.state.isLogin) {
             return (
                 <Provider store={store}>
                     <LoginRouter onPressLogin={this.onLogin} />
                 </Provider>
             );
+        } else {
+
         }
 
         // return (

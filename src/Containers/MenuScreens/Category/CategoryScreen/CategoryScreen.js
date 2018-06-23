@@ -34,6 +34,7 @@ import * as actions from "../../../../AppRedux/Actions/actions";
 // Common file
 import CommonStyles from "../../../../Helper/CommonStyle";
 import constant from "../../../../Helper/Constants";
+import * as cartFunc from "../../../../Helper/Functions/Cart";
 
 // Components Style
 import CategoryStyles from "./CategoryStyles";
@@ -70,7 +71,7 @@ class CategoryScreen extends Component {
           : false
     };
 
-    this.callLoadMore = this.callLoadMore.bind(this);
+    this._callLoadMore = this._callLoadMore.bind(this);
 
     // Class Props
     (this.currentPage = 1),
@@ -134,7 +135,7 @@ class CategoryScreen extends Component {
   async componentDidMount() {
     if (this.state.isSubCategoryScr) {
       console.log("App State Subcategory: ", AppState.currentState);
-      this.getSubCategoryData(false);
+      this._getSubCategoryData(false);
     } else {
       console.log("App State Home: ", AppState.currentState);
       this.getCategoryAndBannerData(false);
@@ -150,19 +151,26 @@ class CategoryScreen extends Component {
   }
 
   // Mics Methods
-  connectSocket = () => {
-    // AppSocket.connect()
+
+  onNavigateBack = () => {
+    // Handle navigation back action
   };
 
-  callLoadMore() {
+  _callLoadMore() {
     console.log("Call Load More .....");
 
-    if (this.currentPage < this.lastPage) {
-      this.getCategoryAndBannerData(true);
+    if (this.state.isSubCategoryScr) {
+      if (this.subCategoryCurrentPage < this.subCategoryLastPage) {
+        this._getSubCategoryData(true);
+      }
+    } else {
+      if (this.currentPage < this.lastPage) {
+        this.getCategoryAndBannerData(true);
+      }
     }
   }
 
-  getSubCategoryData(isLoadMore) {
+  _getSubCategoryData(isLoadMore) {
     console.log("Call get subcategory .....");
 
     // Show Loading View
@@ -201,7 +209,6 @@ class CategoryScreen extends Component {
           });
         },
         error => {
-          
           constants.debugLog("\nStatus Code: " + error.status);
           constants.debugLog("\nError Message: " + error);
 
@@ -340,7 +347,7 @@ class CategoryScreen extends Component {
         // { isRefreshing: true, currentPage: 1, categoryData: [] },
         { isRefreshing: true, categoryData: [] },
         () => {
-          this.getSubCategoryData(false);
+          this._getSubCategoryData(false);
         }
       );
     } else {
@@ -360,9 +367,13 @@ class CategoryScreen extends Component {
     console.log("Pass Category :==> ", item);
 
     if (item.subCategoryCount > 0 && !this.state.isSubCategoryScr) {
-      this.props.navigation.navigate("CategoryScreen", { category: item });
+      this.props.navigation.navigate(constant.kCategoryScreen, {
+        category: item
+      });
     } else {
-      this.props.navigation.navigate("ProductScreen", { category: item });
+      this.props.navigation.navigate(constant.kProductScreen, {
+        category: item
+      });
     }
   }
 
@@ -372,7 +383,7 @@ class CategoryScreen extends Component {
   //       <View style={CategoryStyles.footer}>
   //         <TouchableOpacity
   //           activeOpacity={0.9}
-  //           onPress={this.callLoadMore}
+  //           onPress={this._callLoadMore}
   //           style={CategoryStyles.loadMoreBtn}
   //         >
   //           <Text style={CategoryStyles.btnText}>Load More</Text>
@@ -451,13 +462,11 @@ class CategoryScreen extends Component {
           <View style={CategoryStyles.categoryItemConstainerStyle}>
             <View style={{ flexDirection: "column" }}>
               <Text style={CategoryStyles.categoryItemNameTxtStyle}>
-                {" "}
                 {global.currentAppLanguage === constant.languageArabic
                   ? item.subCategoryNameAr
-                  : item.subCategoryName}{" "}
+                  : item.subCategoryName}
               </Text>
               <Text style={CategoryStyles.categoryProductsCountStyle}>
-                {" "}
                 {item.productCount}
                 {" Products"}
               </Text>
@@ -478,8 +487,7 @@ class CategoryScreen extends Component {
                   color: "gray"
                 }}
               >
-                {" "}
-                See All{" "}
+                See All
               </Text>
             </View>
           </View>
@@ -498,7 +506,7 @@ class CategoryScreen extends Component {
         </View>
       </TouchableWithoutFeedback>
     );
-  };
+  }
 
   _renderCategoryItem = ({ item, index }) => {
     return (
@@ -510,13 +518,11 @@ class CategoryScreen extends Component {
           <View style={CategoryStyles.categoryItemConstainerStyle}>
             <View style={{ flexDirection: "column" }}>
               <Text style={CategoryStyles.categoryItemNameTxtStyle}>
-                {" "}
                 {global.currentAppLanguage === constant.languageArabic
                   ? item.categoryNameAr
-                  : item.categoryName}{" "}
+                  : item.categoryName}
               </Text>
               <Text style={CategoryStyles.categoryProductsCountStyle}>
-                {" "}
                 {item.productCount}
                 {" Products"}
               </Text>
@@ -537,8 +543,7 @@ class CategoryScreen extends Component {
                   color: "gray"
                 }}
               >
-                {" "}
-                See All{" "}
+                See All
               </Text>
             </View>
           </View>
@@ -572,13 +577,45 @@ class CategoryScreen extends Component {
                 color: "white"
               }}
             >
-              {" "}
-              {item.categoryName}{" "}
+              {item.categoryName}
             </Text>
             </View> */}
           </View>
         </View>
       </TouchableWithoutFeedback>
+    );
+  };
+
+  _renderCartItemsView = () => {
+    return (
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          position: "absolute",
+          bottom: 10,
+          right: 15
+        }}
+      >
+        <TouchableOpacity
+          onPress={() =>
+            this.props.navigation.navigate(constant.kCartScreen, {
+              onNavigateBack: this.onNavigateBack.bind(this)
+            })
+          }
+        >
+          <Image
+            style={{ height: 60, width: 60 }}
+            source={require("../../../../Resources/Images/HomeScr/BtnCart.png")}
+          />
+
+          <View style={CategoryStyles.cartTotalItemsView}>
+            <Text style={CategoryStyles.cartTotalItemsTxt}>
+              {cartFunc.getCartItemsCount()}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -596,15 +633,6 @@ class CategoryScreen extends Component {
       </View>
     );
   };
-
-  _onScrollViewEndReached(e) {
-    var windowHeight = Dimensions.get("window").height,
-      height = e.nativeEvent.contentSize.height,
-      offset = e.nativeEvent.contentOffset.y;
-    if (windowHeight + offset >= height) {
-      console.log("End Scroll");
-    }
-  }
 
   render() {
     console.log("subCategory :===> ", this.state.subCategoryData);
@@ -650,7 +678,7 @@ class CategoryScreen extends Component {
               showsHorizontalScrollIndicator={false}
               removeClippedSubviews={false}
               directionalLockEnabled
-              onEndReached={this.callLoadMore}
+              onEndReached={this._callLoadMore}
               onEndReachedThreshold={0.5}
               ListHeaderComponent={this._renderHeader.bind(this)}
               // ListFooterComponent={this._renderFooter.bind(this)}
@@ -662,6 +690,10 @@ class CategoryScreen extends Component {
               textStyle={{ color: "#FFF" }}
             />
           )}
+
+          {
+            (!this.state.isSubCategoryScr)?this._renderCartItemsView():null
+          }
         </SafeAreaView>
       </View>
       /* </ScrollView> */

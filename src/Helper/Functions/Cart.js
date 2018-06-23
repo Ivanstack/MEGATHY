@@ -30,11 +30,14 @@ export function findCartItem(cartItemName) {
 }
 
 export function getTotalPriceCartItems() {
-    let totalPrice = 0.0
-    global.arrCartItems.map((cartItem, itemIdx) => {
-        constant.debugLog("Find Cart Item : ==> ", cartItem.product_price);
-        totalPrice = totalPrice + cartItem.product_price[0].price * cartItem.totalAddedProduct
-      });
+  let totalPrice = 0.0;
+  global.arrCartItems.map((cartItem, itemIdx) => {
+    let finalProductPrice =
+    (cartItem.product_price[0].status === constant.kProductDiscountActive)?cartItem.product_price[0].discountPrice:cartItem.product_price[0].price
+    constant.debugLog("Find Cart Item : ==> ", cartItem.product_price);
+    totalPrice =
+      totalPrice + finalProductPrice * cartItem.totalAddedProduct;
+  });
 
-      return totalPrice;
+  return totalPrice;
 }

@@ -82,10 +82,9 @@ class ProductScreen extends Component {
             />
           </TouchableOpacity>
           <Text style={ProductStyles.headerText}>
-            {" "}
             {global.currentAppLanguage === constant.languageArabic
               ? navigation.state.params.category.categoryNameAr
-              : navigation.state.params.category.categoryName}{" "}
+              : navigation.state.params.category.categoryName}
           </Text>
         </View>
       </View>
@@ -103,7 +102,9 @@ class ProductScreen extends Component {
       "Get Category :===> ",
       this.props.navigation.state.params.category
     );
-    this.getProductList();
+    this.getProductList(false);
+
+    this._callLoadMore = this._callLoadMore.bind(this);
 
     // this.getSubCategoryData();
   }
@@ -182,16 +183,30 @@ class ProductScreen extends Component {
     }
   }
 
-  getProductList() {
+  _callLoadMore() {
+    console.log("Call Load More .....");
+
+    
+    if (this.currentPage < this.lastPage) {
+      this.getProductList(true);
+    }
+  }
+
+  getProductList(isLoadMore) {
     // getProduct?categoryId=39&storeId=23&page=1
     // let productListUrl =
     //   constant.getProductList +
     //   this.props.navigation.state.params.category.PkId +
     //   constant.storeId +
-    //   "&page=1"; //+this.state.current_page
+    //   "&page=1"; //+this.state.current_page.
+    let productPage = this.currentPage;
+
+    if (isLoadMore && this.currentPage < this.lastPage) {
+      productPage = productPage + 1;
+    }
 
     var productParameters = {
-      page: this.currentPage,
+      page: productPage,
       categoryId: this.props.navigation.state.params.category.PkId
     };
     if (this.props.navigation.state.params.category.FkCategoryId) {
@@ -211,13 +226,16 @@ class ProductScreen extends Component {
           // Hide Loading View
 
           let resultData = result.data.data;
-          console.log("Get Products :======> ", resultData.data);
+          console.log("Get Products :======> ", resultData);
           this.currentPage = resultData.current_page;
           this.lastPage = resultData.last_page;
-          // let newArrCategory = [...this.state.categoryData, ...resultData.data].filter((val,id,array) => array.indexOf(val) === id)
+          let newArrProduct = [
+            ...this.state.productDataList,
+            ...resultData.data
+          ].filter((val, id, array) => array.indexOf(val) === id);
           this.setState(
             {
-              productDataList: resultData.data,
+              productDataList: newArrProduct,
               isRefreshing: false,
               visible: false
             },
@@ -263,8 +281,8 @@ class ProductScreen extends Component {
   }
 
   _onRefresh() {
-    this.setState({ isRefreshing: true });
-    this.getProductList();
+    this.setState({ isRefreshing: true, productDataList:[] });
+    this.getProductList(false);
   }
 
   _onPressAddProduct = item => {
@@ -325,8 +343,63 @@ class ProductScreen extends Component {
     }
   };
 
+  _renderProductDiscountView = item => {
+    return (
+      <View
+        style={{
+          backgroundColor: constant.themeColor,
+          borderColor: "transparent",
+          // borderRightWidth: 10,
+          // borderLeftWidth: 10,
+          borderBottomRightRadius: 10,
+          borderTopRightRadius: 10,
+          // width: "40%",
+          flex: 1,
+          height: 20,
+          position: "absolute",
+          top: 45,
+          paddingLeft: 5,
+          // padding: 15,
+          justifyContent: "center",
+          alignItems: "center",
+          paddingRight: 10
+        }}
+      >
+        <Text
+          style={{
+            fontFamily: constant.themeFont,
+            fontWeight: "bold",
+            fontSize: 10,
+            color: "white"
+          }}
+        >
+          {item.product_price[0].hike} % OFF
+        </Text>
+      </View>
+    );
+  };
+
+  _renderPriceCutView = item => {
+    return (
+      <View style={{ alignSelf: "flex-start" }}>
+        <View style={{ justifyContent: "center" }}>
+          <View style={ProductStyles.productPriceCutView} />
+          <Text style={ProductStyles.productPriceLbl}>
+            SAR {item.product_price[0].price}
+          </Text>
+        </View>
+
+        <View>
+          <Text style={ProductStyles.productPriceLbl}>
+            SAR {item.product_price[0].discountPrice}
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
   _renderCategoryItem = ({ item, index }) => {
-    console.log("global array :===> ", global.arrCartItems);
+    // console.log("global array :===> ", global.arrCartItems);
 
     return (
       <View
@@ -373,7 +446,7 @@ class ProductScreen extends Component {
                         : item.productName}
                     </Text>
                     <Text style={ProductStyles.productQuentityLbl}>
-                      {item.productQuntity}{" "}
+                      {item.productQuntity}
                       {global.currentAppLanguage === constant.languageArabic
                         ? item.productUnitAr
                         : item.productUnit}
@@ -397,9 +470,24 @@ class ProductScreen extends Component {
                   }}
                 >
                   <View>
-                    <Text style={ProductStyles.productPriceLbl}>
+                    {/* <Text
+                      style={
+                        item.product_price[0].status ===
+                        constant.kProductDiscountActive
+                          ? ProductStyles.productDiscountPriceLbl
+                          : ProductStyles.productPriceLbl
+                      }
+                    >
                       SAR {item.product_price[0].price}
-                    </Text>
+                    </Text> */}
+                    {item.product_price[0].status ===
+                    constant.kProductDiscountActive ? (
+                      this._renderPriceCutView(item)
+                    ) : (
+                      <Text style={ProductStyles.productPriceLbl}>
+                        SAR {item.product_price[0].price}
+                      </Text>
+                    )}
                   </View>
 
                   {/* <View style={{ backgroundColor: "blue",marginBottom: 2,marginLeft:5 }}> */}
@@ -415,6 +503,12 @@ class ProductScreen extends Component {
                   {/* </View> */}
                 </View>
               </View>
+
+              {item.product_price[0].discountType ===
+                constant.kProductDiscountPercentage &&
+              item.product_price[0].status === constant.kProductDiscountActive
+                ? this._renderProductDiscountView(item)
+                : null}
 
               {item.totalAddedProduct > 0 && global.arrCartItems.length > 0 ? (
                 <View style={ProductStyles.productSelectBtns}>
@@ -439,8 +533,7 @@ class ProductScreen extends Component {
                           fontWeight: "400"
                         }}
                       >
-                        {" "}
-                        x{item.totalAddedProduct}{" "}
+                        x{item.totalAddedProduct}
                       </Text>
                     </View>
                   </TouchableOpacity>
@@ -498,20 +591,20 @@ class ProductScreen extends Component {
                     this.productList = flatList;
                   }}
                   data={this.state.productDataList}
-                  onEndReachedThreshold={0.5}
                   keyExtractor={(item, index) => item.PkId}
                   renderItem={this._renderCategoryItem.bind(this)}
                   showsHorizontalScrollIndicator={false}
                   removeClippedSubviews={false}
                   directionalLockEnabled
                   numColumns={2}
+                  onEndReached={this._callLoadMore}
                 />
               ) : null}
 
               <View style={ProductStyles.cartContainer}>
                 <TouchableWithoutFeedback
                   onPress={() =>
-                    this.props.navigation.navigate("CartScreen", {
+                    this.props.navigation.navigate(constant.kCartScreen, {
                       onNavigateBack: this.onNavigateBack.bind(this)
                     })
                   }
@@ -524,7 +617,7 @@ class ProductScreen extends Component {
                       marginTop: 1
                     }}
                     onPress={() =>
-                      this.props.navigation.navigate("CartScreen", {
+                      this.props.navigation.navigate(constant.kCartScreen, {
                         onNavigateBack: this.onNavigateBack.bind(this)
                       })
                     }
@@ -570,8 +663,7 @@ class ProductScreen extends Component {
                             fontSize: 10
                           }}
                         >
-                          {" "}
-                          SAR{" "}
+                          SAR
                         </Text>
                         <Text
                           style={{
@@ -580,8 +672,7 @@ class ProductScreen extends Component {
                             fontWeight: "bold"
                           }}
                         >
-                          {" "}
-                          {cartFunc.getTotalPriceCartItems()}{" "}
+                          {cartFunc.getTotalPriceCartItems()}
                         </Text>
                       </View>
 
@@ -594,7 +685,7 @@ class ProductScreen extends Component {
 
                 <TouchableWithoutFeedback
                   onPress={() =>
-                    this.props.navigation.navigate("CartScreen", {
+                    this.props.navigation.navigate(constant.kCartScreen, {
                       onNavigateBack: this.onNavigateBack.bind(this)
                     })
                   }
