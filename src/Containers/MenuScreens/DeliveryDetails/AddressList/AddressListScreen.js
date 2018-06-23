@@ -14,9 +14,14 @@ import {
     SafeAreaView,
     FlatList,
     RefreshControl,
+    Alert,
 } from "react-native";
 
 import constant from "../../../../Helper/Constants";
+
+// Mobex
+import { observable } from "mobx";
+import { observer } from "mobx-react";
 
 // Redux
 import { bindActionCreators } from "redux";
@@ -44,28 +49,16 @@ import baseLocal from "../../../../Resources/Localization/baseLocalization";
 
 // AddressListItem
 import AddressListItem from "./AddressListItem";
+import autobind from "autobind-decorator";
 
+@observer
 class AddressListScreen extends Component {
     constructor(props) {
         super(props);
 
         baseLocal.locale = global.currentAppLanguage;
-
-        // Bind Methods
-        this._getAddressList = this._getAddressList.bind(this);
-        this._onPressAddAddress = this._onPressAddAddress.bind(this);
-        this._onPressAddressItem = this._onPressAddressItem.bind(this);
-        this._onPressEditItem = this._onPressEditItem.bind(this);
-        this._onPressDeleteItem = this._onPressDeleteItem.bind(this);
-        this._onPressDeliverItem = this._onPressDeliverItem.bind(this);
-        this._renderAddressItem = this._renderAddressItem.bind(this);
-        this._onRefresh = this._onRefresh.bind(this);
-        this._callLoadMore = this._callLoadMore.bind(this);
-        this._keyExtractor = this._keyExtractor.bind(this);
-
         this.state = {
             arrAddress: [],
-            visible: false,
             isRefreshing: false,
         };
 
@@ -73,6 +66,7 @@ class AddressListScreen extends Component {
         this.lastPage = 0;
     }
 
+    @observable visible = false;
     static navigationOptions = ({ navigation }) => ({
         headerLeft: (
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -107,11 +101,12 @@ class AddressListScreen extends Component {
         },
     });
 
+    _keyExtractor = (item, index) => item.id.toString();
+
+    @autobind
     componentDidMount() {
         this._getAddressList(false);
     }
-
-    _keyExtractor = (item, index) => item.id.toString();
 
     _callLoadMore() {
         if (this.currentPage < this.lastPage) {
@@ -137,8 +132,14 @@ class AddressListScreen extends Component {
             page: addressPage,
         };
 
+        // Show Loading View
+        this.visible = true;
+
         networkUtility.getRequest(constant.address, addressParameters).then(
             result => {
+                // Hide Loading View
+                this.visible = false;
+
                 let resultData = result.data.data;
                 this.currentPage = resultData.current_page;
                 this.lastPage = resultData.last_page;
@@ -151,7 +152,6 @@ class AddressListScreen extends Component {
                 this.setState({
                     arrAddress: newArrAddress,
                     isRefreshing: false,
-                    visible: false,
                 });
             },
             error => {
@@ -159,7 +159,7 @@ class AddressListScreen extends Component {
                 constants.debugLog("\nError Message: " + error);
 
                 // Hide Loading View
-                this.setState({ visible: false });
+                this.visible = false;
 
                 if (error.status != 500) {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
@@ -204,12 +204,13 @@ class AddressListScreen extends Component {
         };
 
         // Show Loading View
-        this.setState({ visible: true });
+        this.visible = true;
 
         networkUtility.postRequest(constant.login, loginParameters).then(
             result => {
                 // Hide Loading View
-                this.setState({ visible: false });
+                this.visible= false
+
                 global.loginKey = result.data.data.userData.loginKey;
                 AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data.data.userData));
                 AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data.data.settingData));
@@ -219,7 +220,7 @@ class AddressListScreen extends Component {
             },
             error => {
                 // Hide Loading View
-                this.setState({ visible: false });
+                this.visible= false
 
                 constant.debugLog("Status Code: " + error.status);
                 constant.debugLog("Error Message: " + error.message);
@@ -265,18 +266,17 @@ class AddressListScreen extends Component {
         });
     }
 
-    _onPressEditItem(address) {
-
-    }
+    _onPressEditItem(address) {}
 
     _onPressDeleteItem(address) {
-        
+        CommonUtilities.showAlertYesNo()
     }
 
     render() {
         return (
             // Main View (Container)
             <View style={{ flex: 1 }}>
+                <Spinner visible={this.visible} cancelable={true} textStyle={{ color: "#FFF" }} />
                 <SafeAreaView style={styles.container}>
                     {/* // Address List */}
                     {this.state.arrAddress.length > 0 ? (
@@ -302,8 +302,7 @@ class AddressListScreen extends Component {
                             onEndReachedThreshold={0.7}
                         />
                     ) : (
-                        <View style={{marginTop:8, width:"95%", height:"89%"}}/>
-                        // <Spinner visible={this.state.visible} cancelable={true} textStyle={{ color: "#FFF" }} />
+                        <View style={{ marginTop: 8, width: "95%", height: "89%" }} />
                     )}
 
                     {/* // Add New Address Button */}

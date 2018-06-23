@@ -58,3 +58,12 @@ export function showAlert(message, isLocalized = true, title = constant.alertTit
         Alert.alert(baseLocal.t(title), message, [{ text: baseLocal.t(buttonTitle) }]);
     }
 }
+
+export function showAlertYesNo(message, cbYes, cbNo, isLocalized = true, title = constant.alertTitle, buttonTitle = "OK") {
+    baseLocal.locale = global.currentAppLanguage;
+    if (isLocalized) {
+        Alert.alert(baseLocal.t(title), baseLocal.t(message), [{ text: baseLocal.t(buttonTitle) }]);
+    } else {
+        Alert.alert(baseLocal.t(title), message, [{ text: baseLocal.t(buttonTitle) }]);
+    }
+}

@@ -48,7 +48,7 @@ class VerifyCodeScreen extends Component {
     constructor(props) {
         super(props);
 
-        const initialCounterValue = 10;
+        const initialCounterValue = 30;
         baseLocal.locale = global.currentAppLanguage;
         KeyboardManager.setShouldResignOnTouchOutside(true);
         KeyboardManager.setToolbarPreviousNextButtonEnable(false);
