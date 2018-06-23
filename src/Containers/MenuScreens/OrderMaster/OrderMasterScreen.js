@@ -157,14 +157,14 @@ class OrderMasterScreen extends Component {
   // App Life Cycle Methods
   async componentDidMount() {
     console.log("App State: ", AppState.currentState);
-    // this._getStoreTime();
+    this._getStoreTime();
 
-    this.interval = setInterval(this._getStoreTime, 1000);
+    // this.interval = setInterval(this._getStoreTime, 1000);
   }
 
   componentWillUnmount() {
     console.log("App State: ", AppState.currentState);
-    clearInterval(this.interval);
+    // clearInterval(this.interval);
   }
 
   componentWillUpdate() {
@@ -180,7 +180,7 @@ class OrderMasterScreen extends Component {
     // Show Loading View
     this.setState({ visible: true });
 
-    let subCategoryData = networkUtility
+    let storeTime = networkUtility
       .getRequest(constant.getStoreTimeZone)
       .then(
         result => {
@@ -188,7 +188,7 @@ class OrderMasterScreen extends Component {
           console.log("Get storeTime :======> ", responseData);
 
           let storeCrtTime = responseData.storeTime;
-          storeCrtTime = Moment(storeCrtTime).format("hh:mm:ss ");
+          storeCrtTime = Moment(storeCrtTime).format("hh:mm:ss A");
           console.log("Get storeTime after convert :======> ", storeCrtTime);
 
           this.storeCurrentTime = storeCrtTime;

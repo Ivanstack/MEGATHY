@@ -48,10 +48,10 @@ const OrderMasterScreenNav = StackNavigator(
 // Home Screen With Child Element
 const CategoryScreenNav = StackNavigator(
   {
-    OrderMasterScreen: { screen: OrderMasterScreenNav },
     CategoryScreen: { screen: CategoryScreen },
     ProductScreen: { screen: ProductScreen },
-    CartScreen: { screen: CartScreen }
+    CartScreen: { screen: CartScreen },
+    OrderMasterScreen: { screen: OrderMasterScreenNav },
   },
   {
     headerMode: "screen"
