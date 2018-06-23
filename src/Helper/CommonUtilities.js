@@ -9,7 +9,7 @@ export function validateEmail(email) {
 }
 
 export function setInitialGlobalValues() {
-    global.arrCartItems = []
+    // global.arrCartItems = [];
     AsyncStorage.getItem(constant.keyCurrentUser).then(val => {
         if (val === undefined) {
             global.currentUser = null;
@@ -37,17 +37,26 @@ export function setInitialGlobalValues() {
         }
     });
 
-    global.currentAppLanguage = constant.languageEnglish;
+    // global.currentAppLanguage = constant.languageEnglish;
     // global.currentAppLanguage = constant.languageArabic;
 
-    // AsyncStorage.getItem(constant.keyCurrentAppLanguage).then((val) => {
-    //     if(val === undefined || val === null){
-    //         global.currentAppLanguage = constant.languageEnglish
-    //     }else{
-    //         global.currentAppLanguage = val
-    //     }
-    //     constant.debugLog("Current App Language: " + global.currentAppLanguage)
-    // })
+    AsyncStorage.getItem(constant.keyCurrentAppLanguage).then(val => {
+        if (val === undefined || val === null) {
+            global.currentAppLanguage = constant.languageEnglish;
+        } else {
+            global.currentAppLanguage = val;
+        }
+        constant.debugLog("Current App Language: " + global.currentAppLanguage);
+    });
+
+    AsyncStorage.getItem(constant.keyCurrentCartItems).then(val => {
+        if (val === undefined) {
+          global.arrCartItems = [];
+        } else {
+          global.arrCartItems = JSON.parse(val);
+          constant.debugLog("Current Cart Items: " + val);
+        }
+      });
 }
 
 export function showAlert(message, isLocalized = true, title = constant.alertTitle, buttonTitle = "OK") {
@@ -55,15 +64,42 @@ export function showAlert(message, isLocalized = true, title = constant.alertTit
     if (isLocalized) {
         Alert.alert(baseLocal.t(title), baseLocal.t(message), [{ text: baseLocal.t(buttonTitle) }]);
     } else {
-        Alert.alert(baseLocal.t(title), message, [{ text: baseLocal.t(buttonTitle) }]);
+        Alert.alert(baseLocal.t(title), message, [{ text: buttonTitle }]);
     }
 }
 
-export function showAlertYesNo(message, cbYes, cbNo, isLocalized = true, title = constant.alertTitle, buttonTitle = "OK") {
+export function showAlertYesNo(
+    message,
+    isLocalized = true,
+    title = constant.alertTitle,
+    buttonTitleYes = "Yes",
+    buttonTitleNo = "No"
+) {
     baseLocal.locale = global.currentAppLanguage;
-    if (isLocalized) {
-        Alert.alert(baseLocal.t(title), baseLocal.t(message), [{ text: baseLocal.t(buttonTitle) }]);
-    } else {
-        Alert.alert(baseLocal.t(title), message, [{ text: baseLocal.t(buttonTitle) }]);
-    }
+    return new Promise((resolve, reject) => {
+        if (isLocalized) {
+            Alert.alert(baseLocal.t(title), baseLocal.t(message), [
+                { text: baseLocal.t(buttonTitleYes), onPress: () => resolve(""), style: "default" },
+                { text: baseLocal.t(buttonTitleNo), onPress: () => reject(""), style: "cancel" },
+            ]);
+        } else {
+            Alert.alert(baseLocal.t(title), message, [
+                { text: buttonTitleYes, onPress: () => resolve(""), style: "default" },
+                { text: buttonTitleNo, onPress: () => reject(""), style: "cancel" },
+            ]);
+        }
+    });
 }
+
+// Way to implement showAlertYesNo function
+
+// CommonUtilities.showAlertYesNo("Are you sure you want to delete this address?").then(
+//     pressedYes => {
+//         // User pressed Yes
+//         constant.debugLog("User pressed Yes");
+//     },
+//     pressedNo => {
+//         // User pressed No
+//         constant.debugLog("User pressed No");
+//     }
+// );

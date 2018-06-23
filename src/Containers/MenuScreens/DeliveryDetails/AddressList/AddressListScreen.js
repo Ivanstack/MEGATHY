@@ -49,7 +49,8 @@ import baseLocal from "../../../../Resources/Localization/baseLocalization";
 
 // AddressListItem
 import AddressListItem from "./AddressListItem";
-import autobind from "autobind-decorator";
+
+var self = null
 
 @observer
 class AddressListScreen extends Component {
@@ -62,8 +63,19 @@ class AddressListScreen extends Component {
             isRefreshing: false,
         };
 
+        this._onRefresh = this._onRefresh.bind(this);
+        this._callLoadMore = this._callLoadMore.bind(this);
+        this._getAddressList = this._getAddressList.bind(this);
+        this._onDeleteAddress = this._onDeleteAddress.bind(this);
+        this._onPressItem = this._onPressItem.bind(this);
+        this._onPressAddAddress = this._onPressAddAddress.bind(this);
+        this._onPressEditItem = this._onPressEditItem.bind(this);
+        this._onPressDeleteItem = this._onPressDeleteItem.bind(this);
+        this._onPressDeliverItem = this._onPressDeliverItem.bind(this);
+
         this.currentPage = 1;
         this.lastPage = 0;
+        // self = this
     }
 
     @observable visible = false;
@@ -103,7 +115,7 @@ class AddressListScreen extends Component {
 
     _keyExtractor = (item, index) => item.id.toString();
 
-    @autobind
+    // @autobind
     componentDidMount() {
         this._getAddressList(false);
     }
@@ -182,76 +194,21 @@ class AddressListScreen extends Component {
     }
 
     _onPressAddAddress() {
-        return;
-        if (!CommonUtilities.validateEmail(this.state.email)) {
-            CommonUtilities.showAlert("Invalid email id");
-            return;
-        }
-
-        if (this.state.password === "") {
-            CommonUtilities.showAlert("Password cannot be blank");
-            return;
-        }
-
-        var loginParameters = {
-            email: this.state.email,
-            password: this.state.password,
-            deviceType: Platform.OS === "ios" ? constant.deviceTypeiPhone : constant.deviceTypeAndroid,
-            notifyId: constant.notifyId,
-            timeZone: constant.timeZone,
-            vendorId: DeviceInfo.getUniqueID(),
-            appVersion: DeviceInfo.appVersion === undefined ? "0.0" : DeviceInfo.appVersion,
-        };
-
-        // Show Loading View
-        this.visible = true;
-
-        networkUtility.postRequest(constant.login, loginParameters).then(
-            result => {
-                // Hide Loading View
-                this.visible= false
-
-                global.loginKey = result.data.data.userData.loginKey;
-                AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data.data.userData));
-                AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data.data.settingData));
-                AsyncStorage.removeItem(constant.keyCurrentStore);
-                constant.debugLog("User Login Success");
-                this.props.navigation.navigate("CityScreen");
-            },
-            error => {
-                // Hide Loading View
-                this.visible= false
-
-                constant.debugLog("Status Code: " + error.status);
-                constant.debugLog("Error Message: " + error.message);
-                if (error.status != 500) {
-                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        CommonUtilities.showAlert(error.data["messageAr"], false);
-                    } else {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(error.data["message"], false);
-                        }, 200);
-                    }
-                } else {
-                    constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Opps! something went wrong");
-                }
-            }
-        );
+        this.props.navigation.navigate("AddAddressScreen")
     }
 
     _renderAddressItem = ({ item }) => (
         <AddressListItem
             address={item}
             parentEntryPoint={this.props.entryPoint}
-            onPressItem={this._onPressAddressItem}
+            onPressItem={this._onPressItem}
             onPressEditItem={this._onPressEditItem}
             onPressDeleteItem={this._onPressDeleteItem}
             onPressDeliverItem={this._onPressDeliverItem}
         />
     );
 
-    _onPressAddressItem(address) {
+    _onPressItem(address) {
         let arrAddressTemp = this.state.arrAddress;
         arrAddressTemp.map((addressTemp, index, arrObjects) => {
             if (addressTemp.id === address.id) {
@@ -269,7 +226,65 @@ class AddressListScreen extends Component {
     _onPressEditItem(address) {}
 
     _onPressDeleteItem(address) {
-        CommonUtilities.showAlertYesNo()
+        CommonUtilities.showAlertYesNo("Are you sure you want to delete this address?").then(
+            (pressedYes) => {
+                // User pressed Yes
+                constant.debugLog("User pressed Yes");
+                this._onDeleteAddress(address)
+            },
+            (pressedNo) => {
+                // User pressed No
+                constant.debugLog("User pressed No");
+            }
+        );
+        // CommonUtilities.showAlertYesNo("Are you sure you want to delete this address?").then(
+        //     pressedYes => {
+        //         // User pressed Yes
+        //         constant.debugLog("User pressed Yes");
+        //         this._onDeleteAddress(address)
+        //         this._onPressEditItem(address)
+        //     },
+        //     pressedNo => {
+        //         // User pressed No
+        //         constant.debugLog("User pressed No");
+        //     }
+        // );
+    }
+
+    _onPressDeliverItem(address){
+
+    }
+
+    _onDeleteAddress(address) {
+        // Show Loading View
+        this.visible = true;
+
+        networkUtility.deleteRequest(constant.address + "/" + address.id, "").then(
+            result => {
+                // Hide Loading View
+                this.visible = false;
+                this._onRefresh()
+            },
+            error => {
+                // Hide Loading View
+                this.visible = false;
+
+                constant.debugLog("Status Code: " + error.status);
+                constant.debugLog("Error Message: " + error.message);
+                if (error.status != 500) {
+                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
+                        CommonUtilities.showAlert(error.data["messageAr"], false);
+                    } else {
+                        setTimeout(() => {
+                            CommonUtilities.showAlert(error.data["message"], false);
+                        }, 200);
+                    }
+                } else {
+                    constant.debugLog("Internal Server Error: " + error.data);
+                    CommonUtilities.showAlert("Opps! something went wrong");
+                }
+            }
+        );
     }
 
     render() {

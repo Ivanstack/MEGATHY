@@ -24,6 +24,7 @@ export default class AppTextField extends Component {
                     autoFocus={this.props.autoFocus === undefined ? false : this.props.autoFocus}
                     autoCapitalize={this.props.autoCapitalize === undefined ? "none" : this.props.autoCapitalize}
                     autoCorrect={this.props.autoCorrect === undefined ? false : this.props.autoCorrect}
+                    multiline={this.props.multiline === undefined ? false : this.props.multiline}
                     clearTextOnFocus={this.props.clearTextOnFocus === undefined ? false : this.props.clearTextOnFocus}
                     secureTextEntry={this.props.secureTextEntry === undefined ? false : this.props.secureTextEntry}
                     enablesReturnKeyAutomatically={this.props.enablesReturnKeyAutomatically === undefined ? true : this.props.enablesReturnKeyAutomatically}

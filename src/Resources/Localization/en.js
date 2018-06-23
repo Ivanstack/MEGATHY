@@ -52,7 +52,7 @@ export default {
     ADD: "ADD",
     City: "City",
     Area: "Area",
-    Address: "Press here to locate your address",
+    "Press here to locate your address": "Press here to locate your address",
     "Phone Number": "Phone Number",
     Phone: "Phone",
     "Full Name": "Full Name",
