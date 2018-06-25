@@ -34,9 +34,6 @@ import Icon from "react-native-vector-icons/EvilIcons";
 import ImageLoad from "react-native-image-placeholder";
 import Swiper from "react-native-swiper";
 import StepIndicator from "react-native-step-indicator";
-import Moment from "moment";
-import { observable } from "mobx";
-import { observer } from "mobx-react";
 import autobind from "autobind-decorator";
 
 // Network Utility
@@ -79,7 +76,6 @@ const customStyles = {
   currentStepLabelColor: constant.themeColor
 };
 
-@observer
 class OrderMasterScreen extends Component {
   constructor(props) {
     super(props);
@@ -87,13 +83,12 @@ class OrderMasterScreen extends Component {
     this.state = {
       currentPosition: 0,
       visible: false,
-      storeTime: ""
+      storeTime: "",
+      storeCurrentTime: "",
+      storeCurrentTimeInSeconds: ""
     };
     classContext = this;
   }
-
-  @observable storeCurrentTime = "";
-  @observable storeCurrentTimeInSeconds = "";
 
   static navigationOptions = ({ navigation }) => ({
     headerLeft: (
@@ -109,6 +104,9 @@ class OrderMasterScreen extends Component {
           <TouchableOpacity
             onPress={() => {
               navigation.goBack(null);
+              // classContext.props.cartScrContext.setState({
+              //   orderMasterModalVisible: false
+              // });
             }}
           >
             <Icon name="close-o" size={30} color="white" />
@@ -169,32 +167,39 @@ class OrderMasterScreen extends Component {
   // Mics Methods
 
   _timerForStoreCurrentTime = () => {
-    if (this.storeCurrentTimeInSeconds === "") {
-      this.storeCurrentTimeInSeconds =
+    if (this.state.storeCurrentTimeInSeconds === "") {
+      this.state.storeCurrentTimeInSeconds =
         new Date(this.state.storeTime).getTime() + 1000; // Get Time in ms
     }
-    this.storeCurrentTimeInSeconds = this.storeCurrentTimeInSeconds + 1000;
+    this.setState({
+      storeCurrentTimeInSeconds: this.state.storeCurrentTimeInSeconds + 1000
+    });
+    // this.storeCurrentTimeInSeconds = this.storeCurrentTimeInSeconds + 1000;
     // console.log("Get storeTime TimeStemp :======> ", this.storeCurrentTimeInSeconds);
 
-    let dateFromTimeStamp = Moment(this.storeCurrentTimeInSeconds).format(
-      "hh:mm:ss A"
-    );
-    // console.log(
-    //   "Get storeTime before convert from TimeStemp :======> ",
-    //   this.storeCurrentTime
+    let dateFromTimeStamp = new Date(
+      this.state.storeCurrentTimeInSeconds
+    ).toString("hh:mm:ss A");
+    // let dateFromTimeStamp = Moment(this.state.storeCurrentTimeInSeconds).format(
+    //   "hh:mm:ss A"
     // );
+    console.log(
+      "Get storeTime before convert from TimeStemp :======> ",
+      dateFromTimeStamp
+    );
     // console.log(
     //   "Get storeTime after convert from TimeStemp :======> ",
     //   dateFromTimeStamp
     // );
-    this.storeCurrentTime = dateFromTimeStamp;
+    this.setState({ storeCurrentTime: dateFromTimeStamp });
+    // this.storeCurrentTime = dateFromTimeStamp;
   };
 
   _getStoreTime = () => {
     console.log("Call get storeTime .....");
 
     // Show Loading View
-    this.setState({ visible: true });
+    // this.setState({ visible: true });
 
     let storeTime = networkUtility.getRequest(constant.getStoreTimeZone).then(
       result => {
@@ -202,15 +207,17 @@ class OrderMasterScreen extends Component {
         console.log("Get storeTime :======> ", responseData);
 
         let storeCrtTime = responseData.storeTime;
-        storeCrtTime = Moment(storeCrtTime).format("hh:mm:ss A");
+        storeCrtTime = new Date(this.state.storeCrtTime).toString("hh:mm:ss A");
+        // storeCrtTime = Moment(storeCrtTime).format("hh:mm:ss A");
+        console.log("Get storeTime after convert :======> ", storeCrtTime);
 
         // Hide Loading View
         this.setState({
           visible: false,
           storeTime: responseData.storeTime
         });
-
-        this.storeCurrentTime = storeCrtTime;
+        this.setState({ storeCurrentTime: storeCrtTime });
+        // this.storeCurrentTime = storeCrtTime;
         this.storeCrntTimeInterval = setInterval(
           this._timerForStoreCurrentTime,
           1000
@@ -283,7 +290,6 @@ class OrderMasterScreen extends Component {
           <View style={OrderMasterStyles.orderActionView}>
             <View style={{ marginTop: 8 }}>
               <StepIndicator
-                
                 customStyles={customStyles}
                 currentPosition={this.state.currentPosition}
                 labels={labels}
@@ -330,7 +336,7 @@ class OrderMasterScreen extends Component {
                   alignSelf: "flex-end"
                 }}
               >
-                Store Current Time : {this.storeCurrentTime}
+                Store Current Time : {this.state.storeCurrentTime}
               </Text>
             </View>
           </View>
@@ -359,12 +365,7 @@ class OrderMasterScreen extends Component {
               pagingEnabled={true}
             >
               <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center"
-                  // backgroundColor: "blue"
-                }}
+                style={OrderMasterStyles.addressListContainerStyle}
               >
                 <AddressListScreen />
               </View>

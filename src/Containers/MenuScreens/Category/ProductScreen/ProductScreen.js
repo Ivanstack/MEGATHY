@@ -83,8 +83,12 @@ class ProductScreen extends Component {
           </TouchableOpacity>
           <Text style={ProductStyles.headerText}>
             {global.currentAppLanguage === constant.languageArabic
-              ? navigation.state.params.category.categoryNameAr
-              : navigation.state.params.category.categoryName}
+              ? navigation.state.params.category.subCategoryName
+                ? navigation.state.params.category.subCategoryNameAr
+                : navigation.state.params.category.categoryNameAr
+              : navigation.state.params.category.subCategoryName
+                ? navigation.state.params.category.subCategoryName
+                : navigation.state.params.category.categoryName}
           </Text>
         </View>
       </View>
@@ -102,6 +106,7 @@ class ProductScreen extends Component {
       "Get Category :===> ",
       this.props.navigation.state.params.category
     );
+    this.GetOrSaveCartItem(false);
     this.getProductList(false);
 
     this._callLoadMore = this._callLoadMore.bind(this);
@@ -159,20 +164,26 @@ class ProductScreen extends Component {
           // We have data!!
           global.arrCartItems = JSON.parse(oldArrCartItems);
           console.log("Get Array from AsynStorage :====>", global.arrCartItems);
-          this.state.productDataList.map(item => {
-            if (global.arrCartItems.length > 0) {
-              global.arrCartItems.map(cartItem => {
+          console.log(
+            "Get lenght from Product :====>",
+            this.state.productDataList.length
+          );
+          if (global.arrCartItems.length > 0) {
+            global.arrCartItems.map(cartItem => {
+              this.state.productDataList.map(item => {
                 if (cartItem.PkId === item.PkId) {
                   item.totalAddedProduct = cartItem.totalAddedProduct;
                   console.log("Item changed :===> ", item);
-                } else {
-                  item.totalAddedProduct = 0;
                 }
+                // else {
+                //   item.totalAddedProduct = 0;
+                // }
               });
-            } else {
-              item.totalAddedProduct = 0;
-            }
-          });
+            });
+          } else {
+            item.totalAddedProduct = 0;
+          }
+          // });
           this.forceUpdate();
         }
       }
@@ -186,7 +197,6 @@ class ProductScreen extends Component {
   _callLoadMore() {
     console.log("Call Load More .....");
 
-    
     if (this.currentPage < this.lastPage) {
       this.getProductList(true);
     }
@@ -281,7 +291,8 @@ class ProductScreen extends Component {
   }
 
   _onRefresh() {
-    this.setState({ isRefreshing: true, productDataList:[] });
+    this.currentPage = 1;
+    this.setState({ isRefreshing: true, productDataList: [] });
     this.getProductList(false);
   }
 

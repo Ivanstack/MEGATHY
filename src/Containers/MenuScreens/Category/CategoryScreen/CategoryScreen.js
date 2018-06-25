@@ -7,11 +7,8 @@
 import React, { Component } from "react";
 import {
   Platform,
-  StyleSheet,
   Text,
   View,
-  Button,
-  BackHandler,
   Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -154,6 +151,7 @@ class CategoryScreen extends Component {
 
   onNavigateBack = () => {
     // Handle navigation back action
+    this.forceUpdate()
   };
 
   _callLoadMore() {

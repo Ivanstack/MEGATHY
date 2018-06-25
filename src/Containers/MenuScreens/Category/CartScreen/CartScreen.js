@@ -19,7 +19,8 @@ import {
   AsyncStorage,
   Animated,
   Dimensions,
-  TextInput
+  TextInput,
+  Modal
 } from "react-native";
 
 // Redux
@@ -43,6 +44,10 @@ import * as networkUtility from "../../../../Helper/NetworkUtility";
 // Components Style
 import CartStyle from "./CartScreenStyle";
 
+// Screens
+import * as router from "../../../../Router/Router";
+import OrderMasterScreen from "../../OrderMaster/OrderMasterScreen";
+
 // Localization
 import baseLocal from "../../../../Resources/Localization/baseLocalization";
 const orderNowViewHeight = (12 * Dimensions.get("window").height) / 100;
@@ -62,7 +67,8 @@ class CartScreen extends Component {
       isRefreshing: false,
       productQuentity: 0,
       hideDiscountLbl: true,
-      showScheduleOrderNow: false
+      showScheduleOrderNow: false,
+      orderMasterModalVisible: false
     };
   }
 
@@ -302,6 +308,8 @@ class CartScreen extends Component {
               style={[CartStyle.scheduleAndOrderBtns, { marginRight: 20 }]}
               onPress={() => {
                 this._onPressShowHideScheduleOrderNowBtns();
+                // this.setState({ orderMasterModalVisible: true });
+
                 this.props.navigation.navigate(constant.kOrderMasterScreen);
               }}
             >
@@ -477,6 +485,16 @@ class CartScreen extends Component {
             // backgroundColor: "yellow"
           }}
         >
+          {/* <Modal
+            animationType="slide"
+            transparent={false}
+            visible={this.state.orderMasterModalVisible}
+            // onRequestClose={() => {
+            //   alert("Modal has been closed.");
+            // }}
+          >
+            <OrderMasterScreen cartScrContext={this} />
+          </Modal> */}
           {global.arrCartItems.length > 0 ? (
             <FlatList
               style={{

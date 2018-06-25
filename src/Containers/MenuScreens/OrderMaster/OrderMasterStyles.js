@@ -18,7 +18,7 @@ export default StyleSheet.create({
     alignItems: "center",
     // marginLeft: 5,
     fontSize: 17,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontFamily: constant.themeFont
   },
   goToNextPageView: {
@@ -30,7 +30,7 @@ export default StyleSheet.create({
     backgroundColor: constant.themeColor,
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 10,
+    padding: 10
   },
   orderActionView: {
     //   flex: 1,
@@ -38,7 +38,7 @@ export default StyleSheet.create({
     height: "14%",
     backgroundColor: "white",
     justifyContent: "center",
-    padding: 5,
+    padding: 5
     // alignItems: 'center',
   },
   swipeViewWrapper: {
@@ -52,7 +52,14 @@ export default StyleSheet.create({
   nextViewStyle: {
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
     // padding: 15,
+  },
+  addressListContainerStyle: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: goToNextPageViewHeight
+    // backgroundColor: "blue"
   }
 });

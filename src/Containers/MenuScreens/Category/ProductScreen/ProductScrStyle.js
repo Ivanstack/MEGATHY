@@ -138,7 +138,7 @@ export default StyleSheet.create({
     height: "8%",
     // justifyContent:"space-between",
     flexDirection: "row",
-    bottom: 50
+    // bottom: 50
   },
   cartBadge: {
     position: "absolute",
