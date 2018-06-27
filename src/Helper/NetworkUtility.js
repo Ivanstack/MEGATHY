@@ -1,4 +1,4 @@
-import constants from "./Constants";
+import * as constants from "./Constants";
 import { AsyncStorage } from "react-native";
 import * as CommonUtilities from "./CommonUtilities";
 var axios = require("axios");

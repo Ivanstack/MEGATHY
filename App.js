@@ -19,17 +19,17 @@ import LoginRouter from "./src/Router/LoginRouter";
 import Constants from "./src/Helper/Constants";
 
 // Common Utilities
-import utilities, {setInitialGlobalValues} from './src/Helper/CommonUtilities'
+import utilities, { setInitialGlobalValues } from "./src/Helper/CommonUtilities";
 
 export default class App extends Component {
     constructor(props) {
         super(props);
-
+        
         // Set Statusbar Light Content for iOS
         StatusBar.setBarStyle("light-content", true);
-        
+
         // Global Variables (App wise scope)
-        setInitialGlobalValues()
+        setInitialGlobalValues();
 
         // States
         this.state = {
@@ -43,13 +43,13 @@ export default class App extends Component {
         });
 
         Constants.emitter.addListener(Constants.loginListener, () => {
-            context.setState({isLogin: true});
+            context.setState({ isLogin: true });
             try {
-                AsyncStorage.setItem(isLogin, 'true');
-              } catch (error) {
+                AsyncStorage.setItem(isLogin, "true");
+            } catch (error) {
                 // Error saving data
-              }
-        })
+            }
+        });
     }
 
     // Life Cycle
@@ -86,14 +86,13 @@ export default class App extends Component {
                     <Router onPressLogout={this.onLogout} />
                 </Provider>
             );
-        } else if(!this.state.isLogin) {
+        } else if (!this.state.isLogin) {
             return (
                 <Provider store={store}>
                     <LoginRouter onPressLogin={this.onLogin} />
                 </Provider>
             );
         } else {
-
         }
 
         // return (

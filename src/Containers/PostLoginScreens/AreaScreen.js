@@ -59,7 +59,7 @@ class AreaScreen extends Component {
 
                     // Show Loading View
                     this.setState({ visible: true });
-                    networkUtility.getRequest(constant.getArea, areaParameters).then(
+                    networkUtility.getRequest(constant.APIGetArea, areaParameters).then(
                         result => {
                             // Hide Loading View
                             this.setState({ visible: false });
@@ -84,13 +84,11 @@ class AreaScreen extends Component {
                                 ) {
                                     CommonUtilities.showAlert(error.data["messageAr"], false);
                                 } else {
-                                    setTimeout(() => {
-                                        CommonUtilities.showAlert(error.data["message"], false);
-                                    }, 200);
+                                    CommonUtilities.showAlert(error.data["message"], false);
                                 }
                             } else {
                                 constant.debugLog("Internal Server Error: " + error.data);
-                                CommonUtilities.showAlert("Something went wrong, plese try again");
+                                CommonUtilities.showAlert("Opps! something went wrong");
                             }
                         }
                     );

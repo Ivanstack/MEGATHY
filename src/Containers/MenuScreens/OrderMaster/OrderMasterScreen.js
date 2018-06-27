@@ -184,7 +184,7 @@ class OrderMasterScreen extends Component {
   _getStoreTime = () => {
     console.log("Call get storeTime .....");
 
-    let storeTime = networkUtility.getRequest(constant.getStoreTimeZone).then(
+    let storeTime = networkUtility.getRequest(constant.APIGetStoreTimeZone).then(
       result => {
         let responseData = result.data.data;
         console.log("Get storeTime :======> ", responseData);

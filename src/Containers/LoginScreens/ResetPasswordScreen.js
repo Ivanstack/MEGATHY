@@ -103,21 +103,17 @@ class ResetPasswordScreen extends Component {
         // Show Loading View
         this.setState({ visible: true });
 
-        networkUtility.putRequest(constant.updatePassword, resetPasswordParameters).then(
+        networkUtility.putRequest(constant.APIUpdatePassword, resetPasswordParameters).then(
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
 
                 if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
-                    setTimeout(() => {
                         CommonUtilities.showAlert(result.data.messageAr, false);
                         this.props.navigation.popToTop();
-                    }, 200);
                 } else {
-                    setTimeout(() => {
                         CommonUtilities.showAlert(result.data.message, false);
                         this.props.navigation.popToTop();
-                    }, 200);
                 }
             },
             error => {
@@ -130,9 +126,7 @@ class ResetPasswordScreen extends Component {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
                         CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
-                        setTimeout(() => {
                             CommonUtilities.showAlert(error.data["message"], false);
-                        }, 200);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);

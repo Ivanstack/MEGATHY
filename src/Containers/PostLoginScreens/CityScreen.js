@@ -22,16 +22,16 @@ import * as networkUtility from "../../Helper/NetworkUtility";
 import Spinner from "react-native-loading-spinner-overlay";
 
 // Localization
-import baseLocal from '../../Resources/Localization/baseLocalization'
+import baseLocal from "../../Resources/Localization/baseLocalization";
 
 // Common Utilities
-import * as CommonUtilities from '../../Helper/CommonUtilities'
+import * as CommonUtilities from "../../Helper/CommonUtilities";
 
 class CityScreen extends Component {
     constructor(props) {
         super(props);
 
-        baseLocal.locale = global.currentAppLanguage
+        baseLocal.locale = global.currentAppLanguage;
         this.onPressOK = this.onPressOK.bind(this);
         this.onChangeCity = this.onChangeCity.bind(this);
 
@@ -46,7 +46,7 @@ class CityScreen extends Component {
     componentWillMount() {
         // Show Loading View
         this.setState({ visible: true });
-        networkUtility.getRequest(constant.getCity, "").then(
+        networkUtility.getRequest(constant.APIGetCity, "").then(
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
@@ -65,15 +65,13 @@ class CityScreen extends Component {
                 constant.debugLog("Error Message: " + error.message);
                 if (error.status != 500) {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        CommonUtilities.showAlert(error.data["messageAr"], false)
+                        CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(error.data["message"], false)
-                        }, 200);
+                        CommonUtilities.showAlert(error.data["message"], false);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Something went wrong, plese try again")
+                    CommonUtilities.showAlert("Opps! something went wrong");
                 }
             }
         );
@@ -100,7 +98,7 @@ class CityScreen extends Component {
     render() {
         let { errors = {}, secureTextEntry, email, password } = this.state;
         let cityItems = this.state.arrCities.map((value, index) => {
-            let cityNameTemp = global.currentAppLanguage === "en" ? value.cityName : value.cityNameAr
+            let cityNameTemp = global.currentAppLanguage === "en" ? value.cityName : value.cityNameAr;
             return <Picker.Item key={index} value={cityNameTemp} label={cityNameTemp} />;
         });
 
@@ -138,7 +136,7 @@ class CityScreen extends Component {
                     {/* // Reset Button */}
                     <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressOK}>
                         <Text style={{ color: "white", fontFamily: "Ebrima", fontSize: 14, fontWeight: "bold" }}>
-                        {baseLocal.t("OK")}
+                            {baseLocal.t("OK")}
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -149,7 +147,7 @@ class CityScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        login: state.dataReducer.login,
+        // login: state.dataReducer.login,
     };
 }
 

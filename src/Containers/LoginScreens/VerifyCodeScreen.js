@@ -114,7 +114,7 @@ class VerifyCodeScreen extends Component {
         // Show Loading View
         this.setState({ visible: true });
 
-        networkUtility.postRequest(constant.verifyPhoneCode, verifyCodeParameters).then(
+        networkUtility.postRequest(constant.APIVerifyPhoneCode, verifyCodeParameters).then(
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
@@ -125,13 +125,9 @@ class VerifyCodeScreen extends Component {
                     });
                 } else {
                     if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(result.data.messageAr, false);
-                        }, 200);
+                        CommonUtilities.showAlert(result.data.messageAr, false);
                     } else {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(result.data.message, false);
-                        }, 200);
+                        CommonUtilities.showAlert(result.data.message, false);
                     }
                 }
             },
@@ -145,13 +141,11 @@ class VerifyCodeScreen extends Component {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
                         CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(error.data["message"], false);
-                        }, 200);
+                        CommonUtilities.showAlert(error.data["message"], false);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Something went wrong, plese try again");
+                    CommonUtilities.showAlert("Opps! something went wrong");
                 }
             }
         );
@@ -178,27 +172,19 @@ class VerifyCodeScreen extends Component {
         // Show Loading View
         this.setState({ visible: true });
 
-        networkUtility.postRequest(constant.requestVerifyPhones, resendCodeParameters).then(
+        networkUtility.postRequest(constant.APIRequestVerifyPhones, resendCodeParameters).then(
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
 
                 if (result.status === 206) {
-                    setTimeout(() => {
-                        CommonUtilities.showAlert("This number is already verified");
-                        // setTimeout(() => {
-                        this.props.navigation.goBack();
-                        // }, 200);
-                    }, 200);
+                    CommonUtilities.showAlert("This number is already verified");
+                    this.props.navigation.goBack();
                 } else {
                     if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(result.data.messageAr, false);
-                        }, 200);
+                        CommonUtilities.showAlert(result.data.messageAr, false);
                     } else {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(result.data.message, false);
-                        }, 200);
+                        CommonUtilities.showAlert(result.data.message, false);
                     }
                 }
             },
@@ -212,13 +198,11 @@ class VerifyCodeScreen extends Component {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
                         CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(error.data["message"], false);
-                        }, 200);
+                        CommonUtilities.showAlert(error.data["message"], false);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Something went wrong, plese try again");
+                    CommonUtilities.showAlert("Opps! something went wrong");
                 }
             }
         );
@@ -244,27 +228,19 @@ class VerifyCodeScreen extends Component {
         // Show Loading View
         this.setState({ visible: true });
 
-        networkUtility.postRequest(constant.requestVerifyPhones, resendCodeParameters).then(
+        networkUtility.postRequest(constant.APIRequestVerifyPhones, resendCodeParameters).then(
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
 
                 if (result.status === 206) {
-                    setTimeout(() => {
-                        CommonUtilities.showAlert("This number is already verified");
-                        // setTimeout(() => {
-                        this.props.navigation.goBack();
-                        // }, 200);
-                    }, 200);
+                    CommonUtilities.showAlert("This number is already verified");
+                    this.props.navigation.goBack();
                 } else {
                     if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(result.data.messageAr, false);
-                        }, 200);
+                        CommonUtilities.showAlert(result.data.messageAr, false);
                     } else {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(result.data.message, false);
-                        }, 200);
+                        CommonUtilities.showAlert(result.data.message, false);
                     }
                 }
             },
@@ -278,13 +254,11 @@ class VerifyCodeScreen extends Component {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
                         CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(error.data["message"], false);
-                        }, 200);
+                        CommonUtilities.showAlert(error.data["message"], false);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Something went wrong, plese try again");
+                    CommonUtilities.showAlert("Opps! something went wrong");
                 }
             }
         );

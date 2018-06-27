@@ -80,7 +80,7 @@ class ForgotPasswordScreen extends Component {
         // Show Loading View
         this.setState({ visible: true });
 
-        networkUtility.postRequest(constant.forgotPassword, forgotPasswordParameters).then(
+        networkUtility.postRequest(constant.APIForgotPassword, forgotPasswordParameters).then(
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
@@ -100,9 +100,7 @@ class ForgotPasswordScreen extends Component {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
                         CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(error.data["message"], false);
-                        }, 200);
+                        CommonUtilities.showAlert(error.data["message"], false);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);

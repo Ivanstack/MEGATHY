@@ -20,7 +20,7 @@ import * as actions from "../../AppRedux/Actions/actions";
 var DeviceInfo = require("react-native-device-info");
 
 // Common Utilities
-import * as CommonUtilities from '../../Helper/CommonUtilities'
+import * as CommonUtilities from "../../Helper/CommonUtilities";
 
 // Network Utility
 import * as networkUtility from "../../Helper/NetworkUtility";
@@ -32,7 +32,7 @@ import KeyboardManager from "react-native-keyboard-manager";
 import Spinner from "react-native-loading-spinner-overlay";
 
 // Localization
-import baseLocal from '../../Resources/Localization/baseLocalization'
+import baseLocal from "../../Resources/Localization/baseLocalization";
 
 // FBSDK
 const FBSDK = require("react-native-fbsdk");
@@ -41,15 +41,13 @@ const { LoginManager, GraphRequest, GraphRequestManager, AccessToken } = FBSDK;
 class LoginScreen extends Component {
     constructor(props) {
         super(props);
-        
-        baseLocal.locale = global.currentAppLanguage
+
+        baseLocal.locale = global.currentAppLanguage;
         KeyboardManager.setShouldResignOnTouchOutside(true);
         KeyboardManager.setToolbarPreviousNextButtonEnable(false);
 
         this.onPressSignup = this.onPressSignup.bind(this);
         this.onPressForgotPassword = this.onPressForgotPassword.bind(this);
-        this.onPressLoginWithFB = this.onPressLoginWithFB.bind(this);
-        this.checkFBIdExistance = this.checkFBIdExistance.bind(this);
         this.onPressLogin = this.onPressLogin.bind(this);
         this.onFocus = this.onFocus.bind(this);
         this.onChangeText = this.onChangeText.bind(this);
@@ -64,13 +62,7 @@ class LoginScreen extends Component {
             secureTextEntry: true,
             email: "",
             password: "",
-            visible: false,
         };
-    }
-
-    componentDidUpdate() {
-        // constant.debugLog("Login Status : ", this.props.login);
-        // AsyncStorage.setItem(constant.isLogin, "true");
     }
 
     componentDidMount() {
@@ -80,14 +72,20 @@ class LoginScreen extends Component {
         });
     }
 
+    componentWillReceiveProps(newProps) {
+        if (newProps.isLogin === true) {
+            this.props.navigation.navigate("CityScreen");
+        }
+    }
+
     onPressLogin() {
         if (!CommonUtilities.validateEmail(this.state.email)) {
-            CommonUtilities.showAlert('Invalid email id')
+            CommonUtilities.showAlert("Invalid email id");
             return;
         }
 
         if (this.state.password === "") {
-            CommonUtilities.showAlert('Password cannot be blank')
+            CommonUtilities.showAlert("Password cannot be blank");
             return;
         }
 
@@ -101,140 +99,8 @@ class LoginScreen extends Component {
             appVersion: DeviceInfo.appVersion === undefined ? "0.0" : DeviceInfo.appVersion,
         };
 
-        // Show Loading View
-        this.setState({ visible: true });
-
-        networkUtility.postRequest(constant.login, loginParameters).then(
-            result => {
-                // Hide Loading View
-                this.setState({ visible: false });
-
-                global.currentUser = result.data.data.userData
-                AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data.data.userData));
-                AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data.data.settingData));
-                AsyncStorage.removeItem(constant.keyCurrentStore);
-                constant.debugLog("User Login Success");
-                this.props.navigation.navigate("CityScreen");
-            },
-            error => {
-                // Hide Loading View
-                this.setState({ visible: false });
-
-                constant.debugLog("Status Code: " + error.status);
-                constant.debugLog("Error Message: " + error.message);
-                if (error.status != 500) {
-                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        CommonUtilities.showAlert(error.data["messageAr"], false)
-                    } else {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(error.data["message"], false)
-                        }, 200);
-                    }
-                } else {
-                    constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert('Opps! something went wrong')
-                }
-            }
-        );
+        this.props.onLogin(loginParameters);
     }
-
-    onPressLoginWithFB() {
-        // Show Loading View
-        this.setState({ visible: true });
-        LoginManager.logInWithReadPermissions(["public_profile"]).then(
-            result => {
-                if (result.isCancelled) {
-                    alert("Login cancelled");
-                } else {
-                    AccessToken.getCurrentAccessToken().then(data => {
-                        let accessToken = data.accessToken;
-
-                        const responseInfoCallback = (error, result) => {
-                            if (error) {
-                                constant.debugLog(error);
-                                alert("Error fetching data: " + error.toString());
-                            } else {
-                                constant.debugLog(result);
-                                this.props.navigation.navigate("SignUpScreen", { fbResult: result });
-                            }
-                        };
-
-                        const infoRequest = new GraphRequest(
-                            "/me",
-                            {
-                                accessToken: accessToken,
-                                parameters: {
-                                    fields: {
-                                        string: "email,name,first_name,middle_name,last_name",
-                                    },
-                                },
-                            },
-                            this.checkFBIdExistance
-                        );
-
-                        // Start the graph request.
-                        new GraphRequestManager().addRequest(infoRequest).start();
-                    });
-                }
-            },
-            error => {
-                alert("Login fail with error: " + error);
-            }
-        );
-    }
-
-    checkFBIdExistance = (error, fbResult) => {
-        if (error) {
-            constant.debugLog(error);
-            alert("Error fetching data: " + error.toString());
-        } else {
-            constant.debugLog(fbResult);
-            var checkFBIdParameters = {
-                facebookId: fbResult["id"],
-                deviceType: Platform.OS === "ios" ? constant.deviceTypeiPhone : constant.deviceTypeAndroid,
-                notifyId: constant.notifyId,
-                timeZone: constant.timeZone,
-                appVersion: DeviceInfo.appVersion === undefined ? "0.0" : DeviceInfo.appVersion,
-            };
-
-            networkUtility.postRequest(constant.verifyFBId, checkFBIdParameters).then(
-                result => {
-                    // Hide Loading View
-                    this.setState({ visible: false });
-
-                    if (result.status == 206) {
-                        this.props.navigation.navigate("SignUpScreen", { fbResult: fbResult });
-                    } else {
-                        global.loginKey = result.data.data.userData.loginKey;
-                        AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data.data.userData));
-                        AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data.data.settingData));
-                        AsyncStorage.removeItem(constant.keyCurrentStore);
-                        constant.debugLog("FB User Login Success");
-                        this.props.navigation.navigate("CityScreen");
-                    }
-                },
-                error => {
-                    // Show Loading View
-                    this.setState({ visible: false });
-
-                    constant.debugLog("Status Code: " + error.status);
-                    constant.debugLog("Error Message: " + error.message);
-                    if (error.status != 500) {
-                        if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                            CommonUtilities.showAlert(error.data["messageAr"], false)
-                        } else {
-                            setTimeout(() => {
-                                CommonUtilities.showAlert(error.data["message"], false)
-                            }, 200);
-                        }
-                    } else {
-                        constant.debugLog("Internal Server Error: " + error.data);
-                        CommonUtilities.showAlert('Opps! something went wrong')
-                    }
-                }
-            );
-        }
-    };
 
     onPressSignup() {
         this.props.navigation.navigate("SignUpScreen");
@@ -301,7 +167,7 @@ class LoginScreen extends Component {
             // Main View (Container)
             <View style={styles.container}>
                 <Spinner
-                    visible={this.state.visible}
+                    visible={this.props.isLoading}
                     cancelable={true}
                     // textContent={"Please wait..."}
                     textStyle={{ color: "#FFF" }}
@@ -316,7 +182,7 @@ class LoginScreen extends Component {
                     {/* // FB Button */}
                     <TouchableOpacity
                         style={{ width: "82%", height: 40, marginTop: 25 }}
-                        onPress={this.onPressLoginWithFB}
+                        onPress={() => this.props.onFBLogin()}
                     >
                         <View style={styles.fbButtonStyle}>
                             <Image
@@ -324,7 +190,7 @@ class LoginScreen extends Component {
                                 source={require("../../Resources/Images/FBIcon.png")}
                             />
                             <Text style={{ color: "#405798", fontFamily: "Ebrima", fontWeight: "bold" }}>
-                                {baseLocal.t('Login with facebook')}
+                                {baseLocal.t("Login with facebook")}
                             </Text>
                         </View>
                     </TouchableOpacity>
@@ -353,7 +219,10 @@ class LoginScreen extends Component {
                                 alignItems: "center",
                             }}
                         >
-                            <Text style={{ color: "#CF2526", fontFamily: "Ebrima", fontSize: 10 }}> {baseLocal.t('OR')} </Text>
+                            <Text style={{ color: "#CF2526", fontFamily: "Ebrima", fontSize: 10 }}>
+                                {" "}
+                                {baseLocal.t("OR")}{" "}
+                            </Text>
                         </View>
                         <View style={{ width: "40%", height: 1, backgroundColor: "#EAEAEA", marginTop: 10 }}> </View>
                     </View>
@@ -362,7 +231,7 @@ class LoginScreen extends Component {
                         {/* // Email Text Field */}
                         <AppTextField
                             reference={this.emailRef}
-                            label={baseLocal.t('Email Id')}
+                            label={baseLocal.t("Email Id")}
                             value={this.state.email}
                             returnKeyType="next"
                             keyboardType="email-address"
@@ -374,7 +243,7 @@ class LoginScreen extends Component {
                         {/* // Password Text Field */}
                         <AppTextField
                             reference={this.passwordRef}
-                            label={baseLocal.t('Password')}
+                            label={baseLocal.t("Password")}
                             value={this.state.password}
                             returnKeyType="done"
                             clearTextOnFocus={true}
@@ -387,7 +256,9 @@ class LoginScreen extends Component {
 
                     {/* // Login Button */}
                     <TouchableOpacity style={styles.loginButtonStyle} onPress={this.onPressLogin}>
-                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>{baseLocal.t('Login')}</Text>
+                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                            {baseLocal.t("Login")}
+                        </Text>
                     </TouchableOpacity>
 
                     {/* // Forgot Password and Signup Buttons View */}
@@ -396,12 +267,16 @@ class LoginScreen extends Component {
                     >
                         {/* // Forgot Password Button */}
                         <TouchableOpacity onPress={this.onPressForgotPassword}>
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontSize: 15 }}>{baseLocal.t('Forgot Password?')}</Text>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontSize: 15 }}>
+                                {baseLocal.t("Forgot Password?")}
+                            </Text>
                         </TouchableOpacity>
 
                         {/* // Signup Button */}
                         <TouchableOpacity onPress={this.onPressSignup}>
-                            <Text style={{ color: "white", fontFamily: "Ebrima", fontSize: 15 }}>{baseLocal.t('Sign Up')}</Text>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontSize: 15 }}>
+                                {baseLocal.t("Sign Up")}
+                            </Text>
                         </TouchableOpacity>
                     </View>
 
@@ -413,7 +288,7 @@ class LoginScreen extends Component {
                         }}
                     >
                         <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
-                        {baseLocal.t('Continue as guest user')}
+                            {baseLocal.t("Continue as guest user")}
                         </Text>
                     </TouchableOpacity>
                 </ScrollView>
@@ -424,12 +299,18 @@ class LoginScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        login: state.dataReducer.login,
+        isLoading: state.login.isLoading,
+        isLogin: state.login.isLogin,
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(actions, dispatch);
+    // return bindActionCreators(actions, dispatch);
+    return {
+        onLogin: parameters =>
+            dispatch({ type: "LOGIN_CALL_REQUEST", payload: { endPoint: constant.APILogin, parameters: parameters } }),
+        onFBLogin: () => dispatch({ type: "FB_LOGIN_CALL_REQUEST", payload: { endPoint: constant.APIVerifyFBId } }),
+    };
 }
 
 export default connect(

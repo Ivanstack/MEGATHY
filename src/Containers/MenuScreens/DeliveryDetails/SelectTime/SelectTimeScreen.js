@@ -25,7 +25,7 @@ import { connect } from "react-redux";
 import * as actions from "../../../../AppRedux/Actions/actions";
 
 // Libs
-import CollapsibleList from "react-native-collapsible-list";
+// import CollapsibleList from "react-native-collapsible-list";
 import SegmentedControlTab from "react-native-segmented-control-tab";
 
 // Device Info
@@ -174,7 +174,7 @@ class SelectTimeScreen extends Component {
           //   alignItems: 'center',
         }}
       >
-        <CollapsibleList
+        {/* <CollapsibleList
           numberOfVisibleItems={1}
           //   wrapperStyle={styles.wrapperCollapsibleList}
           buttonContent={
@@ -204,7 +204,7 @@ class SelectTimeScreen extends Component {
             </View>,
             <View style={styles.collapsibleItem} />
           ]}
-        />
+        /> */}
       </View>
     );
   };

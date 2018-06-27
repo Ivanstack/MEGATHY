@@ -74,7 +74,7 @@ class StoreScreen extends Component {
 
                     // Show Loading View
                     this.setState({ visible: true });
-                    networkUtility.getRequest(constant.getStore, storeParameters).then(
+                    networkUtility.getRequest(constant.APIGetStore, storeParameters).then(
                         result => {
                             // Hide Loading View
                             this.setState({ visible: false });
@@ -93,16 +93,17 @@ class StoreScreen extends Component {
                             constant.debugLog("Status Code: " + error.status);
                             constant.debugLog("Error Message: " + error.message);
                             if (error.status != 500) {
-                                if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
+                                if (
+                                    global.currentAppLanguage === constant.languageArabic &&
+                                    error.data["messageAr"] != undefined
+                                ) {
                                     CommonUtilities.showAlert(error.data["messageAr"], false);
                                 } else {
-                                    setTimeout(() => {
-                                        CommonUtilities.showAlert(error.data["message"], false);
-                                    }, 200);
+                                    CommonUtilities.showAlert(error.data["message"], false);
                                 }
                             } else {
                                 constant.debugLog("Internal Server Error: " + error.data);
-                                CommonUtilities.showAlert("Something went wrong, plese try again");
+                                CommonUtilities.showAlert("Opps! something went wrong");
                             }
                         }
                     );
@@ -121,7 +122,7 @@ class StoreScreen extends Component {
             storeId: this.state.arrStores[this.state.selectedStoreIndex].storeId,
         };
 
-        networkUtility.postRequest(constant.setStore, setStoreParameters).then(
+        networkUtility.postRequest(constant.APISetStore, setStoreParameters).then(
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
@@ -146,13 +147,11 @@ class StoreScreen extends Component {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
                         CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(error.data["message"], false);
-                        }, 200);
+                        CommonUtilities.showAlert(error.data["message"], false);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Something went wrong, plese try again");
+                    CommonUtilities.showAlert("Opps! something went wrong");
                 }
             }
         );
@@ -195,7 +194,11 @@ class StoreScreen extends Component {
                         marginTop: 10,
                     }}
                 >
-                    {this.state.selectedArea != null ? (global.currentAppLanguage === "en" ? this.state.selectedArea.areaName : this.state.selectedArea.areaNameAr) : ""}
+                    {this.state.selectedArea != null
+                        ? global.currentAppLanguage === "en"
+                            ? this.state.selectedArea.areaName
+                            : this.state.selectedArea.areaNameAr
+                        : ""}
                 </Text>
                 {/* // Select Store Text */}
                 <Text
@@ -221,12 +224,16 @@ class StoreScreen extends Component {
                 <View style={{ width: "80%", flexDirection: "row", justifyContent: "space-around", marginTop: 100 }}>
                     {/* // Back Button */}
                     <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressBack}>
-                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>{baseLocal.t("Back")}</Text>
+                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                            {baseLocal.t("Back")}
+                        </Text>
                     </TouchableOpacity>
 
                     {/* // Sign Up Button */}
                     <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressOK}>
-                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>{baseLocal.t("OK")}</Text>
+                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                            {baseLocal.t("OK")}
+                        </Text>
                     </TouchableOpacity>
                 </View>
             </View>

@@ -100,7 +100,6 @@ class CartScreen extends Component {
   });
 
   // App Life Cycle Methods
-  @autobind
   componentDidMount() {
     console.log("App State: ", AppState.currentState);
     this.GetOrSaveCartItem(false);

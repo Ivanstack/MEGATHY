@@ -51,21 +51,23 @@ export function setInitialGlobalValues() {
 
     AsyncStorage.getItem(constant.keyCurrentCartItems).then(val => {
         if (val === undefined) {
-          global.arrCartItems = [];
+            global.arrCartItems = [];
         } else {
-          global.arrCartItems = JSON.parse(val);
-          constant.debugLog("Current Cart Items: " + val);
+            global.arrCartItems = JSON.parse(val);
+            constant.debugLog("Current Cart Items: " + val);
         }
-      });
+    });
 }
 
 export function showAlert(message, isLocalized = true, title = constant.alertTitle, buttonTitle = "OK") {
-    baseLocal.locale = global.currentAppLanguage;
-    if (isLocalized) {
-        Alert.alert(baseLocal.t(title), baseLocal.t(message), [{ text: baseLocal.t(buttonTitle) }]);
-    } else {
-        Alert.alert(baseLocal.t(title), message, [{ text: buttonTitle }]);
-    }
+    setTimeout(() => {
+        baseLocal.locale = global.currentAppLanguage;
+        if (isLocalized) {
+            Alert.alert(baseLocal.t(title), baseLocal.t(message), [{ text: baseLocal.t(buttonTitle) }]);
+        } else {
+            Alert.alert(baseLocal.t(title), message, [{ text: buttonTitle }]);
+        }
+    }, 200);
 }
 
 export function showAlertYesNo(

@@ -146,7 +146,7 @@ class SignUpScreen extends Component {
         // Show Loading View
         this.setState({ visible: true });
 
-        networkUtility.postRequest(constant.register, registerParameters).then(
+        networkUtility.postRequest(constant.APIRegister, registerParameters).then(
             result => {
                 // Hide Loading View
                 this.setState({ visible: false });
@@ -168,9 +168,7 @@ class SignUpScreen extends Component {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
                         CommonUtilities.showAlert(error.data["messageAr"], false)
                     } else {
-                        setTimeout(() => {
                             CommonUtilities.showAlert(error.data["message"], false)
-                        }, 200);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);

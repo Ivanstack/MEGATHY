@@ -1,15 +1,14 @@
-
-
-import React, { Component } from 'react';
-import {  View, Text, StyleSheet } from 'react-native';
-
 // Redux
-import { applyMiddleware, combineReducers, createStore } from 'redux'
-import logger from 'redux-logger'
-import thunk from 'redux-thunk';
-import rootReducer from '../Reducers/reducers';
+import { applyMiddleware, combineReducers, createStore } from "redux";
+import logger from "redux-logger";
+import saga from "redux-saga";
+import { watcherSaga } from "../Sagas/sagas";
 
-// Navigation
-import Router from '../../Router/Router'
+const rootReducer = combineReducers({
+    login: require("./LoginReducer").reducer
+});
 
-export default createStore(rootReducer, applyMiddleware(thunk));
+export let sagaMiddleware = saga();
+let store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
+sagaMiddleware.run(watcherSaga);
+export default store;

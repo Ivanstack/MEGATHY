@@ -3,107 +3,96 @@ import baseLocal from "../Resources/Localization/baseLocalization";
 var { EventEmitter } = require("fbemitter");
 
 module.exports = {
-  /// Other Misc Constants
-  alertTitle: "Megathy",
-  emitter: new EventEmitter(),
-  isLogin: "false",
-  loginListener: "loginListener",
-  languageEnglish: "en",
-  languageArabic: "ar",
-  LOGOUT_EVENT: "logout",
+    /// Other Misc Constants
+    alertTitle: "Megathy",
+    emitter: new EventEmitter(),
+    isLogin: "false",
+    loginListener: "loginListener",
+    languageEnglish: "en",
+    languageArabic: "ar",
+    LOGOUT_EVENT: "logout",
+    DeviceInfo: require("react-native-device-info"),
 
-  /// Common Functions
-  debugLog: log => {
-    console.log("\n====================>");
-    console.log(log);
-    console.log("<====================\n");
-  },
+    /// Common Functions
+    debugLog: log => {
+        console.log("\n====================>");
+        console.log(log);
+        console.log("<====================\n");
+    },
 
-  /// Async Storage Keys
-  keyCurrentUser: "currentUser",
-  keyCurrentSettings: "currentSettings",
-  keyCurrentStore: "currentStore",
-  keyCurrentAppLanguage: "currentAppLanguage",
-  keyCurrentCartItems: "cartItems",
+    /// Async Storage Keys
+    keyCurrentUser: "currentUser",
+    keyCurrentSettings: "currentSettings",
+    keyCurrentStore: "currentStore",
+    keyCurrentAppLanguage: "currentAppLanguage",
+    keyCurrentCartItems: "cartItems",
 
-  //Screen Name Keys
-  kCategoryScreen: "CategoryScreen",
-  kProductScreen: "ProductScreen",
-  kCartScreen: "CartScreen",
-  kOrderMasterScreen: "OrderMasterScreen",
+    //Screen Name Keys
+    kCategoryScreen: "CategoryScreen",
+    kProductScreen: "ProductScreen",
+    kCartScreen: "CartScreen",
+    kOrderMasterScreen: "OrderMasterScreen",
 
-  /// Common API request parameters
-  deviceTypeiPhone: "IPHONE",
-  deviceTypeAndroid: "ANDROID",
-  notifyId: "0123456789",
-  timeZone: "Asia/Riyadh",
+    /// Common API request parameters
+    deviceTypeiPhone: "IPHONE",
+    deviceTypeAndroid: "ANDROID",
+    notifyId: "0123456789",
+    timeZone: "Asia/Riyadh",
 
-  APIConfirmationTypeRegister: "Register",
-  APIConfirmationTypeForgotPassword: "Forgot Password",
-  APIConfirmationTypeAddress: "Address Conformation",
+    APIConfirmationTypeRegister: "Register",
+    APIConfirmationTypeForgotPassword: "Forgot Password",
+    APIConfirmationTypeAddress: "Address Conformation",
 
-  /// Rest API details
-  // Base URL
-  baseURL: "http://192.168.0.3/megathylaravel/public/api/v1/", // Jay Kaneriya
-  // baseURL: "http://192.168.0.11/Megathy/MegathyLaravel/public/api/v1/", // BharatBhai
-  // baseURL: "http://192.168.0.2/MegathyLaravel/public/api/v1/", //Chintan Adatiya
+    /// Rest API details
+    // Base URL
+    baseURL: "http://192.168.0.3/megathylaravel/public/api/v1/", // Jay Kaneriya
+    // baseURL: "http://192.168.0.11/Megathy/MegathyLaravel/public/api/v1/", // BharatBhai
+    // baseURL: "http://192.168.0.2/MegathyLaravel/public/api/v1/", //Chintan Adatiya
 
-  /// End Points
-  // Login/Signup
-  login: "userLogin",
-  register: "registerUser",
-  forgotPassword: "requestForgotPassword",
-  verifyFBId: "verifyfacebookId",
-  getCity: "getCity",
-  getArea: "getArea",
-  getStore: "getStore",
-  setStore: "setStore",
-  verifyPhoneCode: "verifyPhoneCode",
-  requestVerifyPhones: "requestVerifyPhones",
-  updatePassword: "updatePassword",
-  
+    /// End Points
+    // Login/Signup
+    APILogin: "userLogin",
+    APIRegister: "registerUser",
+    APIForgotPassword: "requestForgotPassword",
+    APIVerifyFBId: "verifyfacebookId",
+    APIGetCity: "getCity",
+    APIGetArea: "getArea",
+    APIGetStore: "getStore",
+    APISetStore: "setStore",
+    APIVerifyPhoneCode: "verifyPhoneCode",
+    APIRequestVerifyPhones: "requestVerifyPhones",
+    APIUpdatePassword: "updatePassword",
 
-  /// Menu Screens
-  getCategory: "getCategory",
-  getSubCategory: "getSubCategory",
-  getBanners: "banners",
-  getProductList: "getProduct",
-  getStoreTimeZone: "getStoreTimeZone",
-  address: "address",
-  
-  storeId:
-    "&storeId=" +
-    (global.currentStore === undefined || global.currentStore === undefined)
-      ? ""
-      : global.currentStore.storeId,
+    /// Menu Screens
+    APIGetCategory: "getCategory",
+    APIGetSubCategory: "getSubCategory",
+    APIGetBanners: "banners",
+    APIGetProductList: "getProduct",
+    APIGetStoreTimeZone: "getStoreTimeZone",
+    GetAddress: "address",
+    DeleteAddress: "address",
+    APIGetOrderTimeSession: "getOrderTimeSession",
 
-  /// Colors
-  themeColor: "#CF2526",
-  prodCategoryBGColor: "#EFEDE9",
-  buttonDisableColor: "#939393",
-  darkGrayBGColor: "#D4D4D4",
+    /// Colors
+    themeColor: "#CF2526",
+    prodCategoryBGColor: "#EFEDE9",
+    buttonDisableColor: "#939393",
+    darkGrayBGColor: "#D4D4D4",
 
-  /// Font Family
-  themeFont: "Ebrima",
+    /// Font Family
+    themeFont: "Ebrima",
 
-  //Product Key
-  kProductDiscountActive:"Active",
-  kProductDiscountInactive:"Inactive",
-  kProductDiscountType:"fixed",
-  kProductDiscountPercentage:"percentage",
+    //Product Key
+    kProductDiscountActive: "Active",
+    kProductDiscountInactive: "Inactive",
+    kProductDiscountType: "fixed",
+    kProductDiscountPercentage: "percentage",
 };
 
 /*
 Network Utility API Call Template
 
-    this.state = {
-        visible: false,
-    };
-
-    // Show Loading View
-    this.setState({ visible: true });
-
-    networkUtility.postRequest(constant.forgotPassword, forgotPasswordParameters).then(
+    networkUtility.postRequest(constant.APIForgotPassword, forgotPasswordParameters).then(
         result => {
             // Hide Loading View
             this.setState({ visible: false });
@@ -118,15 +107,13 @@ Network Utility API Call Template
             constants.debugLog("\nError Message: " + error.message);
             if (error.status != 500) {
                 if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
-                    alert(error.data["messageAr"]);
+                    CommonUtilities.showAlert(error.data["messageAr"], false);
                 } else {
-                    setTimeout(() => {
-                        alert(error.data["message"]);
-                    }, 200);
+                    CommonUtilities.showAlert(error.data["message"], false);
                 }
             } else {
                 constants.debugLog("Internal Server Error: " + error.data);
-                alert("Something went wrong, plese try again");
+                CommonUtilities.showAlert("Opps! something went wrong");
             }
         }
     );
