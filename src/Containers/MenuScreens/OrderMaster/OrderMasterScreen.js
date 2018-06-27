@@ -11,13 +11,8 @@ import {
   View,
   Image,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  Alert,
   AppState,
-  SafeAreaView,
-  FlatList,
-  AsyncStorage,
-  Dimensions
+  SafeAreaView
 } from "react-native";
 
 // Redux
@@ -28,6 +23,7 @@ import * as actions from "../../../AppRedux/Actions/actions";
 // Common file
 import CommonStyles from "../../../Helper/CommonStyle";
 import * as constant from "../../../Helper/Constants";
+import * as commonUtility from "../../../Helper/CommonUtilities";
 
 // Lib
 import Icon from "react-native-vector-icons/EvilIcons";
@@ -151,7 +147,6 @@ class OrderMasterScreen extends Component {
   });
 
   // App Life Cycle Methods
-  @autobind
   componentDidMount() {
     console.log("App State: ", AppState.currentState);
     this._getStoreTime();
@@ -167,39 +162,27 @@ class OrderMasterScreen extends Component {
   // Mics Methods
 
   _timerForStoreCurrentTime = () => {
+    let getStoreTimeInSecond = this.state.storeCurrentTimeInSeconds;
     if (this.state.storeCurrentTimeInSeconds === "") {
-      this.state.storeCurrentTimeInSeconds =
-        new Date(this.state.storeTime).getTime() + 1000; // Get Time in ms
+      getStoreTimeInSecond = new Date(this.state.storeTime).getTime(); // Get Time in ms
     }
-    this.setState({
-      storeCurrentTimeInSeconds: this.state.storeCurrentTimeInSeconds + 1000
-    });
-    // this.storeCurrentTimeInSeconds = this.storeCurrentTimeInSeconds + 1000;
-    // console.log("Get storeTime TimeStemp :======> ", this.storeCurrentTimeInSeconds);
-
-    let dateFromTimeStamp = new Date(
-      this.state.storeCurrentTimeInSeconds
-    ).toString("hh:mm:ss A");
-    // let dateFromTimeStamp = Moment(this.state.storeCurrentTimeInSeconds).format(
-    //   "hh:mm:ss A"
-    // );
+    getStoreTimeInSecond = getStoreTimeInSecond + 1000;
+    let dateFromTimeStamp = new Date(getStoreTimeInSecond).toLocaleTimeString(
+      "en-us"
+    );
+    console.log("Get TimeStemp :======> ", getStoreTimeInSecond);
     console.log(
       "Get storeTime before convert from TimeStemp :======> ",
       dateFromTimeStamp
     );
-    // console.log(
-    //   "Get storeTime after convert from TimeStemp :======> ",
-    //   dateFromTimeStamp
-    // );
-    this.setState({ storeCurrentTime: dateFromTimeStamp });
-    // this.storeCurrentTime = dateFromTimeStamp;
+    this.setState({
+      storeCurrentTime: dateFromTimeStamp,
+      storeCurrentTimeInSeconds: getStoreTimeInSecond
+    });
   };
 
   _getStoreTime = () => {
     console.log("Call get storeTime .....");
-
-    // Show Loading View
-    // this.setState({ visible: true });
 
     let storeTime = networkUtility.getRequest(constant.getStoreTimeZone).then(
       result => {
@@ -207,17 +190,15 @@ class OrderMasterScreen extends Component {
         console.log("Get storeTime :======> ", responseData);
 
         let storeCrtTime = responseData.storeTime;
-        storeCrtTime = new Date(this.state.storeCrtTime).toString("hh:mm:ss A");
-        // storeCrtTime = Moment(storeCrtTime).format("hh:mm:ss A");
+        storeCrtTime = new Date(storeCrtTime).toLocaleTimeString("en-us");
         console.log("Get storeTime after convert :======> ", storeCrtTime);
 
         // Hide Loading View
         this.setState({
           visible: false,
-          storeTime: responseData.storeTime
+          storeTime: responseData.storeTime,
+          storeCurrentTime: storeCrtTime
         });
-        this.setState({ storeCurrentTime: storeCrtTime });
-        // this.storeCurrentTime = storeCrtTime;
         this.storeCrntTimeInterval = setInterval(
           this._timerForStoreCurrentTime,
           1000
@@ -235,19 +216,13 @@ class OrderMasterScreen extends Component {
             global.currentAppLanguage === constant.languageArabic &&
             error.data["messageAr"] != undefined
           ) {
-            setTimeout(() => {
-              alert(error.data["messageAr"]);
-            }, 200);
+            commonUtility.showAlert(error.data["messageAr"], false, "Megathy");
           } else {
-            setTimeout(() => {
-              alert(error.data["message"]);
-            }, 200);
+            commonUtility.showAlert(error.data["message"], false, "Megathy");
           }
         } else {
           constants.debugLog("Internal Server Error: " + error.data);
-          setTimeout(() => {
-            alert("Something went wrong, plese try again");
-          }, 200);
+          commonUtility.showAlert("Opps! something went wrong");
         }
       }
     );
@@ -284,7 +259,6 @@ class OrderMasterScreen extends Component {
         <SafeAreaView
           style={{
             flex: 1
-            // backgroundColor: "yellow"
           }}
         >
           <View style={OrderMasterStyles.orderActionView}>
@@ -364,9 +338,7 @@ class OrderMasterScreen extends Component {
               onMomentumScrollEnd={(e, state, context) => {}}
               pagingEnabled={true}
             >
-              <View
-                style={OrderMasterStyles.addressListContainerStyle}
-              >
+              <View style={OrderMasterStyles.addressListContainerStyle}>
                 <AddressListScreen />
               </View>
               <View

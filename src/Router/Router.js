@@ -21,6 +21,7 @@ import OrderMasterScreen from "../Containers/MenuScreens/OrderMaster/OrderMaster
 
 import AddressListScreen from "../Containers/MenuScreens/DeliveryDetails/AddressList/AddressListScreen";
 import AddAddressScreen from "../Containers/MenuScreens/DeliveryDetails/AddAddress/AddAddressScreen";
+import SelectTimeScreen from "../Containers/MenuScreens/DeliveryDetails/SelectTime/SelectTimeScreen";
 import SecondScreen from "../Containers/MenuScreens/SecondScreen";
 
 // Constant
@@ -55,6 +56,7 @@ const DeliveryDetailsNav = StackNavigator(
     {
         AddressListScreen: { screen: AddressListScreen },
         AddAddressScreen: { screen: AddAddressScreen },
+        SelectTimeScreen: { screen: SelectTimeScreen },
     },
     {
         headerMode: "screen",
@@ -76,7 +78,7 @@ const AppDrawer = DrawerNavigator(
     {
         CategoryScreen: { screen: CategoryScreenNav },
         FirstScreen: { screen: DeliveryDetailsNav },
-        SecondScreen: { screen: SecondScreenNav },
+        SecondScreen: { screen: SelectTimeScreen },
     },
     {
         drawerWidth: 300,
