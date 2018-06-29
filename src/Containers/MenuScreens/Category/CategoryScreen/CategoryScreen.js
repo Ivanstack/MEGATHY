@@ -30,7 +30,7 @@ import * as actions from "../../../../AppRedux/Actions/actions";
 
 // Common file
 import CommonStyles from "../../../../Helper/CommonStyle";
-import constant from "../../../../Helper/Constants";
+import * as constant from "../../../../Helper/Constants";
 import * as cartFunc from "../../../../Helper/Functions/Cart";
 
 // Components Style
