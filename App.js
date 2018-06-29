@@ -14,85 +14,101 @@ import store from "./src/AppRedux/Reducers/index";
 // Navigation
 import Router from "./src/Router/Router";
 import LoginRouter from "./src/Router/LoginRouter";
+import PostLoginRouter from "./src/Router/PostLoginRouter";
 
 // Constant
-import Constants from "./src/Helper/Constants";
+import * as Constants from "./src/Helper/Constants";
 
 // Common Utilities
-import utilities, { setInitialGlobalValues } from "./src/Helper/CommonUtilities";
+import * as CommonUtilities from "./src/Helper/CommonUtilities";
 
 export default class App extends Component {
     constructor(props) {
         super(props);
-        
+
         // Set Statusbar Light Content for iOS
         StatusBar.setBarStyle("light-content", true);
 
         // Global Variables (App wise scope)
-        setInitialGlobalValues();
+        CommonUtilities.setInitialGlobalValues();
 
         // States
         this.state = {
             isLogin: null,
+            isStoreSet: false,
         };
 
         context = this;
-        Constants.emitter.addListener(Constants.LOGOUT_EVENT, function(x) {
-            Constants.debugLog("Logout: " + x);
-            context.setState({ isLogin: false });
+        Constants.emitter.addListener(Constants.logoutListener, () => {
+            CommonUtilities.logout();
+            context.setState({ isLogin: false, isStoreSet: false });
         });
 
         Constants.emitter.addListener(Constants.loginListener, () => {
             context.setState({ isLogin: true });
-            try {
-                AsyncStorage.setItem(isLogin, "true");
-            } catch (error) {
-                // Error saving data
-            }
+        });
+
+        Constants.emitter.addListener(Constants.setStoreListener, () => {
+            context.setState({ isStoreSet: true });
         });
     }
 
     // Life Cycle
     componentWillMount() {
-        AsyncStorage.getItem(Constants.isLogin).then(value => {
-            if (value === "true") {
+        setTimeout(() => {
+            if (global.currentUser === null) {
+                this.setState({
+                    isLogin: false,
+                    isStoreSet: false,
+                });
+            } else if (global.currentStore === null) {
                 this.setState({
                     isLogin: true,
+                    isStoreSet: false,
                 });
             } else {
                 this.setState({
-                    isLogin: false,
+                    isLogin: true,
+                    isStoreSet: true,
                 });
             }
-        });
+        }, 200); // Time to display Splash Screen
     }
 
-    onLogin = () => {
-        this.setState({
-            isLogin: true,
-        });
-    };
+    // onLogin = () => {
+    //     this.setState({
+    //         isLogin: true,
+    //     });
+    // };
 
-    onLogout = () => {
-        this.setState({
-            isLogin: false,
-        });
-    };
+    // onLogout = () => {
+    //     this.setState({
+    //         isLogin: false,
+    //     });
+    // };
 
     render() {
-        if (this.state.isLogin) {
+        if (this.state.isStoreSet) {
             return (
                 <Provider store={store}>
-                    <Router onPressLogout={this.onLogout} />
+                    <Router />
+                    {/* <Router onPressLogout={this.onLogout} /> */}
                 </Provider>
             );
-        } else if (!this.state.isLogin) {
+        } else if (this.state.isLogin) {
             return (
                 <Provider store={store}>
-                    <LoginRouter onPressLogin={this.onLogin} />
+                    <PostLoginRouter />
+                    {/* <LoginRouter onPressLogin={this.onLogin} /> */}
                 </Provider>
             );
         } else {
+            return (
+                <Provider store={store}>
+                    <LoginRouter />
+                    {/* <LoginRouter onPressLogin={this.onLogin} /> */}
+                </Provider>
+            );
         }
 
         // return (

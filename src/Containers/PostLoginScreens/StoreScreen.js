@@ -18,7 +18,7 @@ import {
 } from "react-native";
 
 // Constants
-import constant from "../../Helper/Constants";
+import * as constant from "../../Helper/Constants";
 
 // Redux
 import { bindActionCreators } from "redux";
@@ -37,6 +37,8 @@ import baseLocal from "../../Resources/Localization/baseLocalization";
 // Common Utilities
 import * as CommonUtilities from "../../Helper/CommonUtilities";
 
+var selectedCity = null;
+var selectedArea = null;
 class StoreScreen extends Component {
     constructor(props) {
         super(props);
@@ -47,17 +49,22 @@ class StoreScreen extends Component {
         this.onChangeStore = this.onChangeStore.bind(this);
 
         this.state = {
-            arrStores: [],
+            // arrStores: [],
             selectedStoreName: "",
             selectedStoreIndex: -1,
-            visible: false,
-            selectedCity: null,
-            selectedArea: null,
         };
     }
 
     componentWillMount() {
-        constant.debugLog("This is example of debug log");
+        selectedCity = this.props.navigation.getParam("selectedCity", "");
+        selectedArea = this.props.navigation.getParam("selectedArea", "");
+        var storeParameters = {
+            cityId: selectedCity.PkId,
+            areaId: selectedArea.PkId,
+        };
+        this.props.getStores(storeParameters);
+
+        /*
         let selectedCityTemp = this.props.navigation.getParam("selectedCity", "noCity");
         let selectedAreaTemp = this.props.navigation.getParam("selectedArea", "noArea");
         if (selectedCityTemp != "noCity" && selectedAreaTemp != "noArea") {
@@ -110,6 +117,26 @@ class StoreScreen extends Component {
                 }
             );
         }
+        */
+    }
+
+    componentWillReceiveProps(newProps) {
+        if (newProps.isGetStoreSuccess === true && newProps.arrStores.length > 0) {
+            this.setState({
+                selectedStoreName: newProps.arrStores[0].storeName,
+                selectedStoreIndex: 0,
+            });
+        } else if (newProps.isSetStoreSuccess === true && newProps.arrStores.length > 0) {
+            AsyncStorage.setItem(
+                constant.keyCurrentStore,
+                JSON.stringify(this.props.arrStores[this.state.selectedStoreIndex])
+            ).then(() => {
+                AsyncStorage.getItem(constant.keyCurrentStore).then(val => {
+                    global.currentStore = JSON.parse(val);
+                    constant.emitter.emit(constant.setStoreListener);
+                });
+            });
+        }
     }
 
     onPressBack() {
@@ -119,9 +146,12 @@ class StoreScreen extends Component {
     onPressOK() {
         var setStoreParameters = {
             _method: "put",
-            storeId: this.state.arrStores[this.state.selectedStoreIndex].storeId,
+            storeId: this.props.arrStores[this.state.selectedStoreIndex].storeId,
         };
 
+        this.props.setStores(setStoreParameters);
+
+        /*
         networkUtility.postRequest(constant.APISetStore, setStoreParameters).then(
             result => {
                 // Hide Loading View
@@ -155,6 +185,7 @@ class StoreScreen extends Component {
                 }
             }
         );
+        */
     }
 
     onChangeStore(newStore, newIndex) {
@@ -171,7 +202,7 @@ class StoreScreen extends Component {
 
     render() {
         let { errors = {}, secureTextEntry, email, password } = this.state;
-        let storeItems = this.state.arrStores.map((value, index) => {
+        let storeItems = this.props.arrStores.map((value, index) => {
             let storeNameTemp = global.currentAppLanguage === "en" ? value.storeName : value.storeNameAr;
             return <Picker.Item key={index} value={storeNameTemp} label={storeNameTemp} />;
         });
@@ -180,7 +211,7 @@ class StoreScreen extends Component {
             // Main View (Container)
             <View style={styles.container}>
                 <Spinner
-                    visible={this.state.visible}
+                    visible={this.props.isLoading}
                     cancelable={true}
                     // textContent={"Please wait..."}
                     textStyle={{ color: "#FFF" }}
@@ -194,10 +225,10 @@ class StoreScreen extends Component {
                         marginTop: 10,
                     }}
                 >
-                    {this.state.selectedArea != null
+                    {selectedArea != null
                         ? global.currentAppLanguage === "en"
-                            ? this.state.selectedArea.areaName
-                            : this.state.selectedArea.areaNameAr
+                            ? selectedArea.areaName
+                            : selectedArea.areaNameAr
                         : ""}
                 </Text>
                 {/* // Select Store Text */}
@@ -243,12 +274,27 @@ class StoreScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        login: state.dataReducer.login,
+        isLoading: state.store.isLoading,
+        isGetStoreSuccess: state.store.isGetStoreSuccess,
+        isSetStoreSuccess: state.store.isSetStoreSuccess,
+        arrStores: state.store.arrStores,
+        error: state.store.error,
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(actions, dispatch);
+    return {
+        getStores: parameters =>
+            dispatch({
+                type: constant.actions.getStoreRequest,
+                payload: { endPoint: constant.APIGetStore, parameters: parameters },
+            }),
+        setStores: parameters =>
+            dispatch({
+                type: constant.actions.setStoreRequest,
+                payload: { endPoint: constant.APISetStore, parameters: parameters },
+            }),
+    };
 }
 
 export default connect(

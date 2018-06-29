@@ -8,9 +8,10 @@ module.exports = {
     emitter: new EventEmitter(),
     isLogin: "false",
     loginListener: "loginListener",
+    logoutListener: "logoutListener",
+    setStoreListener: "setStoreListener",
     languageEnglish: "en",
     languageArabic: "ar",
-    LOGOUT_EVENT: "logout",
     DeviceInfo: require("react-native-device-info"),
 
     /// Common Functions
@@ -78,7 +79,9 @@ module.exports = {
     prodCategoryBGColor: "#EFEDE9",
     buttonDisableColor: "#939393",
     darkGrayBGColor: "#D4D4D4",
-
+    darkGrayBGColor: "#D4D4D4",
+    themeGreenColor: "#3B7F38",
+    themeYellowColor: "#FAC818",
     /// Font Family
     themeFont: "Ebrima",
 
@@ -87,6 +90,70 @@ module.exports = {
     kProductDiscountInactive: "Inactive",
     kProductDiscountType: "fixed",
     kProductDiscountPercentage: "percentage",
+
+    //Product Key
+    kProductDiscountActive: "Active",
+    kProductDiscountInactive: "Inactive",
+    kProductDiscountType: "fixed",
+    kProductDiscountPercentage: "percentage",
+
+    actions: {
+        /*
+        Redux Action Keys Start
+        Key formation:
+            <API_Name> + <Request|Success|Failure>
+    */
+        // Login Screen
+        FBLoginRequest: "FBLoginRequest",
+        loginRequest: "loginRequest",
+        loginSuccess: "loginSuccess",
+        loginFailure: "loginFailure",
+
+        // Sign Up Screen
+        signUpRequest: "signUpRequest",
+        signUpSuccess: "signUpSuccess",
+        signUpFailure: "signUpFailure",
+
+        // Forgot Password Screen
+        forgotPasswordRequest: "forgotPasswordRequest",
+        forgotPasswordSuccess: "forgotPasswordSuccess",
+        forgotPasswordFailure: "forgotPasswordFailure",
+
+        // Verify Code Screen
+        verifyPhoneRequest: "verifyPhoneRequest",
+        verifyPhoneSuccess: "verifyPhoneSuccess",
+        verifyPhoneFailure: "verifyPhoneFailure",
+        verifyCodeRequest: "verifyCodeRequest",
+        verifyCodeSuccess: "verifyCodeSuccess",
+        verifyCodeFailure: "verifyCodeFailure",
+
+        // Reset Password Screen
+        resetPasswordRequest: "resetPasswordRequest",
+        resetPasswordSuccess: "resetPasswordSuccess",
+        resetPasswordFailure: "resetPasswordFailure",
+
+        // City Screen
+        getCityRequest: "getCityRequest",
+        getCitySuccess: "getCitySuccess",
+        getCityFailure: "getCityFailure",
+
+        // Area Screen
+        getAreaRequest: "getAreaRequest",
+        getAreaSuccess: "getAreaSuccess",
+        getAreaFailure: "getAreaFailure",
+
+        // Store Screen
+        getStoreRequest: "getStoreRequest",
+        getStoreSuccess: "getStoreSuccess",
+        getStoreFailure: "getStoreFailure",
+        setStoreRequest: "setStoreRequest",
+        setStoreSuccess: "setStoreSuccess",
+        setStoreFailure: "setStoreFailure",
+    },
+
+    /*
+        Redux Action Keys End
+    */
 };
 
 /*

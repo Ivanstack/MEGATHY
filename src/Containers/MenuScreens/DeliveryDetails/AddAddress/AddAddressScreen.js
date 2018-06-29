@@ -19,15 +19,12 @@ import {
 } from "react-native";
 
 import AppTextField from "../../../../Components/AppTextField";
-import constant from "../../../../Helper/Constants";
+import * as constant from "../../../../Helper/Constants";
 
 // Redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as actions from "../../../../AppRedux/Actions/actions";
-
-// Device Info
-var DeviceInfo = require("react-native-device-info");
 
 // Common Utilities
 import * as CommonUtilities from "../../../../Helper/CommonUtilities";
@@ -157,8 +154,8 @@ class AddAddressScreen extends Component {
     //     deviceType: Platform.OS === "ios" ? constant.deviceTypeiPhone : constant.deviceTypeAndroid,
     //     notifyId: constant.notifyId,
     //     timeZone: constant.timeZone,
-    //     vendorId: DeviceInfo.getUniqueID(),
-    //     appVersion: DeviceInfo.appVersion === undefined ? "0.0" : DeviceInfo.appVersion,
+    //     vendorId: constant.DeviceInfo.getUniqueID(),
+    //     appVersion: constant.DeviceInfo.getVersion() === undefined ? "0.0" : constant.DeviceInfo.getVersion(),
     // };
 
     // Show Loading View

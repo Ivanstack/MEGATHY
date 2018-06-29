@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -12,6 +13,12 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* MegathyRNTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* MegathyRNTests.m */; };
+		014A7CB820E63B6400CC40A5 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 014A7CB620E63B6400CC40A5 /* LaunchScreen.xib */; };
+		014A7CBF20E63CD600CC40A5 /* Default-375w-812h.png in Resources */ = {isa = PBXBuildFile; fileRef = 014A7CBA20E63CD600CC40A5 /* Default-375w-812h.png */; };
+		014A7CC020E63CD600CC40A5 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 014A7CBB20E63CD600CC40A5 /* Default-568h@2x.png */; };
+		014A7CC120E63CD600CC40A5 /* Default-667h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 014A7CBC20E63CD600CC40A5 /* Default-667h@2x.png */; };
+		014A7CC220E63CD600CC40A5 /* Default-Portrait-736h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 014A7CBD20E63CD600CC40A5 /* Default-Portrait-736h@3x.png */; };
+		014A7CC320E63CD600CC40A5 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 014A7CBE20E63CD600CC40A5 /* Default@2x.png */; };
 		016522BB20D018630072E8CA /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 016522B720D018600072E8CA /* FBSDKLoginKit.framework */; };
 		016522BC20D018630072E8CA /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 016522B820D018610072E8CA /* FBSDKCoreKit.framework */; };
 		016522BD20D018630072E8CA /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 016522B920D018620072E8CA /* FBSDKShareKit.framework */; };
@@ -21,7 +28,6 @@
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
@@ -407,6 +413,12 @@
 		00E356EE1AD99517003FC87E /* MegathyRNTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MegathyRNTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* MegathyRNTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MegathyRNTests.m; sourceTree = "<group>"; };
+		014A7CB720E63B6400CC40A5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MegathyRN/Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		014A7CBA20E63CD600CC40A5 /* Default-375w-812h.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-375w-812h.png"; sourceTree = "<group>"; };
+		014A7CBB20E63CD600CC40A5 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		014A7CBC20E63CD600CC40A5 /* Default-667h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-667h@2x.png"; sourceTree = "<group>"; };
+		014A7CBD20E63CD600CC40A5 /* Default-Portrait-736h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait-736h@3x.png"; sourceTree = "<group>"; };
+		014A7CBE20E63CD600CC40A5 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		016522B720D018600072E8CA /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		016522B820D018610072E8CA /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		016522B920D018620072E8CA /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
@@ -422,7 +434,6 @@
 		13B07F961A680F5B00A75B9A /* MegathyRN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MegathyRN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = MegathyRN/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = MegathyRN/AppDelegate.m; sourceTree = "<group>"; };
-		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MegathyRN/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MegathyRN/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = MegathyRN/main.m; sourceTree = "<group>"; };
@@ -584,6 +595,19 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		014A7CB920E63CD600CC40A5 /* Splash */ = {
+			isa = PBXGroup;
+			children = (
+				014A7CBA20E63CD600CC40A5 /* Default-375w-812h.png */,
+				014A7CBB20E63CD600CC40A5 /* Default-568h@2x.png */,
+				014A7CBC20E63CD600CC40A5 /* Default-667h@2x.png */,
+				014A7CBD20E63CD600CC40A5 /* Default-Portrait-736h@3x.png */,
+				014A7CBE20E63CD600CC40A5 /* Default@2x.png */,
+			);
+			name = Splash;
+			path = MegathyRN/Splash;
+			sourceTree = "<group>";
+		};
 		016522A920D015F30072E8CA /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -684,12 +708,12 @@
 		13B07FAE1A68108700A75B9A /* MegathyRN */ = {
 			isa = PBXGroup;
 			children = (
+				014A7CB620E63B6400CC40A5 /* LaunchScreen.xib */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
 			name = MegathyRN;
@@ -747,6 +771,7 @@
 		7BFCD2DE65884477B557942F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				014A7CB920E63CD600CC40A5 /* Splash */,
 				018A6A5A20CA938B00140A58 /* IQKeyboardManager.bundle */,
 				C20834BC77304323A732DA63 /* ebrima.ttf */,
 				2DFD385689534B9E847D5FDE /* ebrimabd.ttf */,
@@ -1366,17 +1391,22 @@
 			files = (
 				018A6A5B20CA938B00140A58 /* IQKeyboardManager.bundle in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				DE0AFC204B3A4A48B4B5DF21 /* ebrima.ttf in Resources */,
 				B32D67710BF14EE99234FC13 /* ebrimabd.ttf in Resources */,
 				CFFCCF0E4CDA4ABDB2D73253 /* Entypo.ttf in Resources */,
 				DDD896BA3B33457891274466 /* EvilIcons.ttf in Resources */,
+				014A7CC220E63CD600CC40A5 /* Default-Portrait-736h@3x.png in Resources */,
 				E03AA3C09AA94EB383EA29F8 /* Feather.ttf in Resources */,
+				014A7CC120E63CD600CC40A5 /* Default-667h@2x.png in Resources */,
+				014A7CBF20E63CD600CC40A5 /* Default-375w-812h.png in Resources */,
 				F5C6331EA97A407090A454BE /* FontAwesome.ttf in Resources */,
 				84E9D35A3D97488A8DD49649 /* Foundation.ttf in Resources */,
+				014A7CC320E63CD600CC40A5 /* Default@2x.png in Resources */,
 				40932687993B4EB08391ECBF /* Ionicons.ttf in Resources */,
+				014A7CC020E63CD600CC40A5 /* Default-568h@2x.png in Resources */,
 				A981E0A4A5C04FB6AA383CE9 /* MaterialCommunityIcons.ttf in Resources */,
 				636483436AC14FC691AEF8CA /* MaterialIcons.ttf in Resources */,
+				014A7CB820E63B6400CC40A5 /* LaunchScreen.xib in Resources */,
 				D9A8E0CE754644E09C79D3A4 /* Octicons.ttf in Resources */,
 				AD51B6B252B64638B8E7B7A4 /* SimpleLineIcons.ttf in Resources */,
 				EDCD6B1DFA9F4C65A62458BA /* Zocial.ttf in Resources */,
@@ -1482,13 +1512,12 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		13B07FB11A68108700A75B9A /* LaunchScreen.xib */ = {
+		014A7CB620E63B6400CC40A5 /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				13B07FB21A68108700A75B9A /* Base */,
+				014A7CB720E63B6400CC40A5 /* Base */,
 			);
 			name = LaunchScreen.xib;
-			path = MegathyRN;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

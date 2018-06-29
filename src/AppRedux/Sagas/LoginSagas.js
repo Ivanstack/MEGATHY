@@ -1,6 +1,6 @@
 import { AsyncStorage, Platform } from "react-native";
 import { takeLatest, takeEvery, call, put } from "redux-saga/effects";
-import constant from "../../Helper/Constants";
+import * as constant from "../../Helper/Constants";
 import * as networkUtility from "../../Helper/NetworkUtility";
 import * as CommonUtilities from "../../Helper/CommonUtilities";
 
@@ -12,18 +12,18 @@ export function* LoginScreenCalls(action) {
     if (action.payload.endPoint === constant.APILogin) {
         try {
             const response = yield call(loginWithEmail, action.payload);
-            yield put({ type: "LOGIN_CALL_SUCCESS", response });
+            yield put({ type: constant.actions.loginSuccess, response });
         } catch (error) {
             constant.debugLog("Error: " + JSON.stringify(error));
-            yield put({ type: "LOGIN_CALL_FAILURE", error });
+            yield put({ type: constant.actions.loginFailure, error });
         }
     } else if (action.payload.endPoint === constant.APIVerifyFBId) {
         try {
             const response = yield call(loginWithFB);
-            yield put({ type: "LOGIN_CALL_SUCCESS", response });
+            yield put({ type: constant.actions.loginSuccess, response });
         } catch (error) {
             constant.debugLog("Error: " + JSON.stringify(error));
-            yield put({ type: "LOGIN_CALL_FAILURE", error });
+            yield put({ type: constant.actions.loginFailure, error });
         }
     }
 }
@@ -101,7 +101,7 @@ checkFBIdExistance = (error, fbResult) => {
             deviceType: Platform.OS === "ios" ? constant.deviceTypeiPhone : constant.deviceTypeAndroid,
             notifyId: constant.notifyId,
             timeZone: constant.timeZone,
-            appVersion: constant.DeviceInfo.appVersion === undefined ? "0.0" : constant.DeviceInfo.appVersion,
+            appVersion: constant.DeviceInfo.getVersion() === undefined ? "0.0" : constant.DeviceInfo.getVersion(),
         };
 
         return networkUtility.postRequest(constant.APIVerifyFBId, checkFBIdParameters).then(
@@ -114,7 +114,6 @@ checkFBIdExistance = (error, fbResult) => {
                     AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data.data.settingData));
                     AsyncStorage.removeItem(constant.keyCurrentStore);
                     constant.debugLog("FB User Login Success");
-                    this.props.navigation.navigate("CityScreen");
                     return result;
                 }
             },

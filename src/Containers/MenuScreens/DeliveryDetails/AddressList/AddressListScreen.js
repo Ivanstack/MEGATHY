@@ -17,15 +17,12 @@ import {
     Alert,
 } from "react-native";
 
-import constant from "../../../../Helper/Constants";
+import * as constant from "../../../../Helper/Constants";
 
 // Redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as actions from "../../../../AppRedux/Actions/actions";
-
-// Device Info
-var DeviceInfo = require("react-native-device-info");
 
 // Common Utilities
 import * as CommonUtilities from "../../../../Helper/CommonUtilities";
@@ -334,7 +331,7 @@ class AddressListScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        firstComp: state.dataReducer.firstComp,
+        // firstComp: state.dataReducer.firstComp,
     };
 }
 

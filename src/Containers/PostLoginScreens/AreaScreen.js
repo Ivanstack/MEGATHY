@@ -8,7 +8,7 @@ import React, { Component } from "react";
 import { Platform, StyleSheet, Text, View, TouchableOpacity, ScrollView, Dimensions, Picker } from "react-native";
 
 // Constants
-import constant from "../../Helper/Constants";
+import * as constant from "../../Helper/Constants";
 
 // Redux
 import { bindActionCreators } from "redux";
@@ -27,6 +27,7 @@ import baseLocal from "../../Resources/Localization/baseLocalization";
 // Common Utilities
 import * as CommonUtilities from "../../Helper/CommonUtilities";
 
+var selectedCity = null
 class AreaScreen extends Component {
     constructor(props) {
         super(props);
@@ -37,63 +38,27 @@ class AreaScreen extends Component {
         this.onChangeArea = this.onChangeArea.bind(this);
 
         this.state = {
-            arrAreas: [],
+            // arrAreas: [],
             selectedAreaName: "",
             selectedAreaIndex: -1,
             visible: false,
-            selectedCity: null,
         };
     }
 
     componentWillMount() {
-        let selectedCityTemp = this.props.navigation.getParam("selectedCity", "noCity");
-        if (selectedCityTemp != "noCity") {
-            this.setState(
-                {
-                    selectedCity: selectedCityTemp,
-                },
-                () => {
-                    var areaParameters = {
-                        cityId: this.state.selectedCity.PkId,
-                    };
+        selectedCity = this.props.navigation.getParam("selectedCity", "");
+        var areaParameters = {
+            cityId: selectedCity.PkId,
+        };
+        this.props.getAreas(areaParameters)
+    }
 
-                    // Show Loading View
-                    this.setState({ visible: true });
-                    networkUtility.getRequest(constant.APIGetArea, areaParameters).then(
-                        result => {
-                            // Hide Loading View
-                            this.setState({ visible: false });
-
-                            this.setState({
-                                selectedAreaName: result.data.data.length > 0 ? result.data.data[0].areaName : "",
-                                selectedAreaIndex: result.data.data.length > 0 ? 0 : -1,
-                                arrAreas: result.data.data,
-                            });
-                            // HTTP Status Code => {result.status}
-                        },
-                        error => {
-                            // Hide Loading View
-                            this.setState({ visible: false });
-
-                            constant.debugLog("Status Code: " + error.status);
-                            constant.debugLog("Error Message: " + error.message);
-                            if (error.status != 500) {
-                                if (
-                                    global.currentAppLanguage === constant.languageArabic &&
-                                    error.data["messageAr"] != undefined
-                                ) {
-                                    CommonUtilities.showAlert(error.data["messageAr"], false);
-                                } else {
-                                    CommonUtilities.showAlert(error.data["message"], false);
-                                }
-                            } else {
-                                constant.debugLog("Internal Server Error: " + error.data);
-                                CommonUtilities.showAlert("Opps! something went wrong");
-                            }
-                        }
-                    );
-                }
-            );
+    componentWillReceiveProps(newProps) {
+        if (newProps.isSuccess === true && newProps.arrAreas.length > 0) {
+            this.setState({
+                selectedAreaName: newProps.arrAreas[0].areaName,
+                selectedAreaIndex: 0,
+            });
         }
     }
 
@@ -103,8 +68,8 @@ class AreaScreen extends Component {
 
     onPressOK() {
         this.props.navigation.navigate("StoreScreen", {
-            selectedCity: this.state.selectedCity,
-            selectedArea: this.state.arrAreas[this.state.selectedAreaIndex],
+            selectedCity: selectedCity,
+            selectedArea: this.props.arrAreas[this.state.selectedAreaIndex],
         });
     }
 
@@ -122,7 +87,7 @@ class AreaScreen extends Component {
 
     render() {
         let { errors = {}, secureTextEntry, email, password } = this.state;
-        let areaItems = this.state.arrAreas.map((value, index) => {
+        let areaItems = this.props.arrAreas.map((value, index) => {
             let areaNameTemp = global.currentAppLanguage === "en" ? value.areaName : value.areaNameAr;
             return <Picker.Item key={index} value={areaNameTemp} label={areaNameTemp} />;
         });
@@ -145,10 +110,10 @@ class AreaScreen extends Component {
                         marginTop: 10,
                     }}
                 >
-                    {this.state.selectedCity != null
+                    {selectedCity != null
                         ? global.currentAppLanguage === "en"
-                            ? this.state.selectedCity.cityName
-                            : this.state.selectedCity.cityNameAr
+                            ? selectedCity.cityName
+                            : selectedCity.cityNameAr
                         : ""}
                 </Text>
                 {/* // Select Area Text */}
@@ -194,12 +159,21 @@ class AreaScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        login: state.dataReducer.login,
+        isLoading: state.area.isLoading,
+        isSuccess: state.area.isSuccess,
+        arrAreas: state.area.arrAreas,
+        error: state.area.error,
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(actions, dispatch);
+    return {
+        getAreas: parameters =>
+            dispatch({
+                type: constant.actions.getAreaRequest,
+                payload: { endPoint: constant.APIGetArea, parameters: parameters },
+            }),
+    };
 }
 
 export default connect(

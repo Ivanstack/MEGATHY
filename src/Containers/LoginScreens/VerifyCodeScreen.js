@@ -19,15 +19,11 @@ import {
 } from "react-native";
 
 import AppTextField from "../../Components/AppTextField";
-import constant from "../../Helper/Constants";
+import * as constant from "../../Helper/Constants";
 
 // Redux
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as actions from "../../AppRedux/Actions/actions";
-
-// Device Info
-var DeviceInfo = require("react-native-device-info");
 
 // Network Utility
 import * as networkUtility from "../../Helper/NetworkUtility";
@@ -64,7 +60,6 @@ class VerifyCodeScreen extends Component {
 
         this.state = {
             code: "",
-            visible: false,
             timer: null,
             counter: initialCounterValue,
         };
@@ -77,6 +72,34 @@ class VerifyCodeScreen extends Component {
 
     componentWillUnmount() {
         clearInterval(this.state.timer);
+    }
+
+    componentWillReceiveProps(newProps) {
+        let result = newProps.result === undefined ? null : newProps.result;
+        if (newProps.isVPSuccess === true && result != null) {
+            if (result.status === 206) {
+                CommonUtilities.showAlert("This number is already verified");
+                this.props.navigation.goBack();
+            } else {
+                if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
+                    CommonUtilities.showAlert(result.data.messageAr, false);
+                } else {
+                    CommonUtilities.showAlert(result.data.message, false);
+                }
+            }
+        } else if (newProps.isVCSuccess === true && result != null) {
+            if (result.status === 200) {
+                this.props.navigation.navigate("ResetPasswordScreen", {
+                    registeredEmail: this.props.navigation.getParam("registeredEmail", ""),
+                });
+            } else {
+                if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
+                    CommonUtilities.showAlert(result.data.messageAr, false);
+                } else {
+                    CommonUtilities.showAlert(result.data.message, false);
+                }
+            }
+        }
     }
 
     changeTimeInterval() {
@@ -106,49 +129,12 @@ class VerifyCodeScreen extends Component {
 
         var verifyCodeParameters = {
             phone: forgotPasswordResponse.phone,
-            vendorId: DeviceInfo.getUniqueID(),
+            vendorId: constant.DeviceInfo.getUniqueID(),
             type: APIConfirmationType,
             code: this.state.code,
         };
 
-        // Show Loading View
-        this.setState({ visible: true });
-
-        networkUtility.postRequest(constant.APIVerifyPhoneCode, verifyCodeParameters).then(
-            result => {
-                // Hide Loading View
-                this.setState({ visible: false });
-
-                if (result.status === 200) {
-                    this.props.navigation.navigate("ResetPasswordScreen", {
-                        registeredEmail: registeredEmail,
-                    });
-                } else {
-                    if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
-                        CommonUtilities.showAlert(result.data.messageAr, false);
-                    } else {
-                        CommonUtilities.showAlert(result.data.message, false);
-                    }
-                }
-            },
-            error => {
-                // Hide Loading View
-                this.setState({ visible: false });
-
-                constant.debugLog("Status Code: " + error.status);
-                constant.debugLog("Error Message: " + error.message);
-                if (error.status != 500) {
-                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        CommonUtilities.showAlert(error.data["messageAr"], false);
-                    } else {
-                        CommonUtilities.showAlert(error.data["message"], false);
-                    }
-                } else {
-                    constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Opps! something went wrong");
-                }
-            }
-        );
+        this.props.onVerifyCode(verifyCodeParameters);
     }
 
     onPressCallMe() {
@@ -164,48 +150,12 @@ class VerifyCodeScreen extends Component {
 
         var resendCodeParameters = {
             phone: forgotPasswordResponse.phone,
-            vendorId: DeviceInfo.getUniqueID(),
+            vendorId: constant.DeviceInfo.getUniqueID(),
             type: APIConfirmationType,
             requestBy: "call",
         };
 
-        // Show Loading View
-        this.setState({ visible: true });
-
-        networkUtility.postRequest(constant.APIRequestVerifyPhones, resendCodeParameters).then(
-            result => {
-                // Hide Loading View
-                this.setState({ visible: false });
-
-                if (result.status === 206) {
-                    CommonUtilities.showAlert("This number is already verified");
-                    this.props.navigation.goBack();
-                } else {
-                    if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
-                        CommonUtilities.showAlert(result.data.messageAr, false);
-                    } else {
-                        CommonUtilities.showAlert(result.data.message, false);
-                    }
-                }
-            },
-            error => {
-                // Hide Loading View
-                this.setState({ visible: false });
-
-                constant.debugLog("Status Code: " + error.status);
-                constant.debugLog("Error Message: " + error.message);
-                if (error.status != 500) {
-                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        CommonUtilities.showAlert(error.data["messageAr"], false);
-                    } else {
-                        CommonUtilities.showAlert(error.data["message"], false);
-                    }
-                } else {
-                    constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Opps! something went wrong");
-                }
-            }
-        );
+        this.props.onVerifyPhone(resendCodeParameters);
     }
 
     onPressResend() {
@@ -221,47 +171,11 @@ class VerifyCodeScreen extends Component {
 
         var resendCodeParameters = {
             phone: forgotPasswordResponse.phone,
-            vendorId: DeviceInfo.getUniqueID(),
+            vendorId: constant.DeviceInfo.getUniqueID(),
             type: APIConfirmationType,
         };
 
-        // Show Loading View
-        this.setState({ visible: true });
-
-        networkUtility.postRequest(constant.APIRequestVerifyPhones, resendCodeParameters).then(
-            result => {
-                // Hide Loading View
-                this.setState({ visible: false });
-
-                if (result.status === 206) {
-                    CommonUtilities.showAlert("This number is already verified");
-                    this.props.navigation.goBack();
-                } else {
-                    if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
-                        CommonUtilities.showAlert(result.data.messageAr, false);
-                    } else {
-                        CommonUtilities.showAlert(result.data.message, false);
-                    }
-                }
-            },
-            error => {
-                // Hide Loading View
-                this.setState({ visible: false });
-
-                constant.debugLog("Status Code: " + error.status);
-                constant.debugLog("Error Message: " + error.message);
-                if (error.status != 500) {
-                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        CommonUtilities.showAlert(error.data["messageAr"], false);
-                    } else {
-                        CommonUtilities.showAlert(error.data["message"], false);
-                    }
-                } else {
-                    constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Opps! something went wrong");
-                }
-            }
-        );
+        this.props.onVerifyPhone(resendCodeParameters);
     }
 
     onPressBack() {
@@ -300,7 +214,7 @@ class VerifyCodeScreen extends Component {
             // Main View (Container)
             <View style={styles.container}>
                 <Spinner
-                    visible={this.state.visible}
+                    visible={this.props.isLoading}
                     cancelable={true}
                     // textContent={"Please wait..."}
                     textStyle={{ color: "#FFF" }}
@@ -396,12 +310,27 @@ class VerifyCodeScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        login: state.dataReducer.login,
+        isLoading: state.verifyCode.isLoading,
+        isVPSuccess: state.verifyCode.isVPSuccess,
+        isVCSuccess: state.verifyCode.isVCSuccess,
+        result: state.verifyCode.result,
+        error: state.verifyCode.error,
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(actions, dispatch);
+    return {
+        onVerifyPhone: parameters =>
+            dispatch({
+                type: constant.actions.verifyPhoneRequest,
+                payload: { endPoint: constant.APIRequestVerifyPhones, parameters: parameters },
+            }),
+        onVerifyCode: parameters =>
+            dispatch({
+                type: constant.actions.verifyCodeRequest,
+                payload: { endPoint: constant.APIVerifyPhoneCode, parameters: parameters },
+            }),
+    };
 }
 
 export default connect(

@@ -9,9 +9,9 @@ export function setDefaultAPIConfig() {
     axiosDefaults.baseURL = constants.baseURL;
     axiosDefaults.timeout = 60000;
     axiosDefaults.headers = {
-        Authorization: global.loginKey === null ? "" : global.currentUser.loginKey,
+        Authorization: global.currentUser === null ? "" : global.currentUser.loginKey,
         "Accept-Language": global.currentAppLanguage,
-        AppVersion: DeviceInfo.AppVersion,
+        AppVersion: DeviceInfo.getVersion(),
         "User-Agent": DeviceInfo.getUserAgent(),
     };
     // ValidityState = status => {
@@ -52,7 +52,7 @@ export function getRequest(endPoint, parameters = "") {
             .catch(function(error) {
                 console.log(error);
                 if (error.response.status === 403) {
-                    logout();
+                    CommonUtilities.logout(false)
                 } else {
                     reject(error.response);
                 }
@@ -91,7 +91,7 @@ export function postRequest(endPoint, parameters = "") {
             .catch(error => {
                 console.log(error.response);
                 if (error.response.status === 403) {
-                    logout();
+                    CommonUtilities.logout(false)
                 } else {
                     reject(error.response);
                 }
@@ -130,7 +130,7 @@ export function putRequest(endPoint, parameters = "") {
             .catch(error => {
                 console.log(error.response);
                 if (error.response.status === 403) {
-                    logout();
+                    CommonUtilities.logout(false)
                 } else {
                     reject(error.response);
                 }
@@ -169,16 +169,10 @@ export function deleteRequest(endPoint, parameters = "") {
             .catch(error => {
                 console.log(error.response);
                 if (error.response.status === 403) {
-                    logout();
+                    CommonUtilities.logout(false)
                 } else {
                     reject(error.response);
                 }
             });
     });
-}
-
-export function logout() {
-    CommonUtilities.showAlert("You are already logged into another device. Please login again", false);
-    AsyncStorage.removeItem(constants.isLogin);
-    constants.emitter.emit(constants.LOGOUT_EVENT, "AuthProblem");
 }

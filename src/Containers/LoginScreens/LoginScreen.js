@@ -9,15 +9,12 @@ import { Platform, StyleSheet, AsyncStorage, Dimensions } from "react-native";
 import { Text, View, Image, TouchableOpacity, Alert, ScrollView } from "react-native";
 
 import AppTextField from "../../Components/AppTextField";
-import constant from "../../Helper/Constants";
+import * as constant from "../../Helper/Constants";
 
 // Redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as actions from "../../AppRedux/Actions/actions";
-
-// Device Info
-var DeviceInfo = require("react-native-device-info");
 
 // Common Utilities
 import * as CommonUtilities from "../../Helper/CommonUtilities";
@@ -74,7 +71,8 @@ class LoginScreen extends Component {
 
     componentWillReceiveProps(newProps) {
         if (newProps.isLogin === true) {
-            this.props.navigation.navigate("CityScreen");
+            AsyncStorage.setItem(constant.isLogin, "true");
+            constant.emitter.emit(constant.loginListener);
         }
     }
 
@@ -95,8 +93,8 @@ class LoginScreen extends Component {
             deviceType: Platform.OS === "ios" ? constant.deviceTypeiPhone : constant.deviceTypeAndroid,
             notifyId: constant.notifyId,
             timeZone: constant.timeZone,
-            vendorId: DeviceInfo.getUniqueID(),
-            appVersion: DeviceInfo.appVersion === undefined ? "0.0" : DeviceInfo.appVersion,
+            vendorId: constant.DeviceInfo.getUniqueID(),
+            appVersion: constant.DeviceInfo.getVersion() === undefined ? "0.0" : constant.DeviceInfo.getVersion(),
         };
 
         this.props.onLogin(loginParameters);
@@ -301,15 +299,20 @@ function mapStateToProps(state, props) {
     return {
         isLoading: state.login.isLoading,
         isLogin: state.login.isLogin,
+        result: state.login.result,
+        error: state.login.error,
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    // return bindActionCreators(actions, dispatch);
     return {
         onLogin: parameters =>
-            dispatch({ type: "LOGIN_CALL_REQUEST", payload: { endPoint: constant.APILogin, parameters: parameters } }),
-        onFBLogin: () => dispatch({ type: "FB_LOGIN_CALL_REQUEST", payload: { endPoint: constant.APIVerifyFBId } }),
+            dispatch({
+                type: constant.actions.loginRequest,
+                payload: { endPoint: constant.APILogin, parameters: parameters },
+            }),
+        onFBLogin: () =>
+            dispatch({ type: constant.actions.FBLoginRequest, payload: { endPoint: constant.APIVerifyFBId } }),
     };
 }
 

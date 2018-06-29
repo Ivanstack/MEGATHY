@@ -9,7 +9,7 @@ import { Platform, StyleSheet, AsyncStorage, Dimensions } from "react-native";
 import { Text, View, Image, TouchableOpacity, TouchableWithoutFeedback, FlatList } from "react-native";
 
 // Constants
-import constant from "../../../../Helper/Constants";
+import * as constant from "../../../../Helper/Constants";
 
 // Localization
 import baseLocal from "../../../../Resources/Localization/baseLocalization";

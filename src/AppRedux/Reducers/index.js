@@ -5,7 +5,17 @@ import saga from "redux-saga";
 import { watcherSaga } from "../Sagas/sagas";
 
 const rootReducer = combineReducers({
-    login: require("./LoginReducer").reducer
+    // Login/SignUp Flow
+    login: require("./LoginReducer").reducer,
+    signup: require("./SignUpReducer").reducer,
+    forgotPassword: require("./ForgotPasswordReducer").reducer,
+    verifyCode: require("./VerifyCodeReducer").reducer,
+    resetPassword: require("./ResetPasswordReducer").reducer,
+
+    // Post Login/SignUp Flow
+    city: require("./CityReducer").reducer,
+    area: require("./AreaReducer").reducer,
+    store: require("./StoreReducer").reducer,
 });
 
 export let sagaMiddleware = saga();

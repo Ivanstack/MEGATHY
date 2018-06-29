@@ -19,15 +19,12 @@ import {
 } from "react-native";
 
 import AppTextField from "../../Components/AppTextField";
-import constant from "../../Helper/Constants";
+import * as constant from "../../Helper/Constants";
 
 // Redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as actions from "../../AppRedux/Actions/actions";
-
-// Device Info
-var DeviceInfo = require("react-native-device-info");
 
 // Common Utilities
 import * as CommonUtilities from "../../Helper/CommonUtilities";
@@ -69,13 +66,21 @@ class ResetPasswordScreen extends Component {
             secureTextEntry: true,
             password: "",
             confirmPassword: "",
-            visible: false,
         };
     }
 
-    componentDidUpdate() {}
-
-    componentDidMount() {}
+    componentWillReceiveProps(newProps) {
+        let result = newProps.result === undefined ? null : newProps.result;
+        if (newProps.isRPSuccess === true && result != null) {
+            if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
+                CommonUtilities.showAlert(result.data.messageAr, false);
+                this.props.navigation.popToTop();
+            } else {
+                CommonUtilities.showAlert(result.data.message, false);
+                this.props.navigation.popToTop();
+            }
+        }
+    }
 
     onPressSave() {
         if (this.state.password === "") {
@@ -96,29 +101,25 @@ class ResetPasswordScreen extends Component {
 
         var resetPasswordParameters = {
             email: registeredEmail,
-            vendorId: DeviceInfo.getUniqueID(),
+            vendorId: constant.DeviceInfo.getUniqueID(),
             password: this.state.password,
         };
 
-        // Show Loading View
-        this.setState({ visible: true });
+        this.props.onResetPassword(resetPasswordParameters);
 
+        /*
         networkUtility.putRequest(constant.APIUpdatePassword, resetPasswordParameters).then(
             result => {
-                // Hide Loading View
-                this.setState({ visible: false });
 
                 if (global.currentAppLanguage === constant.languageArabic && result.data.messageAr != undefined) {
-                        CommonUtilities.showAlert(result.data.messageAr, false);
-                        this.props.navigation.popToTop();
+                    CommonUtilities.showAlert(result.data.messageAr, false);
+                    this.props.navigation.popToTop();
                 } else {
-                        CommonUtilities.showAlert(result.data.message, false);
-                        this.props.navigation.popToTop();
+                    CommonUtilities.showAlert(result.data.message, false);
+                    this.props.navigation.popToTop();
                 }
             },
             error => {
-                // Hide Loading View
-                this.setState({ visible: false });
 
                 constant.debugLog("Status Code: " + error.status);
                 constant.debugLog("Error Message: " + error.message);
@@ -126,7 +127,7 @@ class ResetPasswordScreen extends Component {
                     if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
                         CommonUtilities.showAlert(error.data["messageAr"], false);
                     } else {
-                            CommonUtilities.showAlert(error.data["message"], false);
+                        CommonUtilities.showAlert(error.data["message"], false);
                     }
                 } else {
                     constant.debugLog("Internal Server Error: " + error.data);
@@ -134,6 +135,7 @@ class ResetPasswordScreen extends Component {
                 }
             }
         );
+        */
     }
 
     onPressBack() {
@@ -198,7 +200,7 @@ class ResetPasswordScreen extends Component {
             // Main View (Container)
             <View style={styles.container}>
                 <Spinner
-                    visible={this.state.visible}
+                    visible={this.props.isLoading}
                     cancelable={true}
                     // textContent={"Please wait..."}
                     textStyle={{ color: "#FFF" }}
@@ -276,12 +278,21 @@ class ResetPasswordScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        login: state.dataReducer.login,
+        isLoading: state.resetPassword.isLoading,
+        isRPSuccess: state.resetPassword.isRPSuccess,
+        result: state.resetPassword.result,
+        error: state.resetPassword.error,
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(actions, dispatch);
+    return {
+        onResetPassword: parameters =>
+            dispatch({
+                type: constant.actions.resetPasswordRequest,
+                payload: { endPoint: constant.APIUpdatePassword, parameters: parameters },
+            }),
+        }
 }
 
 export default connect(

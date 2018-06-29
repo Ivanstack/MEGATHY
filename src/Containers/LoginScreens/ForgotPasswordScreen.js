@@ -19,15 +19,11 @@ import {
 } from "react-native";
 
 import AppTextField from "../../Components/AppTextField";
-import constant from "../../Helper/Constants";
+import * as constant from "../../Helper/Constants";
 
 // Redux
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as actions from "../../AppRedux/Actions/actions";
-
-// Device Info
-var DeviceInfo = require("react-native-device-info");
 
 // Common Utilities
 import * as CommonUtilities from "../../Helper/CommonUtilities";
@@ -61,11 +57,18 @@ class ForgotPasswordScreen extends Component {
 
         this.state = {
             email: "",
-            visible: false,
         };
     }
 
-    componentDidUpdate() {}
+    componentWillReceiveProps(newProps) {
+        if (newProps.isFPSuccess === true && newProps.result != null) {
+            this.props.navigation.navigate("VerifyCodeScreen", {
+                forgotPasswordResponse: newProps.result.data.data,
+                confirmationType: constant.APIConfirmationTypeForgotPassword,
+                registeredEmail: this.state.email,
+            });
+        }
+    }
 
     onPressReset() {
         if (!CommonUtilities.validateEmail(this.state.email)) {
@@ -74,40 +77,10 @@ class ForgotPasswordScreen extends Component {
         }
         var forgotPasswordParameters = {
             email: this.state.email,
-            vendorId: DeviceInfo.getUniqueID(),
+            vendorId: constant.DeviceInfo.getUniqueID(),
         };
 
-        // Show Loading View
-        this.setState({ visible: true });
-
-        networkUtility.postRequest(constant.APIForgotPassword, forgotPasswordParameters).then(
-            result => {
-                // Hide Loading View
-                this.setState({ visible: false });
-                this.props.navigation.navigate("VerifyCodeScreen", {
-                    forgotPasswordResponse: result.data.data,
-                    confirmationType: constant.APIConfirmationTypeForgotPassword,
-                    registeredEmail: this.state.email,
-                });
-            },
-            error => {
-                // Hide Loading View
-                this.setState({ visible: false });
-
-                constant.debugLog("Status Code: " + error.status);
-                constant.debugLog("Error Message: " + error.message);
-                if (error.status != 500) {
-                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        CommonUtilities.showAlert(error.data["messageAr"], false);
-                    } else {
-                        CommonUtilities.showAlert(error.data["message"], false);
-                    }
-                } else {
-                    constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Opps! something went wrong");
-                }
-            }
-        );
+        this.props.onForgotPassword(forgotPasswordParameters)
     }
 
     onPressBack() {
@@ -149,7 +122,7 @@ class ForgotPasswordScreen extends Component {
             // Main View (Container)
             <View style={styles.container}>
                 <Spinner
-                    visible={this.state.visible}
+                    visible={this.props.isLoading}
                     cancelable={true}
                     // textContent={"Please wait..."}
                     textStyle={{ color: "#FFF" }}
@@ -214,12 +187,18 @@ class ForgotPasswordScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        login: state.dataReducer.login,
+        isLoading: state.forgotPassword.isLoading,
+        isFPSuccess: state.forgotPassword.isFPSuccess,
+        result: state.forgotPassword.result,
+        error: state.forgotPassword.error,
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(actions, dispatch);
+    return {
+        onForgotPassword: parameters =>
+            dispatch({ type: constant.actions.forgotPasswordRequest, payload: { endPoint: constant.APIForgotPassword, parameters: parameters } }),
+    };
 }
 
 export default connect(

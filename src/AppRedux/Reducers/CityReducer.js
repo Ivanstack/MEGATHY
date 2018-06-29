@@ -3,43 +3,33 @@ import * as constant from "../../Helper/Constants";
 // reducer with initial state
 export const initialState = {
     isLoading: false,
-    isLogin: false,
-    result: null,
+    isSuccess: false,
+    arrCities: [],
     error: null,
 };
 
 export const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case constant.actions.loginRequest:
+        case constant.actions.getCityRequest:
             return {
                 ...state,
-                isLogin: false,
+                isSuccess: false,
                 isLoading: true,
-                result: null,
                 error: null,
             };
-        case constant.actions.FBLoginRequest:
+        case constant.actions.getCitySuccess:
             return {
                 ...state,
-                isLogin: false,
-                isLoading: true,
-                result: null,
-                error: null,
-            };
-        case constant.actions.loginSuccess:
-            return {
-                ...state,
-                isLogin: true,
+                arrCities: action.response,
+                isSuccess: true,
                 isLoading: false,
-                result: action.response,
                 error: null,
             };
-        case constant.actions.loginFailure:
+        case constant.actions.getCityFailure:
             return {
                 ...state,
-                isLogin: false,
+                isSuccess: false,
                 isLoading: false,
-                result: null,
                 error: action.error,
             };
         default:

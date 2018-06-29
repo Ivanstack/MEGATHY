@@ -19,15 +19,12 @@ import {
 } from "react-native";
 
 import AppTextField from "../../Components/AppTextField";
-import constant from "../../Helper/Constants";
+import * as constant from "../../Helper/Constants";
 
 // Redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as actions from "../../AppRedux/Actions/actions";
-
-// Device Info
-var DeviceInfo = require("react-native-device-info");
 
 // Common Utilities
 import * as CommonUtilities from '../../Helper/CommonUtilities'
@@ -54,6 +51,7 @@ class SignUpScreen extends Component {
 
         this.onPressBack = this.onPressBack.bind(this);
         this.onPressSignUp = this.onPressSignUp.bind(this);
+        this.onFocusPhone = this.onFocusPhone.bind(this);
         this.onFocus = this.onFocus.bind(this);
         this.onChangeText = this.onChangeText.bind(this);
         this.onAccessoryPress = this.onAccessoryPress.bind(this);
@@ -79,11 +77,14 @@ class SignUpScreen extends Component {
             password: "",
             confirmPassword: "",
             fbId: "",
-            visible: false,
         };
     }
 
-    componentDidUpdate() {}
+    componentWillReceiveProps(newProps) {
+        if (newProps.isSignUp === true) {
+            constant.emitter.emit(constant.loginListener);
+        }
+    }
 
     componentDidMount() {
         let fbResult = this.props.navigation.getParam("fbResult", "noFB");
@@ -127,12 +128,12 @@ class SignUpScreen extends Component {
         var registerParameters = {
             userName: this.state.fullName,
             email: this.state.email,
-            phone: this.state.email,
+            phone: this.state.phone,
             deviceType: Platform.OS === "ios" ? constant.deviceTypeiPhone : constant.deviceTypeAndroid,
             notifyId: constant.notifyId,
             timeZone: constant.timeZone,
-            vendorId: DeviceInfo.getUniqueID(),
-            appVersion: DeviceInfo.appVersion === undefined ? "0.0" : DeviceInfo.appVersion,
+            vendorId: constant.DeviceInfo.getUniqueID(),
+            appVersion: constant.DeviceInfo.getVersion() === undefined ? "0.0" : constant.DeviceInfo.getVersion(),
         };
 
         if (this.state.fbId === "") {
@@ -143,43 +144,15 @@ class SignUpScreen extends Component {
             registerParameters["facebookId"] = this.state.fbId;
         }
 
-        // Show Loading View
-        this.setState({ visible: true });
-
-        networkUtility.postRequest(constant.APIRegister, registerParameters).then(
-            result => {
-                // Hide Loading View
-                this.setState({ visible: false });
-
-                global.loginKey = result.data.data.userData.loginKey;
-                AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data.data.userData));
-                AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data.data.settingData));
-                AsyncStorage.removeItem(constant.keyCurrentStore);
-                constant.debugLog("User Signup Success");
-                this.props.navigation.navigate("CityScreen");
-            },
-            error => {
-                // Hide Loading View
-                this.setState({ visible: false });
-
-                constant.debugLog("Status Code: " + error.status);
-                constant.debugLog("Error Message: " + error.message);
-                if (error.status != 500) {
-                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        CommonUtilities.showAlert(error.data["messageAr"], false)
-                    } else {
-                            CommonUtilities.showAlert(error.data["message"], false)
-                    }
-                } else {
-                    constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert('Opps! something went wrong')
-                }
-            }
-        );
+        this.props.onSignUp(registerParameters);
     }
 
     onPressBack() {
         this.props.navigation.goBack();
+    }
+
+    onFocusPhone(){
+
     }
 
     onFocus() {
@@ -258,7 +231,7 @@ class SignUpScreen extends Component {
             // Main View (Container)
             <View style={styles.container}>
                 <Spinner
-                    visible={this.state.visible}
+                    visible={this.props.isLoading}
                     cancelable={true}
                     // textContent={"Please wait..."}
                     textStyle={{ color: "#FFF" }}
@@ -371,12 +344,18 @@ class SignUpScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        login: state.dataReducer.login,
+        isLoading: state.signup.isLoading,
+        isSignUp: state.signup.isSignUp,
+        result: state.signup.result,
+        error: state.signup.error,
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(actions, dispatch);
+    return {
+        onSignUp: parameters =>
+            dispatch({ type: constant.actions.signUpRequest, payload: { endPoint: constant.APIRegister, parameters: parameters } }),
+    };
 }
 
 export default connect(

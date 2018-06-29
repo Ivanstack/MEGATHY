@@ -25,7 +25,7 @@ import SelectTimeScreen from "../Containers/MenuScreens/DeliveryDetails/SelectTi
 import SecondScreen from "../Containers/MenuScreens/SecondScreen";
 
 // Constant
-import constant from "../Helper/Constants";
+import * as constant from "../Helper/Constants";
 
 // Modal Screen
 const OrderMasterScreenNav = StackNavigator(
@@ -155,8 +155,7 @@ const App = StackNavigator(
 // Mics Methods
 export function onPressLogout() {
     console.log("Logout Pressed");
-    constant.emitter.emit(constant.LOGOUT_EVENT, "ok");
-    AsyncStorage.removeItem(constant.isLogin);
+    constant.emitter.emit(constant.logoutListener);
     // this.props.onPressLogout()
 }
 
@@ -166,7 +165,7 @@ function tapSecondScreen() {
 
 function mapStateToProps(state, props) {
     return {
-        secondComp: state.dataReducer.secondComp,
+        // secondComp: state.dataReducer.secondComp,
     };
 }
 

@@ -8,7 +8,7 @@ import React, { Component } from "react";
 import { Platform, StyleSheet, Text, View, TouchableOpacity, ScrollView, Dimensions, Picker } from "react-native";
 
 // Constants
-import constant from "../../Helper/Constants";
+import * as constant from "../../Helper/Constants";
 
 // Redux
 import { bindActionCreators } from "redux";
@@ -36,50 +36,27 @@ class CityScreen extends Component {
         this.onChangeCity = this.onChangeCity.bind(this);
 
         this.state = {
-            arrCities: [],
             selectedCityName: "",
             selectedCityIndex: -1,
-            visible: false,
         };
     }
 
     componentWillMount() {
-        // Show Loading View
-        this.setState({ visible: true });
-        networkUtility.getRequest(constant.APIGetCity, "").then(
-            result => {
-                // Hide Loading View
-                this.setState({ visible: false });
+        this.props.getCities();
+    }
 
-                this.setState({
-                    selectedCityName: result.data.data.length > 0 ? result.data.data[0].cityName : "",
-                    selectedCityIndex: result.data.data.length > 0 ? 0 : -1,
-                    arrCities: result.data.data,
-                });
-            },
-            error => {
-                // Hide Loading View
-                this.setState({ visible: false });
-
-                constant.debugLog("Status Code: " + error.status);
-                constant.debugLog("Error Message: " + error.message);
-                if (error.status != 500) {
-                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        CommonUtilities.showAlert(error.data["messageAr"], false);
-                    } else {
-                        CommonUtilities.showAlert(error.data["message"], false);
-                    }
-                } else {
-                    constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Opps! something went wrong");
-                }
-            }
-        );
+    componentWillReceiveProps(newProps) {
+        if (newProps.isSuccess === true && newProps.arrCities.length > 0) {
+            this.setState({
+                selectedCityName: newProps.arrCities[0].cityName,
+                selectedCityIndex: 0,
+            });
+        }
     }
 
     onPressOK() {
         this.props.navigation.navigate("AreaScreen", {
-            selectedCity: this.state.arrCities[this.state.selectedCityIndex],
+            selectedCity: this.props.arrCities[this.state.selectedCityIndex],
         });
     }
 
@@ -97,7 +74,7 @@ class CityScreen extends Component {
 
     render() {
         let { errors = {}, secureTextEntry, email, password } = this.state;
-        let cityItems = this.state.arrCities.map((value, index) => {
+        let cityItems = this.props.arrCities.map((value, index) => {
             let cityNameTemp = global.currentAppLanguage === "en" ? value.cityName : value.cityNameAr;
             return <Picker.Item key={index} value={cityNameTemp} label={cityNameTemp} />;
         });
@@ -106,7 +83,7 @@ class CityScreen extends Component {
             // Main View (Container)
             <View style={styles.container}>
                 <Spinner
-                    visible={this.state.visible}
+                    visible={this.props.isLoading}
                     cancelable={true}
                     // textContent={"Please wait..."}
                     textStyle={{ color: "#FFF" }}
@@ -147,12 +124,21 @@ class CityScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        // login: state.dataReducer.login,
+        isLoading: state.city.isLoading,
+        isSuccess: state.city.isSuccess,
+        arrCities: state.city.arrCities,
+        error: state.city.error,
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(actions, dispatch);
+    return {
+        getCities: () =>
+            dispatch({
+                type: constant.actions.getCityRequest,
+                payload: { endPoint: constant.APIGetCity, parameters: "" },
+            }),
+    };
 }
 
 export default connect(
