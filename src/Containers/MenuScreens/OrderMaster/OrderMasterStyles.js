@@ -57,9 +57,14 @@ export default StyleSheet.create({
   },
   addressListContainerStyle: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: goToNextPageViewHeight
+    // justifyContent: "center",
+    // alignItems: "center",
+    marginBottom: goToNextPageViewHeight+10
     // backgroundColor: "blue"
+  },
+  orderTimeSlotContainerStyle: {
+    flex: 1,
+    marginBottom: goToNextPageViewHeight+0,
+    backgroundColor:"white"
   }
 });

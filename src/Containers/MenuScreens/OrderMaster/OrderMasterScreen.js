@@ -40,6 +40,7 @@ import OrderMasterStyles from "./OrderMasterStyles";
 
 // Screen
 import AddressListScreen from "../DeliveryDetails/AddressList/AddressListScreen";
+import SelectTimeScreen from "../DeliveryDetails/SelectTime/SelectTimeScreen";
 // import AddressListScreen from "../Category/CartScreen/CartScreen";
 
 // Localization
@@ -170,11 +171,11 @@ class OrderMasterScreen extends Component {
     let dateFromTimeStamp = new Date(getStoreTimeInSecond).toLocaleTimeString(
       "en-us"
     );
-    console.log("Get TimeStemp :======> ", getStoreTimeInSecond);
-    console.log(
-      "Get storeTime before convert from TimeStemp :======> ",
-      dateFromTimeStamp
-    );
+    // console.log("Get TimeStemp :======> ", getStoreTimeInSecond);
+    // console.log(
+    //   "Get storeTime before convert from TimeStemp :======> ",
+    //   dateFromTimeStamp
+    // );
     this.setState({
       storeCurrentTime: dateFromTimeStamp,
       storeCurrentTimeInSeconds: getStoreTimeInSecond
@@ -184,52 +185,58 @@ class OrderMasterScreen extends Component {
   _getStoreTime = () => {
     console.log("Call get storeTime .....");
 
-    let storeTime = networkUtility.getRequest(constant.APIGetStoreTimeZone).then(
-      result => {
-        let responseData = result.data.data;
-        console.log("Get storeTime :======> ", responseData);
+    let storeTime = networkUtility
+      .getRequest(constant.APIGetStoreTimeZone)
+      .then(
+        result => {
+          let responseData = result.data.data;
+          console.log("Get storeTime :======> ", responseData);
 
-        let storeCrtTime = responseData.storeTime;
-        storeCrtTime = new Date(storeCrtTime).toLocaleTimeString("en-us");
-        console.log("Get storeTime after convert :======> ", storeCrtTime);
+          let storeCrtTime = responseData.storeTime;
+          storeCrtTime = new Date(storeCrtTime).toLocaleTimeString("en-us");
+          console.log("Get storeTime after convert :======> ", storeCrtTime);
 
-        // Hide Loading View
-        this.setState({
-          visible: false,
-          storeTime: responseData.storeTime,
-          storeCurrentTime: storeCrtTime
-        });
-        this.storeCrntTimeInterval = setInterval(
-          this._timerForStoreCurrentTime,
-          1000
-        );
-      },
-      error => {
-        constants.debugLog("\nStatus Code: " + error.status);
-        constants.debugLog("\nError Message: " + error);
+          // Hide Loading View
+          this.setState({
+            visible: false,
+            storeTime: responseData.storeTime,
+            storeCurrentTime: storeCrtTime
+          });
+          this.storeCrntTimeInterval = setInterval(
+            this._timerForStoreCurrentTime,
+            1000
+          );
+        },
+        error => {
+          constants.debugLog("\nStatus Code: " + error.status);
+          constants.debugLog("\nError Message: " + error);
 
-        // Hide Loading View
-        this.setState({ visible: false });
+          // Hide Loading View
+          this.setState({ visible: false });
 
-        if (error.status != 500) {
-          if (
-            global.currentAppLanguage === constant.languageArabic &&
-            error.data["messageAr"] != undefined
-          ) {
-            commonUtility.showAlert(error.data["messageAr"], false, "Megathy");
+          if (error.status != 500) {
+            if (
+              global.currentAppLanguage === constant.languageArabic &&
+              error.data["messageAr"] != undefined
+            ) {
+              commonUtility.showAlert(
+                error.data["messageAr"],
+                false,
+                "Megathy"
+              );
+            } else {
+              commonUtility.showAlert(error.data["message"], false, "Megathy");
+            }
           } else {
-            commonUtility.showAlert(error.data["message"], false, "Megathy");
+            constants.debugLog("Internal Server Error: " + error.data);
+            commonUtility.showAlert("Opps! something went wrong");
           }
-        } else {
-          constants.debugLog("Internal Server Error: " + error.data);
-          commonUtility.showAlert("Opps! something went wrong");
         }
-      }
-    );
+      );
   };
 
   _onPageChange(position) {
-    console.log("onPageChange position :", position);
+    // console.log("onPageChange position :", position);
     if (position < 0) {
       position = 0;
     }
@@ -338,19 +345,17 @@ class OrderMasterScreen extends Component {
               onMomentumScrollEnd={(e, state, context) => {}}
               pagingEnabled={true}
             >
+
+             {/* ----- AddressListScreen ----- */}
               <View style={OrderMasterStyles.addressListContainerStyle}>
                 <AddressListScreen />
               </View>
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "yellow"
-                }}
-              >
-                <Text> Select Time </Text>
+
+              {/* ----- SelectTimeScreen ----- */}
+              <View style={OrderMasterStyles.orderTimeSlotContainerStyle}>
+                <SelectTimeScreen />
               </View>
+
               <View
                 style={{
                   flex: 1,
@@ -401,7 +406,7 @@ class OrderMasterScreen extends Component {
 // Store State in store
 function mapStateToProps(state, props) {
   return {
-    firstComp: state.dataReducer.firstComp
+    // firstComp: state.dataReducer.firstComp
   };
 }
 

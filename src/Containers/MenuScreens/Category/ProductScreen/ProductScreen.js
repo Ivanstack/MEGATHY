@@ -669,7 +669,7 @@ class ProductScreen extends Component {
 // Store State in store
 function mapStateToProps(state, props) {
     return {
-        firstComp: state.dataReducer.firstComp,
+        // firstComp: state.firstComp,
     };
 }
 
