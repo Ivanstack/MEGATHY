@@ -18,8 +18,10 @@ const rootReducer = combineReducers({
     store: require("./StoreReducer").reducer,
 
     //Menu Flow
-    selectTime: require("./SelectTimeReducer").reducer,
+    subcategory: require("./SubCategoryReducer").reducer,
     category: require("./CategoryReducer").reducer,
+    selectTime: require("./SelectTimeReducer").reducer,
+    addressList: require("./AddressListReducer").reducer,
 });
 
 export let sagaMiddleware = saga();

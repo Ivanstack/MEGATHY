@@ -149,12 +149,10 @@ class OrderMasterScreen extends Component {
 
   // App Life Cycle Methods
   componentDidMount() {
-    console.log("App State: ", AppState.currentState);
     this._getStoreTime();
   }
 
   componentWillUnmount() {
-    console.log("App State: ", AppState.currentState);
     clearInterval(this.storeCrntTimeInterval);
   }
 
@@ -171,11 +169,6 @@ class OrderMasterScreen extends Component {
     let dateFromTimeStamp = new Date(getStoreTimeInSecond).toLocaleTimeString(
       "en-us"
     );
-    // console.log("Get TimeStemp :======> ", getStoreTimeInSecond);
-    // console.log(
-    //   "Get storeTime before convert from TimeStemp :======> ",
-    //   dateFromTimeStamp
-    // );
     this.setState({
       storeCurrentTime: dateFromTimeStamp,
       storeCurrentTimeInSeconds: getStoreTimeInSecond
@@ -183,18 +176,14 @@ class OrderMasterScreen extends Component {
   };
 
   _getStoreTime = () => {
-    console.log("Call get storeTime .....");
-
     let storeTime = networkUtility
       .getRequest(constant.APIGetStoreTimeZone)
       .then(
         result => {
           let responseData = result.data.data;
-          console.log("Get storeTime :======> ", responseData);
 
           let storeCrtTime = responseData.storeTime;
           storeCrtTime = new Date(storeCrtTime).toLocaleTimeString("en-us");
-          console.log("Get storeTime after convert :======> ", storeCrtTime);
 
           // Hide Loading View
           this.setState({
@@ -236,7 +225,6 @@ class OrderMasterScreen extends Component {
   };
 
   _onPageChange(position) {
-    // console.log("onPageChange position :", position);
     if (position < 0) {
       position = 0;
     }
@@ -277,7 +265,6 @@ class OrderMasterScreen extends Component {
                 onPress={position => this._onPageChange(position)}
                 stepCount={labels.length}
                 renderStepIndicator={item => {
-                  // console.log("indicator :=> ", item);
                   let source = "";
                   if (item.stepStatus === "current") {
                     source = require("../../../Resources/Images/OrderStatus/CurrentState.png");

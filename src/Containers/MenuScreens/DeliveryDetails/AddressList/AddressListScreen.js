@@ -35,7 +35,6 @@ import KeyboardManager from "react-native-keyboard-manager";
 
 // Loading View
 import Spinner from "react-native-loading-spinner-overlay";
-import Icon from "react-native-vector-icons/EvilIcons";
 
 // Localization
 import baseLocal from "../../../../Resources/Localization/baseLocalization";
@@ -43,19 +42,14 @@ import baseLocal from "../../../../Resources/Localization/baseLocalization";
 // AddressListItem
 import AddressListItem from "./AddressListItem";
 
-var self = null;
-
 class AddressListScreen extends Component {
     constructor(props) {
         super(props);
 
-        baseLocal.locale = global.currentAppLanguage;
         this.state = {
-            arrAddress: [],
-            isRefreshing: false,
-            visible: false,
+            reloadPage: false,
         };
-
+        baseLocal.locale = global.currentAppLanguage;
         this._onRefresh = this._onRefresh.bind(this);
         this._callLoadMore = this._callLoadMore.bind(this);
         this._getAddressList = this._getAddressList.bind(this);
@@ -65,122 +59,39 @@ class AddressListScreen extends Component {
         this._onPressEditItem = this._onPressEditItem.bind(this);
         this._onPressDeleteItem = this._onPressDeleteItem.bind(this);
         this._onPressDeliverItem = this._onPressDeliverItem.bind(this);
-
-        this.currentPage = 1;
-        this.lastPage = 0;
-        // self = this
     }
 
-    // @observable visible = false;
-    static navigationOptions = ({ navigation }) => ({
-        headerLeft: (
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <View style={{ flexDirection: "row" }}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            // console.log("Nav Params :==> ",navigation.state.params);
-                            if (navigation.state.params != undefined && navigation.state.params.category != undefined) {
-                                navigation.goBack();
-                            } else {
-                                navigation.navigate("DrawerToggle");
-                            }
-                        }}
-                    >
-                        <Icon
-                            name={
-                                navigation.state.params != undefined && navigation.state.params.category != undefined
-                                    ? "arrow-left"
-                                    : "navicon"
-                            }
-                            style={{ marginLeft: 10 }}
-                            size={35}
-                            color="white"
-                        />
-                    </TouchableOpacity>
-                    <Text style={styles.headerText}> Meghathy </Text>
-                </View>
-            </View>
-        ),
-        headerStyle: {
-            backgroundColor: "#CF2526",
-        },
-    });
+    static navigationOptions = CommonUtilities.navigationView("Address List");
 
     _keyExtractor = (item, index) => item.id.toString();
 
-    // @autobind
     componentDidMount() {
-        this._getAddressList(false);
+        this._getAddressList(true);
+    }
+
+    componentWillReceiveProps(newProps) {
+        if (newProps.isDeleteSuccess === true) {
+            this._onRefresh();
+        }
     }
 
     _callLoadMore() {
-        if (this.currentPage < this.lastPage) {
-            console.log("Call Load More .....");
-            this._getAddressList(true);
+        if (this.props.currentPage < this.props.lastPage) {
+            this._getAddressList(false, true);
         }
     }
 
     _onRefresh() {
-        this.currentPage = 1;
-        this.setState({ isRefreshing: true, arrAddress: [] }, () => {
-            this._getAddressList(false);
-        });
+        this.props.currentPage = 1;
+        this._getAddressList(true);
     }
 
-    _getAddressList(isLoadMore) {
-        let addressPage = this.currentPage;
-        if (isLoadMore && this.currentPage < this.lastPage) {
+    _getAddressList(isRefresh = false, isLoadMore = false) {
+        let addressPage = this.props.currentPage;
+        if (!isRefresh && isLoadMore && this.props.currentPage < this.lastPage) {
             addressPage = addressPage + 1;
         }
-
-        var addressParameters = {
-            page: addressPage,
-        };
-
-        // Show Loading View
-        this.setState({ visible: true });
-        // this.state.visible = true;
-
-        networkUtility.getRequest(constant.GetAddress, addressParameters).then(
-            result => {
-                // Hide Loading View
-                this.setState({ visible: false });
-                // this.visible = false;
-
-                let resultData = result.data.data;
-                this.currentPage = resultData.current_page;
-                this.lastPage = resultData.last_page;
-                let newArrAddress = [...this.state.arrAddress, ...resultData.data].filter((val, id, array) => {
-                    if ((this.currentPage === 1 && id === 0) || this.props.entryPoint === undefined) {
-                        val.selected = true;
-                    }
-                    return array.indexOf(val) === id;
-                });
-                this.setState({
-                    arrAddress: newArrAddress,
-                    isRefreshing: false,
-                });
-            },
-            error => {
-                constants.debugLog("\nStatus Code: " + error.status);
-                constants.debugLog("\nError Message: " + error);
-
-                // Hide Loading View
-                this.setState({ visible: false });
-                // this.visible = false;
-
-                if (error.status != 500) {
-                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        CommonUtilities.showAlert(error.data["messageAr"], false);
-                    } else {
-                      CommonUtilities.showAlert(error.data["message"], false);
-                    }
-                } else {
-                    constants.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Opps! something went wrong");
-                }
-            }
-        );
+        this.props.dispatchGetAddress({ page: addressPage });
     }
 
     _onPressAddAddress() {
@@ -199,18 +110,15 @@ class AddressListScreen extends Component {
     );
 
     _onPressItem(address) {
-        let arrAddressTemp = this.state.arrAddress;
-        arrAddressTemp.map((addressTemp, index, arrObjects) => {
+        let arrAddressTemp = this.props.arrAddress;
+        this.props.arrAddress.map((addressTemp, index, arrObjects) => {
             if (addressTemp.id === address.id) {
                 addressTemp.selected = true;
             } else if (addressTemp.selected != undefined) {
                 delete addressTemp.selected;
             }
         });
-
-        this.setState({
-            arrAddress: arrAddressTemp,
-        });
+        this.setState({ reloadPage: !this.state.reloadPage });
     }
 
     _onPressEditItem(address) {}
@@ -218,74 +126,29 @@ class AddressListScreen extends Component {
     _onPressDeleteItem(address) {
         CommonUtilities.showAlertYesNo("Are you sure you want to delete this address?").then(
             pressedYes => {
-                // User pressed Yes
                 constant.debugLog("User pressed Yes");
                 this._onDeleteAddress(address);
             },
             pressedNo => {
-                // User pressed No
                 constant.debugLog("User pressed No");
             }
         );
-        // CommonUtilities.showAlertYesNo("Are you sure you want to delete this address?").then(
-        //     pressedYes => {
-        //         // User pressed Yes
-        //         constant.debugLog("User pressed Yes");
-        //         this._onDeleteAddress(address)
-        //         this._onPressEditItem(address)
-        //     },
-        //     pressedNo => {
-        //         // User pressed No
-        //         constant.debugLog("User pressed No");
-        //     }
-        // );
     }
 
     _onPressDeliverItem(address) {}
 
     _onDeleteAddress(address) {
-        // Show Loading View
-        this.setState({ visible: true });
-        // this.visible = true;
-
-        networkUtility.deleteRequest(constant.DeleteAddress + "/" + address.id, "").then(
-            result => {
-                // Hide Loading View
-                this.setState({ visible: false });
-                // this.visible = false;
-                this._onRefresh();
-            },
-            error => {
-                // Hide Loading View
-                this.setState({ visible: false });
-                // this.visible = false;
-
-                constant.debugLog("Status Code: " + error.status);
-                constant.debugLog("Error Message: " + error.message);
-                if (error.status != 500) {
-                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        CommonUtilities.showAlert(error.data["messageAr"], false);
-                    } else {
-                        setTimeout(() => {
-                            CommonUtilities.showAlert(error.data["message"], false);
-                        }, 200);
-                    }
-                } else {
-                    constant.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Opps! something went wrong");
-                }
-            }
-        );
+        this.props.dispatchDeleteAddress(address.id);
     }
 
     render() {
         return (
             // Main View (Container)
             <View style={{ flex: 1 }}>
-                <Spinner visible={this.state.visible} cancelable={true} textStyle={{ color: "#FFF" }} />
+                <Spinner visible={this.props.isLoading} cancelable={true} textStyle={{ color: "#FFF" }} />
                 <SafeAreaView style={styles.container}>
                     {/* // Address List */}
-                    {this.state.arrAddress.length > 0 ? (
+                    {this.props.arrAddress.length > 0 ? (
                         <FlatList
                             style={{
                                 marginTop: 8,
@@ -296,9 +159,9 @@ class AddressListScreen extends Component {
                                 this.arrAddress = flatList;
                             }}
                             refreshControl={
-                                <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this._onRefresh} />
+                                <RefreshControl refreshing={this.props.isRefreshing} onRefresh={this._onRefresh} />
                             }
-                            data={this.state.arrAddress}
+                            data={this.props.arrAddress}
                             keyExtractor={this._keyExtractor}
                             renderItem={this._renderAddressItem}
                             showsHorizontalScrollIndicator={false}
@@ -331,12 +194,30 @@ class AddressListScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        // firstComp: state.dataReducer.firstComp,
+        isRefreshing: state.addressList.isRefreshing,
+        isLoading: state.addressList.isLoading,
+        isGetSuccess: state.addressList.isGetSuccess,
+        isDeleteSuccess: state.addressList.isDeleteSuccess,
+        arrAddress: state.addressList.arrAddress,
+        currentPage: state.addressList.currentPage,
+        lastPage: state.addressList.lastPage,
+        error: state.addressList.error,
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(actions, dispatch);
+    return {
+        dispatchGetAddress: parameters =>
+            dispatch({
+                type: constant.actions.getAddressRequest,
+                payload: { endPoint: constant.APIGetAddress, parameters: parameters },
+            }),
+        dispatchDeleteAddress: addressId =>
+            dispatch({
+                type: constant.actions.deleteAddressRequest,
+                payload: { endPoint: constant.APIDeleteAddress + "/" + addressId, parameters: "" },
+            }),
+    };
 }
 
 export default connect(
@@ -351,15 +232,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         // backgroundColor: "#CF2526",
     },
-    fbButtonStyle: {
-        flex: 1,
-        flexDirection: "row",
-        backgroundColor: "#EAEAEA",
-        height: 40,
-        alignItems: "center",
-        justifyContent: "center",
-        borderRadius: 20,
-    },
     loginButtonStyle: {
         width: "95%",
         marginTop: 8,
@@ -368,12 +240,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         // borderRadius: 20,
-    },
-    scrollView: {
-        flexGrow: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        height: Dimensions.get("window").height,
     },
     headerText: {
         color: "white",

@@ -30,6 +30,7 @@ module.exports = {
 
     //Screen Name Keys
     kCategoryScreen: "CategoryScreen",
+    kSubCategoryScreen: "SubCategoryScreen",
     kProductScreen: "ProductScreen",
     kCartScreen: "CartScreen",
     kOrderMasterScreen: "OrderMasterScreen",
@@ -70,8 +71,8 @@ module.exports = {
     APIGetBanners: "banners",
     APIGetProductList: "getProduct",
     APIGetStoreTimeZone: "getStoreTimeZone",
-    GetAddress: "address",
-    DeleteAddress: "address",
+    APIGetAddress: "address",
+    APIDeleteAddress: "address",
     APIGetOrderTimeSession: "getOrderTimeSession",
 
     /// Colors
@@ -102,7 +103,8 @@ module.exports = {
         Redux Action Keys Start
         Key formation:
             <API_Name> + <Request|Success|Failure>
-    */
+        */
+
         // Login Screen
         FBLoginRequest: "FBLoginRequest",
         loginRequest: "loginRequest",
@@ -154,7 +156,7 @@ module.exports = {
         getOrderTimeSessionRequest: "getOrderTimeSessionRequest",
         getOrderTimeSessionSuccess: "getOrderTimeSessionSuccess",
         getOrderTimeSessionFailure: "getOrderTimeSessionFailure",
-        
+
         // Category Screen
         getCategoryRequest: "getCategoryRequest",
         getCategorySuccess: "getCategorySuccess",
@@ -162,6 +164,19 @@ module.exports = {
         getBannerRequest: "getBannerRequest",
         getBannerSuccess: "getBannerSuccess",
         getBannerFailure: "getBannerFailure",
+
+        // SubCategory Screen
+        getSubCategoryRequest: "getSubCategoryRequest",
+        getSubCategorySuccess: "getSubCategorySuccess",
+        getSubCategoryFailure: "getSubCategoryFailure",
+
+        // AddressList Screen
+        getAddressRequest: "getAddressRequest",
+        getAddressSuccess: "getAddressSuccess",
+        getAddressFailure: "getAddressFailure",
+        deleteAddressRequest: "deleteAddressRequest",
+        deleteAddressSuccess: "deleteAddressSuccess",
+        deleteAddressFailure: "deleteAddressFailure",
     },
 
     /*
