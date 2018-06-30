@@ -149,6 +149,19 @@ module.exports = {
         setStoreRequest: "setStoreRequest",
         setStoreSuccess: "setStoreSuccess",
         setStoreFailure: "setStoreFailure",
+
+        // SelectTime Screen
+        getOrderTimeSessionRequest: "getOrderTimeSessionRequest",
+        getOrderTimeSessionSuccess: "getOrderTimeSessionSuccess",
+        getOrderTimeSessionFailure: "getOrderTimeSessionFailure",
+        
+        // Category Screen
+        getCategoryRequest: "getCategoryRequest",
+        getCategorySuccess: "getCategorySuccess",
+        getCategoryFailure: "getCategoryFailure",
+        getBannerRequest: "getBannerRequest",
+        getBannerSuccess: "getBannerSuccess",
+        getBannerFailure: "getBannerFailure",
     },
 
     /*

@@ -16,6 +16,10 @@ const rootReducer = combineReducers({
     city: require("./CityReducer").reducer,
     area: require("./AreaReducer").reducer,
     store: require("./StoreReducer").reducer,
+
+    //Menu Flow
+    selectTime: require("./SelectTimeReducer").reducer,
+    category: require("./CategoryReducer").reducer,
 });
 
 export let sagaMiddleware = saga();

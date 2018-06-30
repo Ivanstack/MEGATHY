@@ -8,6 +8,8 @@ import { ResetPasswordScreenCalls } from "./ResetPasswordSagas";
 import { CityScreenCalls } from "./CitySagas";
 import { AreaScreenCalls } from "./AreaSagas";
 import { StoreScreenCalls } from "./StoreSagas";
+import { SelectTimeScreenCalls } from "./SelectTimeSagas";
+import { CategoryScreenCalls } from "./CategorySagas";
 
 // watcher saga: watches for actions dispatched to the store, starts worker saga
 export function* watcherSaga(action) {
@@ -39,4 +41,11 @@ export function* watcherSaga(action) {
     // Store Screen
     yield takeEvery(constant.actions.getStoreRequest, StoreScreenCalls);
     yield takeEvery(constant.actions.setStoreRequest, StoreScreenCalls);
+
+    // SelectTime Screen
+    yield takeEvery(constant.actions.getOrderTimeSessionRequest, SelectTimeScreenCalls);
+    
+    // Category Screen
+    yield takeEvery(constant.actions.getCategoryRequest, CategoryScreenCalls);
+    yield takeEvery(constant.actions.getBannerRequest, CategoryScreenCalls);
 }
