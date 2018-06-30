@@ -48,7 +48,6 @@ import * as CommonUtilites from "../../../../Helper/CommonUtilities";
 
 // Localization
 import baseLocal from "../../../../Resources/Localization/baseLocalization";
-import CartScreenStyle from "../CartScreen/CartScreenStyle";
 
 // const AppSocket = new SocketIO('http://192.168.0.7:1339');
 
@@ -62,11 +61,6 @@ class CategoryScreen extends Component {
             // swipeIndex: 0,
             // isRefreshing: false,
             // visible: false,
-            isSubCategoryScr:
-                this.props.navigation.state.params != undefined &&
-                this.props.navigation.state.params.category != undefined
-                    ? true
-                    : false,
         };
 
         this._callLoadMore = this._callLoadMore.bind(this);
@@ -124,13 +118,8 @@ class CategoryScreen extends Component {
     // App Life Cycle Methods
 
     async componentDidMount() {
-        if (this.state.isSubCategoryScr) {
-            console.log("App State Subcategory: ", AppState.currentState);
-            this._getSubCategoryData(false);
-        } else {
-            console.log("App State Home: ", AppState.currentState);
-            this.getCategoryAndBannerData(false);
-        }
+        console.log("App State Home: ", AppState.currentState);
+        this.getCategoryAndBannerData(true);
     }
 
     componentWillUnmount() {
@@ -151,84 +140,16 @@ class CategoryScreen extends Component {
     _callLoadMore() {
         console.log("Call Load More .....");
 
-        if (this.state.isSubCategoryScr) {
-            if (this.subCategoryCurrentPage < this.subCategoryLastPage) {
-                this._getSubCategoryData(true);
-            }
-        } else {
-            if (this.currentPage < this.lastPage) {
-                this.getCategoryAndBannerData(true);
-            }
+        if (this.props.currentPage < this.props.lastPage) {
+            this.getCategoryAndBannerData(false, true);
         }
     }
 
-    _getSubCategoryData(isLoadMore) {
-        console.log("Call get subcategory .....");
+    getCategoryAndBannerData(isRefresh = false, isLoadMore = false) {
+        let categoryPage = 1;
 
-        // Show Loading View
-        // this.setState({ visible: true });
-        let subCategoryPage = this.subCategoryCurrentPage;
-
-        if (isLoadMore && this.subCategoryCurrentPage < this.subCategoryLastPage) {
-            subCategoryPage = subCategoryPage + 1;
-        }
-
-        var subCategoryParameters = {
-            page: subCategoryPage,
-            categoryId: this.props.navigation.state.params.category.PkId,
-        };
-
-        this.props.getSubCategories(subCategoryParameters);
-
-        /*
-        console.log("getCategory Parameters :===> ", subCategoryParameters);
-
-        let subCategoryData = networkUtility.getRequest(constant.APIGetSubCategory, subCategoryParameters).then(
-            result => {
-                let resultData = result.data.data;
-                console.log("Get SubCategory :======> ", resultData);
-                this.subCategoryCurrentPage = resultData.current_page;
-                this.subCategoryLastPage = resultData.last_page;
-                let newArrCategory = [...this.state.categoryData, ...resultData.data].filter(
-                    (val, id, array) => array.indexOf(val) === id
-                );
-                console.log("Get SubCategory New Array :======> ", newArrCategory);
-
-                // Hide Loading View
-                this.setState({
-                    categoryData: newArrCategory,
-                    isRefreshing: false,
-                    visible: false,
-                });
-            },
-            error => {
-                constants.debugLog("\nStatus Code: " + error.status);
-                constants.debugLog("\nError Message: " + error);
-
-                // Hide Loading View
-                this.setState({ visible: false });
-
-                if (error.status != 500) {
-                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        CommonUtilities.showAlert(error.data["messageAr"], false);
-                    } else {
-                        CommonUtilities.showAlert(error.data["messageAr"]);
-                    }
-                } else {
-                    constants.debugLog("Internal Server Error: " + error.data);
-                    CommonUtilities.showAlert("Opps! something went wrong");
-                }
-            }
-        );
-        */
-        // }
-    }
-
-    getCategoryAndBannerData(isLoadMore) {
-        let categoryPage = this.currentPage;
-
-        if (isLoadMore && this.currentPage < this.lastPage) {
-            categoryPage = categoryPage + 1;
+        if (!isRefresh && isLoadMore && this.props.currentPage < this.props.lastPage) {
+            categoryPage = this.props.currentPage + 1;
         }
 
         var categoryParameters = {
@@ -319,115 +240,69 @@ class CategoryScreen extends Component {
     }
 
     _onRefresh() {
-        if (this.state.isSubCategoryScr) {
-            this.subCategoryCurrentPage = 1;
-            this._getSubCategoryData(false);
-
-            // this.setState(
-            //     // { isRefreshing: true, currentPage: 1, categoryData: [] },
-            //     { isRefreshing: true, categoryData: [] },
-            //     () => {
-            //         this._getSubCategoryData(false);
-            //     }
-            // );
-        } else {
-            this.currentPage = 1;
-            this.getCategoryAndBannerData(false);
-
-            // this.setState(
-            //     // { isRefreshing: true, currentPage: 1, categoryData: [] },
-            //     { isRefreshing: true, categoryData: [] },
-            //     () => {
-            //         this.getCategoryAndBannerData(false);
-            //     }
-            // );
-        }
+        this.props.currentPage = 1;
+        this.getCategoryAndBannerData(true);
         constant.debugLog("On Refresh call....");
     }
 
     _onPressCategory(item) {
         console.log("Pass Category :==> ", item);
 
-        if (item.subCategoryCount > 0 && !this.state.isSubCategoryScr) {
-            this.props.navigation.navigate(constant.kCategoryScreen, {
+        if (item.subCategoryCount > 0) {
+            this.props.navigation.navigate(constant.kSubCategoryScreen, {
                 category: item,
+                onNavigateBack: this.onNavigateBack.bind(this),
             });
         } else {
             this.props.navigation.navigate(constant.kProductScreen, {
                 category: item,
+                onNavigateBack: this.onNavigateBack.bind(this),
             });
         }
     }
 
-    // _renderFooter() {
-    //   if (this.currentPage < this.lastPage) {
-    //     return (
-    //       <View style={CategoryStyles.footer}>
-    //         <TouchableOpacity
-    //           activeOpacity={0.9}
-    //           onPress={this._callLoadMore}
-    //           style={CategoryStyles.loadMoreBtn}
-    //         >
-    //           <Text style={CategoryStyles.btnText}>Load More</Text>
-    //           {this.state.fetching_from_server ? (
-    //             <ActivityIndicator color="white" style={{ marginLeft: 8 }} />
-    //           ) : null}
-    //         </TouchableOpacity>
-    //       </View>
-    //     );
-    //   } else {
-    //     return <View />;
-    //   }
-    // }
-
     _renderHeader() {
         return (
             <View>
-                {this.state.isSubCategoryScr ? (
-                    <View />
-                ) : (
-                    <View>
-                        <Swiper
-                            style={CategoryStyles.bannerWrapper}
-                            showPagination
-                            autoplay={true}
-                            autoplayTimeout={3}
-                            autoplayDirection={true}
-                            loop={true}
-                            // index={0}
-                            // onIndexChanged={index => {console.log("Change Swipe Index :==> ", index)}}
-                            onMomentumScrollEnd={(e, state, context) => {}}
-                            dot={<View style={CategoryStyles.dot} />}
-                            activeDot={<View style={CategoryStyles.activeDot} />}
-                            paginationStyle={CategoryStyles.pagination}
-                        >
-                            {this.props.arrBanners.length > 0
-                                ? this.props.arrBanners.map((value, index) => {
-                                      return (
-                                          <View key={index} style={{ height: "100%", margin: 10 }}>
-                                              <ImageLoad
-                                                  style={CategoryStyles.image}
-                                                  isShowActivity={false}
-                                                  placeholderSource={require("../../../../Resources/Images/DefaultProductImage.png")}
-                                                  source={{ uri: value.banner_image_url }}
-                                              />
-                                          </View>
-                                      );
-                                  })
-                                : // <View/>
-                                  this.items.map((value, index) => {
-                                      return (
-                                          <View key={index} style={{ height: 200, margin: 10 }}>
-                                              <Image
-                                                  style={CategoryStyles.image}
-                                                  source={require("../../../../Resources/Images/DefaultProductImage.png")}
-                                              />
-                                          </View>
-                                      );
-                                  })}
-                        </Swiper>
-                    </View>
-                )}
+                <Swiper
+                    style={CategoryStyles.bannerWrapper}
+                    showPagination
+                    autoplay={true}
+                    autoplayTimeout={3}
+                    autoplayDirection={true}
+                    loop={true}
+                    // index={0}
+                    // onIndexChanged={index => {console.log("Change Swipe Index :==> ", index)}}
+                    onMomentumScrollEnd={(e, state, context) => {}}
+                    dot={<View style={CategoryStyles.dot} />}
+                    activeDot={<View style={CategoryStyles.activeDot} />}
+                    paginationStyle={CategoryStyles.pagination}
+                >
+                    {this.props.arrBanners.length > 0
+                        ? this.props.arrBanners.map((value, index) => {
+                              return (
+                                  <View key={index} style={{ height: "100%", margin: 10 }}>
+                                      <ImageLoad
+                                          style={CategoryStyles.image}
+                                          isShowActivity={false}
+                                          placeholderSource={require("../../../../Resources/Images/DefaultProductImage.png")}
+                                          source={{ uri: value.banner_image_url }}
+                                      />
+                                  </View>
+                              );
+                          })
+                        : // <View/>
+                          this.items.map((value, index) => {
+                              return (
+                                  <View key={index} style={{ height: 200, margin: 10 }}>
+                                      <Image
+                                          style={CategoryStyles.image}
+                                          source={require("../../../../Resources/Images/DefaultProductImage.png")}
+                                      />
+                                  </View>
+                              );
+                          })}
+                </Swiper>
             </View>
         );
     }
@@ -650,11 +525,7 @@ class CategoryScreen extends Component {
                             }
                             data={this.props.arrCategories}
                             keyExtractor={(item, index) => item.PkId.toString()}
-                            renderItem={
-                                this.state.isSubCategoryScr
-                                    ? this._renderSubCategoryItem.bind(this)
-                                    : this._renderCategoryItem.bind(this)
-                            }
+                            renderItem={this._renderCategoryItem.bind(this)}
                             showsHorizontalScrollIndicator={false}
                             removeClippedSubviews={false}
                             directionalLockEnabled
@@ -667,7 +538,7 @@ class CategoryScreen extends Component {
                         <Spinner visible={this.props.isLoading} cancelable={true} textStyle={{ color: "#FFF" }} />
                     )}
 
-                    {!this.state.isSubCategoryScr ? this._renderCartItemsView() : null}
+                    {this._renderCartItemsView()}
                 </SafeAreaView>
             </View>
             /* </ScrollView> */
@@ -697,11 +568,6 @@ function mapDispatchToProps(dispatch) {
             dispatch({
                 type: constant.actions.getCategoryRequest,
                 payload: { endPoint: constant.APIGetCategory, parameters: parameters },
-            }),
-        getSubCategories: parameters =>
-            dispatch({
-                type: constant.actions.getCategoryRequest,
-                payload: { endPoint: constant.APIGetSubCategory, parameters: parameters },
             }),
         getBanners: () =>
             dispatch({

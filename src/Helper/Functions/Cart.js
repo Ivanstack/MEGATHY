@@ -15,13 +15,11 @@ export function getCartItemsCount() {
 
 export function findCartItem(cartItemName) {
   // global.arrCartItems.find((cartItem) => {
-  //     constant.debugLog("Find Cart Item : ==> ",cartItem)
   //     return cartItem.name === cartItemName
   //   })
   let findCartItem = null;
   if (global.arrCartItems) {
     global.arrCartItems.map((cartItem, itemIdx) => {
-      // constant.debugLog("Find Cart Item : ==> ", cartItem);
       if (cartItem.PkId === cartItemName) {
         findCartItem = cartItem;
       }
@@ -38,7 +36,6 @@ export function getTotalPriceCartItems() {
       cartItem.product_price[0].status === constant.kProductDiscountActive
         ? cartItem.product_price[0].discountPrice
         : cartItem.product_price[0].price;
-    constant.debugLog("Find Cart Item : ==> ", cartItem.product_price);
     totalPrice = totalPrice + finalProductPrice * cartItem.totalAddedProduct;
   });
 

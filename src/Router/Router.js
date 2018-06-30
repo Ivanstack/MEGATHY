@@ -14,6 +14,7 @@ import LoginScreen from "../Containers/LoginScreens/LoginScreen";
 import SideMenu from "../Containers/MenuScreens/SideMenu";
 
 import CategoryScreen from "../Containers/MenuScreens/Category/CategoryScreen/CategoryScreen";
+import SubCategoryScreen from "../Containers/MenuScreens/Category/SubCategoryScreen/SubCategoryScreen";
 import ProductScreen from "../Containers/MenuScreens/Category/ProductScreen/ProductScreen";
 import CartScreen from "../Containers/MenuScreens/Category/CartScreen/CartScreen";
 
@@ -42,6 +43,7 @@ const OrderMasterScreenNav = StackNavigator(
 const CategoryScreenNav = StackNavigator(
     {
         CategoryScreen: { screen: CategoryScreen },
+        SubCategoryScreen: { screen: SubCategoryScreen },
         ProductScreen: { screen: ProductScreen },
         CartScreen: { screen: CartScreen },
         OrderMasterScreen: { screen: OrderMasterScreenNav },

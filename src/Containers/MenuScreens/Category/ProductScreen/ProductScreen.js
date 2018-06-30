@@ -74,7 +74,12 @@ class ProductScreen extends Component {
         headerLeft: (
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                 <View style={{ flexDirection: "row" }}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.state.params.onNavigateBack();
+                            navigation.goBack();
+                        }}
+                    >
                         <Icon name="arrow-left" style={{ marginLeft: 10 }} size={35} color="white" />
                     </TouchableOpacity>
                     <Text style={ProductStyles.headerText}>
@@ -142,20 +147,16 @@ class ProductScreen extends Component {
         try {
             if (isSaveCartItem) {
                 await AsyncStorage.setItem("cartItems", JSON.stringify(global.arrCartItems));
-                console.log("Save Array in AsynStorage :====>", JSON.stringify(global.arrCartItems));
             } else {
                 var oldArrCartItems = await AsyncStorage.getItem("cartItems");
                 if (oldArrCartItems !== null) {
                     // We have data!!
                     global.arrCartItems = JSON.parse(oldArrCartItems);
-                    console.log("Get Array from AsynStorage :====>", global.arrCartItems);
-                    console.log("Get lenght from Product :====>", this.state.productDataList.length);
                     if (global.arrCartItems.length > 0) {
                         global.arrCartItems.map(cartItem => {
                             this.state.productDataList.map(item => {
                                 if (cartItem.PkId === item.PkId) {
                                     item.totalAddedProduct = cartItem.totalAddedProduct;
-                                    console.log("Item changed :===> ", item);
                                 }
                                 // else {
                                 //   item.totalAddedProduct = 0;
@@ -365,7 +366,6 @@ class ProductScreen extends Component {
     };
 
     _renderCategoryItem = ({ item, index }) => {
-        // console.log("global array :===> ", global.arrCartItems);
 
         return (
             <View
