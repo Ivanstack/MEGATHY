@@ -112,6 +112,23 @@ class SelectTimeScreen extends Component {
     this._getAPIGetOrderTimeSession();
   }
 
+  componentWillReceiveProps(newProps) {
+    constant.debugLog("New Props :==> " + JSON.stringify(newProps));
+
+    if (
+      newProps.isSuccess === true &&
+      newProps.objOrderBookedTimeSlote != null
+    ) {
+      this.setState(
+        {
+          arrOrderBookedTimeSlote: newProps.objOrderBookedTimeSlote.orderSlots,
+          crntStoreTime: newProps.objOrderBookedTimeSlote.storeTime
+        },
+        () => this._getRemainingHours()
+      );
+    }
+  }
+
   // Convert Time into 12hrs Formate
   _convertHourFormate = (isTitle, hours) => {
     // let convertHour = ""
@@ -228,54 +245,8 @@ class SelectTimeScreen extends Component {
     constant.debugLog(
       "orderTimeSession Parameters :====> " + orderTimeSessionParameters
     );
-    networkUtility
-      .getRequest(constant.APIGetOrderTimeSession, orderTimeSessionParameters)
-      .then(
-        result => {
-          // Hide Loading View
-          // this.setState({ visible: false });
-          let resultData = result.data.data;
-          // constant.debugLog(
-          //   "orderTimeSession Result :===> " + resultData.otherBookTime
-          // );
-          this.setState(
-            {
-              arrOrderBookedTimeSlote: resultData.orderSlots,
-              crntStoreTime: resultData.storeTime
-            },
-            () => this._getRemainingHours()
-          );
-        },
-        error => {
-          constants.debugLog("\nStatus Code: " + error.status);
-          constants.debugLog("\nError Message: " + error);
 
-          // Hide Loading View
-          // this.setState({ visible: false });
-
-          if (error.status != 500) {
-            if (
-              global.currentAppLanguage === constant.languageArabic &&
-              error.data["messageAr"] != undefined
-            ) {
-              CommonUtilities.showAlert(
-                error.data["messageAr"],
-                false,
-                "Megathy"
-              );
-            } else {
-              CommonUtilities.showAlert(
-                error.data["message"],
-                false,
-                "Megathy"
-              );
-            }
-          } else {
-            constants.debugLog("Internal Server Error: " + error.data);
-            CommonUtilities.showAlert("Opps! something went wrong");
-          }
-        }
-      );
+    this.props.getOrderTimeSession(orderTimeSessionParameters);
   };
 
   // Get Remaining Hours and Make Time Slot for order
@@ -291,8 +262,8 @@ class SelectTimeScreen extends Component {
       this.state.crntSelectedSegment
     ].date;
     let crntDateForCompare = new Date().toISOString().substring(0, 10);
-    console.log("Todays Hours : ==> ", crntDateForCompare);
-    console.log("Compare Date Hours : ==> ", dateForSegment);
+    // console.log("Todays Hours : ==> ", crntDateForCompare);
+    // console.log("Compare Date Hours : ==> ", dateForSegment);
 
     if (crntDateForCompare === dateForSegment) {
       nextDay.setHours(0, 0, 0, 0);
@@ -377,12 +348,12 @@ class SelectTimeScreen extends Component {
     );
   };
 
-  _renderItem = ({ item, index }) => {
+  _renderItem = ({ item }) => {
     let timeSlotStatusColor = this._checkTimeSlotAvailableStatus(item.timeSlot);
-    let imgForTimeSlotViewOpenStatus =
-      this.state.isTimeSlotOpen 
-        ? require("../../../../Resources/Images/Order/upArrowRetract.png")
-        : require("../../../../Resources/Images/Order/downArrowExpand.png");
+
+    let imgForTimeSlotViewOpenStatus = item.isOpen
+      ? require("../../../../Resources/Images/Order/upArrowRetract.png")
+      : require("../../../../Resources/Images/Order/downArrowExpand.png");
     return (
       <View
         style={{
@@ -391,12 +362,9 @@ class SelectTimeScreen extends Component {
       >
         <CollapsibleList
           numberOfVisibleItems={1}
-          //   wrapperStyle={styles.wrapperCollapsibleList}
+          animationConfig={{ duration: 200 }}
           onToggle={collapsed => {
-            let openTimeSlote = {}
-            openTimeSlote["timeSlot"] = item.time;
-            openTimeSlote["isOpen"] = collapsed;
-            this.crntOpenTimeSlot.push(openTimeSlote);
+            item.isOpen = collapsed;
             this.setState({ isTimeSlotOpen: collapsed });
           }}
           buttonContent={
@@ -487,7 +455,7 @@ class SelectTimeScreen extends Component {
         >
           <View
             style={{
-              width: 2,
+              width: 4,
               height: "60%",
               backgroundColor: timeSlotStatus.color
             }}
@@ -559,13 +527,26 @@ class SelectTimeScreen extends Component {
 }
 
 function mapStateToProps(state, props) {
+  constant.debugLog("New State : ===> " + JSON.stringify(state));
   return {
-    // firstComp: state.dataReducer.firstComp
+    isLoading: state.selectTime.isLoading,
+    isSuccess: state.selectTime.isSuccess,
+    objOrderBookedTimeSlote: state.selectTime.objOrderBookedTimeSlote,
+    error: state.selectTime.error
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(actions, dispatch);
+  return {
+    getOrderTimeSession: parameters =>
+      dispatch({
+        type: constant.actions.getOrderTimeSessionRequest,
+        payload: {
+          endPoint: constant.APIGetOrderTimeSession,
+          parameters: parameters
+        }
+      })
+  };
 }
 
 export default connect(

@@ -23,7 +23,7 @@ export default class AddressListItem extends Component {
     }
 
     _onPress = () => {
-        if (this.props.entryPoint != undefined) this.props.onPressItem(this.props.address);
+        if (this.props.parentEntryPoint != undefined) this.props.onPressItem(this.props.address);
     };
 
     _onPressEdit = () => {

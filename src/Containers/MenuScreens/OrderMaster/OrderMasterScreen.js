@@ -348,7 +348,7 @@ class OrderMasterScreen extends Component {
 
              {/* ----- AddressListScreen ----- */}
               <View style={OrderMasterStyles.addressListContainerStyle}>
-                <AddressListScreen />
+                <AddressListScreen entryPoint="OrderMaster"/>
               </View>
 
               {/* ----- SelectTimeScreen ----- */}
