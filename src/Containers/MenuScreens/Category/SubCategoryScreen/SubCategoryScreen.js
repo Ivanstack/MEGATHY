@@ -15,7 +15,6 @@ import {
   AppState,
   SafeAreaView,
   FlatList,
-  Dimensions,
   RefreshControl
 } from "react-native";
 
@@ -156,7 +155,7 @@ class SubCategoryScreen extends Component {
   }
 
   _onRefresh() {
-    this.props.subCategoryCurrentPage = 1;
+    // this.props.subCategoryCurrentPage = 1;
     this._getSubCategoryData(true);
     constant.debugLog("On Refresh call....");
   }
@@ -164,65 +163,13 @@ class SubCategoryScreen extends Component {
   _onPressCategory(item) {
     console.log("Pass Category :==> ", item);
     this.props.navigation.navigate(constant.kProductScreen, {
-      category: item
+      category: item,
+      onNavigateBack: this.onNavigateBack.bind(this),
     });
-  }
-
-  _renderHeader() {
-    return (
-      <View>
-        {this.state.isSubCategoryScr ? (
-          <View />
-        ) : (
-          <View>
-            <Swiper
-              style={SubCategoryStyles.bannerWrapper}
-              showPagination
-              autoplay={true}
-              autoplayTimeout={3}
-              autoplayDirection={true}
-              loop={true}
-              // index={0}
-              // onIndexChanged={index => {console.log("Change Swipe Index :==> ", index)}}
-              onMomentumScrollEnd={(e, state, context) => {}}
-              dot={<View style={SubCategoryStyles.dot} />}
-              activeDot={<View style={SubCategoryStyles.activeDot} />}
-              paginationStyle={SubCategoryStyles.pagination}
-            >
-              {this.props.arrBanners.length > 0
-                ? this.props.arrBanners.map((value, index) => {
-                    return (
-                      <View key={index} style={{ height: "100%", margin: 10 }}>
-                        <ImageLoad
-                          style={SubCategoryStyles.image}
-                          isShowActivity={false}
-                          placeholderSource={require("../../../../Resources/Images/DefaultProductImage.png")}
-                          source={{ uri: value.banner_image_url }}
-                        />
-                      </View>
-                    );
-                  })
-                : // <View/>
-                  this.items.map((value, index) => {
-                    return (
-                      <View key={index} style={{ height: 200, margin: 10 }}>
-                        <Image
-                          style={SubCategoryStyles.image}
-                          source={require("../../../../Resources/Images/DefaultProductImage.png")}
-                        />
-                      </View>
-                    );
-                  })}
-            </Swiper>
-          </View>
-        )}
-      </View>
-    );
   }
 
   _renderSubCategoryItem({ item, index }) {
     console.log("render subcategory item");
-
     return (
       <TouchableWithoutFeedback
         style={{ backgroundColor: constant.prodCategoryBGColor }}
@@ -257,7 +204,7 @@ class SubCategoryScreen extends Component {
                   color: "gray"
                 }}
               >
-                See All
+                SEE ALL
               </Text>
             </View>
           </View>
@@ -277,84 +224,6 @@ class SubCategoryScreen extends Component {
       </TouchableWithoutFeedback>
     );
   }
-
-  _renderCategoryItem = ({ item, index }) => {
-    return (
-      <TouchableWithoutFeedback
-        style={{ backgroundColor: constant.prodCategoryBGColor }}
-        onPress={() => this._onPressCategory(item)}
-      >
-        <View>
-          <View style={SubCategoryStyles.categoryItemConstainerStyle}>
-            <View style={{ flexDirection: "column" }}>
-              <Text style={SubCategoryStyles.categoryItemNameTxtStyle}>
-                {global.currentAppLanguage === constant.languageArabic
-                  ? item.categoryNameAr
-                  : item.categoryName}
-              </Text>
-              <Text style={SubCategoryStyles.categoryProductsCountStyle}>
-                {item.productCount}
-                {" Products"}
-              </Text>
-            </View>
-
-            <View
-              style={{
-                justifyContent: "flex-end",
-                alignItems: "flex-end"
-                // backgroundColor: "gray"
-              }}
-            >
-              <Text
-                style={{
-                  marginRight: 10,
-                  fontSize: 18,
-                  fontFamily: constant.themeFont,
-                  color: "gray"
-                }}
-              >
-                See All
-              </Text>
-            </View>
-          </View>
-
-          <View style={{ width: "100%", height: 230, marginBottom: 10 }}>
-            <ImageLoad
-              style={{ width: "100%", height: 230, marginBottom: 10 }}
-              isShowActivity={false}
-              placeholderSource={require("../../../../Resources/Images/DefaultProductImage.png")}
-              // loadingStyle={{ size: "large", color: "blue" }}
-              source={{
-                uri: item.categoryImageUrl
-              }}
-            />
-            {/* <View style={SubCategoryStyles.overlayLayer} /> */}
-            {/* <View
-              style={[
-                SubCategoryStyles.overlayLayer,
-                {
-                  opacity: 1,
-                  backgroundColor: "transparent",
-                  justifyContent: "center",
-                  alignItems: "center"
-                }
-              ]}
-            >
-              <Text
-              style={{
-                fontSize: 25,
-                fontFamily: constant.themeFont,
-                color: "white"
-              }}
-            >
-              {item.categoryName}
-            </Text>
-            </View> */}
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-    );
-  };
 
   render() {
     console.log("subCategory :===> ", this.props.arrSubCategories);

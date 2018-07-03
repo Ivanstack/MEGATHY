@@ -13,7 +13,6 @@ import {
     SafeAreaView,
     FlatList,
     Image,
-    Dimensions,
     ScrollView,
     TouchableWithoutFeedback,
 } from "react-native";
@@ -21,9 +20,7 @@ import {
 import * as constant from "../../../../Helper/Constants";
 
 // Redux
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as actions from "../../../../AppRedux/Actions/actions";
 
 // Libs
 import CollapsibleList from "react-native-collapsible-list";
@@ -32,12 +29,6 @@ import SegmentedControlTab from "react-native-segmented-control-tab";
 // Common Utilities
 import * as CommonUtilities from "../../../../Helper/CommonUtilities";
 
-// Network Utility
-import * as networkUtility from "../../../../Helper/NetworkUtility";
-
-// IQKeyboard Manager
-import KeyboardManager from "react-native-keyboard-manager";
-
 // Loading View
 import Spinner from "react-native-loading-spinner-overlay";
 import Icon from "react-native-vector-icons/EvilIcons";
@@ -45,13 +36,11 @@ import Icon from "react-native-vector-icons/EvilIcons";
 // Localization
 import baseLocal from "../../../../Resources/Localization/baseLocalization";
 
+// Component Style
+import SelectTimeStyle from "./SelectTimeStyle";
+
 // Variable
 const arrTimeInterval = ["00", "10", "20", "30", "40", "50"];
-const arrTimeSlotStatus = [
-    { status: "Booked", color: constant.themeColor },
-    { status: "Available", color: constant.themeGreenColor },
-    { status: "Partial", color: constant.themeYellowColor },
-];
 
 class SelectTimeScreen extends Component {
     constructor(props) {
@@ -95,7 +84,7 @@ class SelectTimeScreen extends Component {
                             color="white"
                         />
                     </TouchableOpacity>
-                    <Text style={styles.headerText}> Meghathy </Text>
+                    <Text style={SelectTimeStyle.headerText}> Meghathy </Text>
                 </View>
             </View>
         ),
@@ -109,7 +98,6 @@ class SelectTimeScreen extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-
         if (newProps.isSuccess === true && newProps.objOrderBookedTimeSlote != null) {
             this.setState(
                 {
@@ -164,13 +152,14 @@ class SelectTimeScreen extends Component {
         let objSlot = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].otherBookTime;
 
         let bookedOrderTimeSlot = objSlot[`slot${checkeTimeSlot}`];
-        // console.log("Booked Time Slot : ===> " + bookedOrderTimeSlot);
+        constant.debugLog("Booked Time Slot : ===> " + bookedOrderTimeSlot);
 
-        // if (bookedOrderTimeSlot.lenght > 0) {
-        for (let index = 0; index < 6; index++) {
-            const bookedTimeSlotElement = bookedOrderTimeSlot[index];
-            if (bookedTimeSlotElement && bookedTimeSlotElement.includes(checkeTimeSlot)) {
-                return true;
+        if (bookedOrderTimeSlot && bookedOrderTimeSlot.lenght > 0) {
+            for (let index = 0; index < 6; index++) {
+                const bookedTimeSlotElement = bookedOrderTimeSlot[index];
+                if (bookedTimeSlotElement && bookedTimeSlotElement.includes(checkeTimeSlot)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -255,6 +244,7 @@ class SelectTimeScreen extends Component {
         let timeSloteData = {};
         timeSloteData["time"] = todayHour;
         timeSloteData["timeSlot"] = this._creatTimeSlotWithTime(todayHour);
+        timeSloteData["isOpen"] = false;
         arrRemainig.push(timeSloteData);
 
         for (let index = 0; index < remainigHours; index++) {
@@ -262,6 +252,7 @@ class SelectTimeScreen extends Component {
             let newTimeSloteData = {};
             newTimeSloteData["time"] = todayHour;
             newTimeSloteData["timeSlot"] = this._creatTimeSlotWithTime(todayHour);
+            newTimeSloteData["isOpen"] = false;
             arrRemainig.push(newTimeSloteData);
         }
         // console.log("TimeSlot In Json :===> ", arrRemainig);
@@ -313,7 +304,7 @@ class SelectTimeScreen extends Component {
             <TouchableWithoutFeedback onPress={() => this._onPressSelectTimeSlot(item)}>
                 <View
                     style={[
-                        styles.tagBtnStyle,
+                        SelectTimeStyle.tagBtnStyle,
                         {
                             backgroundColor: this._checkedSlotBookedByCrntUser(item)
                                 ? constant.themeGreenColor
@@ -323,7 +314,7 @@ class SelectTimeScreen extends Component {
                         },
                     ]}
                 >
-                    <Text style={styles.headerText}> {item.title} </Text>
+                    <Text style={SelectTimeStyle.headerText}> {item.title} </Text>
                 </View>
             </TouchableWithoutFeedback>
         );
@@ -331,7 +322,6 @@ class SelectTimeScreen extends Component {
 
     _renderItem = ({ item }) => {
         let timeSlotStatusColor = this._checkTimeSlotAvailableStatus(item.timeSlot);
-
         let imgForTimeSlotViewOpenStatus = item.isOpen
             ? require("../../../../Resources/Images/Order/upArrowRetract.png")
             : require("../../../../Resources/Images/Order/downArrowExpand.png");
@@ -364,7 +354,7 @@ class SelectTimeScreen extends Component {
                                     alignItems: "center",
                                 }}
                             >
-                                <Text style={styles.txtTimeSlotTitle}>
+                                <Text style={SelectTimeStyle.txtTimeSlotTitle}>
                                     {this._convertHourFormate(true, item.time)}-{this._convertHourFormate(
                                         true,
                                         item.time + 1
@@ -397,7 +387,7 @@ class SelectTimeScreen extends Component {
                         </View>
                     }
                     items={[
-                        <View style={styles.collapsibleItem} />,
+                        <View style={SelectTimeStyle.collapsibleItem} />,
                         <View
                             style={{
                                 borderBottomWidth: StyleSheet.hairlineWidth,
@@ -414,7 +404,7 @@ class SelectTimeScreen extends Component {
                                 numColumns={3}
                             />
                         </View>,
-                        <View style={styles.collapsibleItem} />,
+                        <View style={SelectTimeStyle.collapsibleItem} />,
                     ]}
                 />
             </View>
@@ -430,7 +420,7 @@ class SelectTimeScreen extends Component {
         const renderedTimeSlotStatusView = arrTimeSlotStatus.map(timeSlotStatus => {
             // constant.debugLog("Render timeslotstatus : " + timeSlotStatus);
             return (
-                <View style={styles.slotStatusIndicatorView} key={timeSlotStatus.status}>
+                <View style={SelectTimeStyle.slotStatusIndicatorView} key={timeSlotStatus.status}>
                     <View
                         style={{
                             width: 4,
@@ -438,7 +428,7 @@ class SelectTimeScreen extends Component {
                             backgroundColor: timeSlotStatus.color,
                         }}
                     />
-                    <Text style={styles.txtTimeSlotStatus}>{timeSlotStatus.status}</Text>
+                    <Text style={SelectTimeStyle.txtTimeSlotStatus}>{timeSlotStatus.status}</Text>
                 </View>
             );
         });
@@ -460,10 +450,10 @@ class SelectTimeScreen extends Component {
                             showsHorizontalScrollIndicator={false}
                         >
                             <SegmentedControlTab
-                                tabsContainerStyle={styles.tabsContainerStyle}
-                                tabStyle={styles.tabStyle}
+                                tabsContainerStyle={SelectTimeStyle.tabsContainerStyle}
+                                tabStyle={SelectTimeStyle.tabStyle}
                                 tabTextStyle={{ color: constant.themeColor }}
-                                activeTabStyle={styles.activeTabStyle}
+                                activeTabStyle={SelectTimeStyle.activeTabStyle}
                                 borderRadius={0}
                                 values={this._getValueForSegmentDate()}
                                 selectedIndex={this.state.crntSelectedSegment}
@@ -473,30 +463,32 @@ class SelectTimeScreen extends Component {
                     </View>
 
                     {/* ----- Time Slote View ----- */}
-                    <View>
-                        <FlatList
-                            style={{ width: "100%", marginBottom: 30 }}
-                            keyExtractor={item => item.time.toString()}
-                            extraData={this.state}
-                            ref={flatList => {
-                                this.timeslote = flatList;
-                            }}
-                            data={this.state.arrSetTimeSlote}
-                            renderItem={this._renderItem}
-                        />
-                    </View>
+                    <View style={{ width: "100%", marginBottom: 30 }}>
+                        <View>
+                            <FlatList
+                                style={{ width: "100%", marginBottom: 30 }}
+                                keyExtractor={item => item.time.toString()}
+                                extraData={this.state}
+                                ref={flatList => {
+                                    this.timeslote = flatList;
+                                }}
+                                data={this.state.arrSetTimeSlote}
+                                renderItem={this._renderItem}
+                            />
+                        </View>
 
-                    {/* ----- Time Slote Status Instruction View ----- */}
-                    <View
-                        style={{
-                            justifyContent: "space-between",
-                            position: "absolute",
-                            bottom: 0,
-                            flexDirection: "row",
-                            backgroundColor: "white",
-                        }}
-                    >
-                        {this._renderTimeSlotStatusInstructorView()}
+                        {/* ----- Time Slote Status Instruction View ----- */}
+                        <View
+                            style={{
+                                justifyContent: "space-between",
+                                position: "absolute",
+                                bottom: 0,
+                                flexDirection: "row",
+                                backgroundColor: "white",
+                            }}
+                        >
+                            {this._renderTimeSlotStatusInstructorView()}
+                        </View>
                     </View>
                 </SafeAreaView>
             </View>
@@ -530,90 +522,3 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(SelectTimeScreen);
-
-const styles = StyleSheet.create({
-    container: {
-        // flex: 1,
-        // justifyContent: "center",
-        // alignItems: "center"
-        // backgroundColor: "#CF2526",
-    },
-    fbButtonStyle: {
-        flex: 1,
-        flexDirection: "row",
-        backgroundColor: "#EAEAEA",
-        height: 40,
-        alignItems: "center",
-        justifyContent: "center",
-        borderRadius: 20,
-    },
-    tagBtnStyle: {
-        width: Dimensions.get("window").width / 3 - 11,
-        marginTop: 8,
-        marginLeft: 8,
-        height: 30,
-        borderWidth: 2,
-        borderColor: "transparent",
-        borderRadius: 15,
-        alignItems: "center",
-        justifyContent: "center",
-        // borderRadius: 20,
-    },
-    scrollView: {
-        flexGrow: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        height: Dimensions.get("window").height,
-    },
-    headerText: {
-        color: "white",
-        margin: 4,
-        fontSize: 15,
-        fontFamily: constant.themeFont,
-    },
-    collapsibleItem: {
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderColor: "#CCC",
-        height: 0,
-        padding: 0,
-    },
-    wrapperCollapsibleList: {
-        flex: 1,
-        // marginTop: 20,
-        overflow: "hidden",
-        backgroundColor: "#FFF",
-        borderRadius: 5,
-    },
-    tabStyle: {
-        width: Dimensions.get("window").width / 2,
-        borderColor: constant.themeColor,
-        borderWidth: 2,
-    },
-    activeTabStyle: {
-        width: Dimensions.get("window").width / 2,
-        backgroundColor: constant.themeColor,
-        borderWidth: 2,
-    },
-    tabsContainerStyle: {
-        width: "100%",
-        height: 35,
-        // padding:4
-    },
-    txtTimeSlotTitle: {
-        paddingLeft: 8,
-        fontFamily: constant.themeFont,
-        fontSize: 16,
-        fontWeight: "bold",
-    },
-    slotStatusIndicatorView: {
-        width: "33%",
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "row",
-    },
-    txtTimeSlotStatus: {
-        fontFamily: constant.themeFont,
-        fontSize: 17,
-        margin: 8,
-    },
-});

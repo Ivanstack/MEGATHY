@@ -1,5 +1,5 @@
 import React from "react";
-import { AsyncStorage, Alert } from "react-native";
+import { AsyncStorage, Alert, Dimensions } from "react-native";
 import * as constant from "./Constants";
 import baseLocal from "../Resources/Localization/baseLocalization"; // For Localization
 import NavigationView from "../Components/NavigationView";
@@ -111,9 +111,9 @@ export function logout(isNormalLogout = true) {
     AsyncStorage.removeItem(constant.keyCurrentStore);
 }
 
-export function navigationView(title) {
+export function navigationView(title, isGoBack = false) {
     return ({ navigation }) => ({
-        headerLeft: <NavigationView navigation={navigation} title={title} />,
+        headerLeft: <NavigationView navigation={navigation} title={title} isGoBack={isGoBack}/>,
         headerStyle: {
             backgroundColor: constant.themeColor,
         },

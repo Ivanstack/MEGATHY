@@ -1,8 +1,13 @@
 // Localization
 import baseLocal from "../Resources/Localization/baseLocalization";
+import { Dimensions } from "react-native";
 var { EventEmitter } = require("fbemitter");
 
 module.exports = {
+    /// Screen Width And Height
+    scrWidth: Dimensions.get("screen").width,
+    scrHeight: Dimensions.get("screen").height,
+
     /// Other Misc Constants
     alertTitle: "Megathy",
     emitter: new EventEmitter(),
@@ -80,9 +85,10 @@ module.exports = {
     prodCategoryBGColor: "#EFEDE9",
     buttonDisableColor: "#939393",
     darkGrayBGColor: "#D4D4D4",
-    darkGrayBGColor: "#D4D4D4",
     themeGreenColor: "#3B7F38",
     themeYellowColor: "#FAC818",
+    
+
     /// Font Family
     themeFont: "Ebrima",
 
@@ -169,6 +175,11 @@ module.exports = {
         getSubCategoryRequest: "getSubCategoryRequest",
         getSubCategorySuccess: "getSubCategorySuccess",
         getSubCategoryFailure: "getSubCategoryFailure",
+        
+        // Product Screen
+        getProductRequest: "getProductRequest",
+        getProductSuccess: "getProductSuccess",
+        getProductFailure: "getProductFailure",
 
         // AddressList Screen
         getAddressRequest: "getAddressRequest",

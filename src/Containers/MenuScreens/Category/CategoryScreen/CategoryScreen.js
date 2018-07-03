@@ -24,12 +24,9 @@ import {
 } from "react-native";
 
 // Redux
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as actions from "../../../../AppRedux/Actions/actions";
 
 // Common file
-import CommonStyles from "../../../../Helper/CommonStyle";
 import * as constant from "../../../../Helper/Constants";
 import * as cartFunc from "../../../../Helper/Functions/Cart";
 
@@ -43,7 +40,6 @@ import ImageLoad from "react-native-image-placeholder";
 import Spinner from "react-native-loading-spinner-overlay";
 
 // Network Utility
-import * as networkUtility from "../../../../Helper/NetworkUtility";
 import * as CommonUtilites from "../../../../Helper/CommonUtilities";
 
 // Localization
@@ -263,7 +259,7 @@ class CategoryScreen extends Component {
 
     _renderHeader() {
         return (
-            <View>
+            <View style={{marginTop:8,marginBottom:8, backgroundColor: constant.prodCategoryBGColor,}}>
                 <Swiper
                     style={CategoryStyles.bannerWrapper}
                     showPagination
@@ -281,7 +277,7 @@ class CategoryScreen extends Component {
                     {this.props.arrBanners.length > 0
                         ? this.props.arrBanners.map((value, index) => {
                               return (
-                                  <View key={index} style={{ height: "100%", margin: 10 }}>
+                                  <View key={index} style={{ height: "100%" }}>
                                       <ImageLoad
                                           style={CategoryStyles.image}
                                           isShowActivity={false}
@@ -294,7 +290,7 @@ class CategoryScreen extends Component {
                         : // <View/>
                           this.items.map((value, index) => {
                               return (
-                                  <View key={index} style={{ height: 200, margin: 10 }}>
+                                  <View key={index} style={{ height: 200 }}>
                                       <Image
                                           style={CategoryStyles.image}
                                           source={require("../../../../Resources/Images/DefaultProductImage.png")}
@@ -304,64 +300,6 @@ class CategoryScreen extends Component {
                           })}
                 </Swiper>
             </View>
-        );
-    }
-
-    _renderSubCategoryItem({ item, index }) {
-        console.log("render subcategory item");
-
-        return (
-            <TouchableWithoutFeedback
-                style={{ backgroundColor: constant.prodCategoryBGColor }}
-                onPress={() => this._onPressCategory(item)}
-            >
-                <View>
-                    <View style={CategoryStyles.categoryItemConstainerStyle}>
-                        <View style={{ flexDirection: "column" }}>
-                            <Text style={CategoryStyles.categoryItemNameTxtStyle}>
-                                {global.currentAppLanguage === constant.languageArabic
-                                    ? item.subCategoryNameAr
-                                    : item.subCategoryName}
-                            </Text>
-                            <Text style={CategoryStyles.categoryProductsCountStyle}>
-                                {item.productCount}
-                                {" Products"}
-                            </Text>
-                        </View>
-
-                        <View
-                            style={{
-                                justifyContent: "flex-end",
-                                alignItems: "flex-end",
-                                // backgroundColor: "gray"
-                            }}
-                        >
-                            <Text
-                                style={{
-                                    marginRight: 10,
-                                    fontSize: 18,
-                                    fontFamily: constant.themeFont,
-                                    color: "gray",
-                                }}
-                            >
-                                See All
-                            </Text>
-                        </View>
-                    </View>
-
-                    <View style={{ width: "100%", height: 230, marginBottom: 10 }}>
-                        <ImageLoad
-                            style={{ width: "100%", height: 230, marginBottom: 10 }}
-                            isShowActivity={false}
-                            placeholderSource={require("../../../../Resources/Images/DefaultProductImage.png")}
-                            // loadingStyle={{ size: "large", color: "blue" }}
-                            source={{
-                                uri: item.subCategoryImageUrl,
-                            }}
-                        />
-                    </View>
-                </View>
-            </TouchableWithoutFeedback>
         );
     }
 
@@ -395,19 +333,19 @@ class CategoryScreen extends Component {
                             <Text
                                 style={{
                                     marginRight: 10,
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     fontFamily: constant.themeFont,
                                     color: "gray",
                                 }}
                             >
-                                See All
+                                SEE ALL
                             </Text>
                         </View>
                     </View>
 
-                    <View style={{ width: "100%", height: 230, marginBottom: 10 }}>
+                    <View style={{ width: "100%", height: 190 }}>
                         <ImageLoad
-                            style={{ width: "100%", height: 230, marginBottom: 10 }}
+                            style={{ width: "100%", height: 180 }}
                             isShowActivity={false}
                             placeholderSource={require("../../../../Resources/Images/DefaultProductImage.png")}
                             // loadingStyle={{ size: "large", color: "blue" }}

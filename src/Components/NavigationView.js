@@ -4,14 +4,16 @@ import Icon from "react-native-vector-icons/EvilIcons";
 import * as constant from "../Helper/Constants"
 
 export default class componentName extends Component {
+    
     render() {
+        // constant.debugLog("Is Go Back : "+this.props.isGoBack)
         return (
             <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                 <View style={{ flexDirection: "row" }}>
                     <TouchableOpacity
                         onPress={() => {
                             // console.log("Nav Params :==> ",navigation.state.params);
-                            if (this.props.navigation.state.params != undefined && this.props.navigation.state.params.category != undefined) {
+                            if (this.props.navigation.state.params != undefined  || this.props.isGoBack) {
                                 this.props.navigation.goBack();
                             } else {
                                 this.props.navigation.navigate("DrawerToggle");
@@ -20,7 +22,7 @@ export default class componentName extends Component {
                     >
                         <Icon
                             name={
-                                this.props.navigation.state.params != undefined && this.props.navigation.state.params.category != undefined
+                                this.props.navigation.state.params != undefined  || this.props.isGoBack
                                     ? "arrow-left"
                                     : "navicon"
                             }

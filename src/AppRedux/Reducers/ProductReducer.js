@@ -4,45 +4,44 @@ import * as constant from "../../Helper/Constants";
 export const initialState = {
     isLoading: false,
     isRefreshing: false,
-    isSubCategoriesSuccess: false,
-    arrSubCategories: [],
-    subCategoryCurrentPage: 1,
-    subCategoryLastPage: 0,
+    isProductSuccess: false,
+    arrProduct: [],
+    currentPage: 1,
+    lastPage: 0,
     error: null,
 };
 
 export const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case constant.actions.getSubCategoryRequest:
+        case constant.actions.getProductRequest:
             return {
                 ...state,
-                isSubCategoriesSuccess: false,
+                isProductSuccess: false,
                 // isRefreshing: true,
                 isLoading: true,
                 error: null,
             };
-        case constant.actions.getSubCategorySuccess:
+        case constant.actions.getProductSuccess:
             return {
                 ...state,
-                arrSubCategories: action.response.current_page === 1 ? action.response.data: [...state.arrSubCategories, ...action.response.data].filter(
+                arrProduct: action.response.current_page === 1 ? action.response.data: [...state.arrProduct, ...action.response.data].filter(
                     (val, id, array) => array.indexOf(val) === id
                 ),
-                subCategoryCurrentPage: action.response.current_page,
-                subCategoryLastPage: action.response.last_page,
-                isSubCategoriesSuccess: true,
+                currentPage: action.response.current_page,
+                lastPage: action.response.last_page,
+                isProductSuccess: true,
                 isRefreshing: false,
                 isLoading: false,
                 error: null,
             };
-        case constant.actions.getSubCategoryFailure:
+        case constant.actions.getProductFailure:
             return {
                 ...state,
-                isSubCategoriesSuccess: false,
+                isProductSuccess: false,
                 isRefreshing: false,
                 isLoading: false,
                 error: action.error,
             };
-        
         default:
             return state;
     }

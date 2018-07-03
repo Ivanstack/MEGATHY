@@ -20,7 +20,6 @@ import {
     Animated,
     Dimensions,
     TextInput,
-    Modal,
 } from "react-native";
 
 // Redux
@@ -30,7 +29,7 @@ import * as actions from "../../../../AppRedux/Actions/actions";
 
 // Common file
 import CommonStyles from "../../../../Helper/CommonStyle";
-import * as CommonUtilities from "../../../../Helper/CommonUtilities"
+import * as CommonUtilities from "../../../../Helper/CommonUtilities";
 import * as constant from "../../../../Helper/Constants";
 import * as cartFunc from "../../../../Helper/Functions/Cart";
 
@@ -71,7 +70,7 @@ class CartScreen extends Component {
         };
     }
 
-    static navigationOptions = CommonUtilities.navigationView("Shopping Cart");
+    static navigationOptions = CommonUtilities.navigationView("Shopping Cart", true);
 
     // App Life Cycle Methods
     componentDidMount() {
@@ -101,13 +100,13 @@ class CartScreen extends Component {
                 if (oldArrCartItems !== null) {
                     // We have data!!
                     global.arrCartItems = JSON.parse(oldArrCartItems);
-                    global.arrCartItems.map(cartItem => {
-                        this.state.productDataList.map(item => {
-                            if (cartItem.PkId === item.PkId) {
-                                item.totalAddedProduct = cartItem.totalAddedProduct;
-                            }
-                        });
-                    });
+                    // global.arrCartItems.map(cartItem => {
+                    //     this.state.productDataList.map(item => {
+                    //         if (cartItem.PkId === item.PkId) {
+                    //             item.totalAddedProduct = cartItem.totalAddedProduct;
+                    //         }
+                    //     });
+                    // });
                     this.forceUpdate();
                 }
             }
@@ -158,24 +157,35 @@ class CartScreen extends Component {
     };
 
     _onPressRemoveCartItemFromList = item => {
-        Alert.alert(
-            "Megathy",
-            "Are you sure want to remove this item from the cart?",
-            [
-                {
-                    text: "No",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel",
-                },
-                {
-                    text: "Yes",
-                    onPress: () => {
-                        this._onPressRemoveProduct(item, true);
-                    },
-                },
-            ],
-            { cancelable: false }
+        CommonUtilities.showAlertYesNo("Are you sure want to remove this item from the cart?", "Megathy").then(
+            pressedYes => {
+                // User pressed Yes
+                constant.debugLog("User pressed Yes");
+                this._onPressRemoveProduct(item, true);
+            },
+            pressedNo => {
+                // User pressed No
+                constant.debugLog("User pressed No");
+            }
         );
+        // Alert.alert(
+        //     "Megathy",
+        //     "Are you sure want to remove this item from the cart?",
+        //     [
+        //         {
+        //             text: "No",
+        //             onPress: () => console.log("Cancel Pressed"),
+        //             style: "cancel",
+        //         },
+        //         {
+        //             text: "Yes",
+        //             onPress: () => {
+        //                 this._onPressRemoveProduct(item, true);
+        //             },
+        //         },
+        //     ],
+        //     { cancelable: false }
+        // );
     };
 
     _onPressShowHideScheduleOrderNowBtns = () => {
@@ -209,6 +219,24 @@ class CartScreen extends Component {
                 }
             );
         }
+    };
+
+
+    _renderPriceCutView = item => {
+        return (
+            <View>
+                <View style={{ alignSelf: "flex-start", justifyContent: "center", backgroundColor: "transparent" }}>
+                    <Text style={ProductStyles.productPriceLbl}>SAR {item.product_price[0].price}</Text>
+                    <View>
+                        <View style={ProductStyles.productPriceCutView} />
+                    </View>
+                </View>
+
+                <View style={{ justifyContent: "center", backgroundColor: "transparent" }}>
+                    <Text style={ProductStyles.productPriceLbl}>SAR {item.product_price[0].discountPrice}</Text>
+                </View>
+            </View>
+        );
     };
 
     _renderOrderNowModel = () => {
@@ -398,7 +426,6 @@ class CartScreen extends Component {
 
     render() {
         return (
-            // <KeyboardAvoidingView behavior='position' style={{ flex: 1 }}>
             <View
                 style={{
                     flex: 1,
@@ -483,13 +510,11 @@ class CartScreen extends Component {
                                             style={CartStyle.cartImg}
                                             source={require("../../../../Resources/Images/ProductScr/CartImageRed.png")}
                                         />
-                                        {this.state.cartItems > 0 ? (
-                                            <View style={CartStyle.cartBadge}>
-                                                <Text style={CartStyle.cartItemLbl}>
-                                                    {cartFunc.getCartItemsCount()}
-                                                </Text>
-                                            </View>
-                                        ) : null}
+                                        {/* {this.state.cartItems > 0 ? ( */}
+                                        <View style={CartStyle.cartBadge}>
+                                            <Text style={CartStyle.cartItemLbl}>{cartFunc.getCartItemsCount()}</Text>
+                                        </View>
+                                        {/* ) : null} */}
                                     </View>
 
                                     <View

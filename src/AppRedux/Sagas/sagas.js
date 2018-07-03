@@ -12,6 +12,7 @@ import { SelectTimeScreenCalls } from "./SelectTimeSagas";
 import { CategoryScreenCalls } from "./CategorySagas";
 import { AddressListScreenCalls } from "./AddressListSagas";
 import { SubCategoryScreenCalls } from "./SubCategorySagas";
+import { ProductScreenCalls } from "./ProductSagas";
 
 // watcher saga: watches for actions dispatched to the store, starts worker saga
 export function* watcherSaga(action) {
@@ -53,6 +54,9 @@ export function* watcherSaga(action) {
 
     // SubCategory Screen
     yield takeEvery(constant.actions.getSubCategoryRequest, SubCategoryScreenCalls);
+    
+    // Product Screen
+    yield takeEvery(constant.actions.getProductRequest, ProductScreenCalls);
     
     // Address List Screen
     yield takeEvery(constant.actions.getAddressRequest, AddressListScreenCalls);

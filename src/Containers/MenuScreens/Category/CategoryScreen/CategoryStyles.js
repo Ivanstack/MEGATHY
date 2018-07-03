@@ -10,7 +10,7 @@ export default StyleSheet.create({
     // flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F5FCFF"
+    backgroundColor: constant.prodCategoryBGColor
   },
   btnStyle: {
     textAlign: "center",
@@ -46,7 +46,7 @@ export default StyleSheet.create({
     backgroundColor: "green"
   },
   image: {
-    width: Dimensions.get("window").width - 20,
+    width: Dimensions.get("window").width,
     height: "100%"
     // flex: 1,
   },
@@ -98,18 +98,18 @@ export default StyleSheet.create({
     alignItems: "center",
     // marginBottom: 10,
     backgroundColor: "white",
-    paddingTop: 20,
-    paddingBottom: 20
+    paddingTop: 10,
+    paddingBottom: 10
   },
   categoryItemNameTxtStyle: {
     marginLeft: 10,
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: constant.themeFont
   },
   categoryProductsCountStyle: {
     marginLeft: 10,
     marginTop: 5,
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: constant.themeFont,
     color: "gray"
   },
