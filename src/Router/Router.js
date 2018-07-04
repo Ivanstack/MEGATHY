@@ -24,6 +24,7 @@ import AddAddressScreen from "../Containers/MenuScreens/DeliveryDetails/AddAddre
 import SelectTimeScreen from "../Containers/MenuScreens/OrderMaster/SelectTime/SelectTimeScreen";
 import SecondScreen from "../Containers/MenuScreens/SecondScreen";
 import PaymentScreen from "../Containers/MenuScreens/DeliveryDetails/PaymentScreen/PaymentScreen";
+import CalendarScreen from "../Containers/MenuScreens/OrderMaster/Calendar/CalendarScreen"
 
 // Constant
 import * as constant from "../Helper/Constants";
@@ -82,7 +83,7 @@ const AppDrawer = DrawerNavigator(
     {
         Categories: { screen: CategoryScreenNav },
         "Delivery Details": { screen: DeliveryDetailsNav },
-        SecondScreen: { screen: SelectTimeScreen },
+        SecondScreen: { screen: CalendarScreen },
     },
     {
         drawerWidth: 300,

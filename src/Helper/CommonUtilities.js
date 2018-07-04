@@ -123,6 +123,18 @@ export function navigationView(title, isGoBack = false) {
     });
 }
 
+export function dateAddingDays(days, oldDate = new Date()) {
+    var newMilliSeconds = oldDate.getTime() + days * 86400000;
+    // 86400000 ms in a day
+    return new Date(newMilliSeconds);
+}
+
+export function dateAddingHours(hours, oldDate = new Date()) {
+    var newMilliSeconds = oldDate.getTime() + hours * 3600000;
+    // 3600000 ms in an hour
+    return new Date(newMilliSeconds);
+}
+
 // Way to implement showAlertYesNo function
 
 // CommonUtilities.showAlertYesNo("Are you sure you want to delete this address?").then(

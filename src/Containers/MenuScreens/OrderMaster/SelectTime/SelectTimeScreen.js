@@ -47,6 +47,7 @@ class SelectTimeScreen extends Component {
         super(props);
 
         baseLocal.locale = global.currentAppLanguage;
+        // this._onPressCalendarDate = this._onPressCalendarDate.bind(this)
         this.state = {
             arrSetTimeSlote: [],
             arrOrderBookedTimeSlote: [],
@@ -305,11 +306,20 @@ class SelectTimeScreen extends Component {
                 arrTimeSlote = [];
             }
             item.tempBookedDate = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date;
-            global.selectedTimeSlot = item
+            global.selectedTimeSlot = item;
             arrTimeSlote.push(item);
             this.setState({ arrForBookedSlote: arrTimeSlote });
         }
     };
+
+    _onPressCalendarDate() {
+        let key = this.props.day.dateString;
+        let selected = true;
+        if (!this.props.parentScreen.state.selectedDates.hasOwnProperty(key)) {
+            const updatedDates = { ...this.props.parentScreen.state.selectedDates, ...{ [key]: { selected } } };
+            this.props.parentScreen.setState({ selectedDates: updatedDates, selectTimeScreenVisible: false });
+        }
+    }
 
     // Render Methods
     _renderTagItem = ({ item, index }) => {
@@ -450,13 +460,44 @@ class SelectTimeScreen extends Component {
         return renderedTimeSlotStatusView;
     };
 
+    _renderCustomNavigationView = () => {
+        return (
+            <View
+                style={{ backgroundColor: constant.themeColor, flexDirection: "row", justifyContent: "space-between" }}
+            >
+                <View>
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.props.parentScreen != undefined
+                                ? this.props.parentScreen.setState({ selectTimeScreenVisible: false })
+                                : constant.debugLog("Parent is not calendar");
+                        }}
+                    >
+                        <Icon name={"arrow-left"} style={{ marginLeft: 10 }} size={35} color="white" />
+                    </TouchableOpacity>
+                    <Text> Time Slots </Text>
+                </View>
+                <TouchableOpacity
+                    onPress={() => {
+                        this.props.parentScreen != undefined
+                            ? this._onPressCalendarDate()
+                            : constant.debugLog("Parent is not calendar");
+                    }}
+                >
+                    <Text> Save </Text>
+                </TouchableOpacity>
+            </View>
+        );
+    };
+
     render() {
         return (
             // Main View (Container)
             <View style={{ flex: 1 }}>
-                <SafeAreaView style={{ flex: 1, height:"100%" }}>
+                <SafeAreaView style={{ flex: 1, height: "100%" }}>
                     {/* ----- Segment View ----- */}
                     <View>
+                        {this.props.parentScreen === undefined ? null : this._renderCustomNavigationView()}
                         <ScrollView
                             // style={{ backgroundColor: "orange"}}
                             horizontal={true}
