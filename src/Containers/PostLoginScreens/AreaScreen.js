@@ -13,7 +13,6 @@ import * as constant from "../../Helper/Constants";
 // Redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as actions from "../../AppRedux/Actions/actions";
 
 // Network Utility
 import * as networkUtility from "../../Helper/NetworkUtility";

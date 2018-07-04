@@ -77,6 +77,8 @@ module.exports = {
     APIGetProductList: "getProduct",
     APIGetStoreTimeZone: "getStoreTimeZone",
     APIGetAddress: "address",
+    APIAddAddress: "address",
+    APIEditAddress: "address",
     APIDeleteAddress: "address",
     APIGetOrderTimeSession: "getOrderTimeSession",
 
@@ -87,8 +89,8 @@ module.exports = {
     darkGrayBGColor: "#D4D4D4",
     themeGreenColor: "#3B7F38",
     themeYellowColor: "#FAC818",
+    themeLightGreenColor: "#53B326",
     
-
     /// Font Family
     themeFont: "Ebrima",
 
@@ -188,6 +190,14 @@ module.exports = {
         deleteAddressRequest: "deleteAddressRequest",
         deleteAddressSuccess: "deleteAddressSuccess",
         deleteAddressFailure: "deleteAddressFailure",
+
+        // AddressList Screen
+        addAddressRequest: "addAddressRequest",
+        addAddressSuccess: "addAddressSuccess",
+        addAddressFailure: "addAddressFailure",
+        editAddressRequest: "editAddressRequest",
+        editAddressSuccess: "editAddressSuccess",
+        editAddressFailure: "editAddressFailure",
     },
 
     /*

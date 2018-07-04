@@ -7,7 +7,6 @@ import { DrawerNavigator, DrawerItems, StackNavigator } from "react-navigation";
 // Redux
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as actions from "../AppRedux/Actions/actions";
 
 // Screens
 import LoginScreen from "../Containers/LoginScreens/LoginScreen";
@@ -24,9 +23,11 @@ import AddressListScreen from "../Containers/MenuScreens/DeliveryDetails/Address
 import AddAddressScreen from "../Containers/MenuScreens/DeliveryDetails/AddAddress/AddAddressScreen";
 import SelectTimeScreen from "../Containers/MenuScreens/DeliveryDetails/SelectTime/SelectTimeScreen";
 import SecondScreen from "../Containers/MenuScreens/SecondScreen";
+import PaymentScreen from "../Containers/MenuScreens/DeliveryDetails/PaymentScreen/PaymentScreen";
 
 // Constant
 import * as constant from "../Helper/Constants";
+import * as commonUtilities from "../Helper/CommonUtilities";
 
 // Modal Screen
 const OrderMasterScreenNav = StackNavigator(
@@ -59,7 +60,8 @@ const DeliveryDetailsNav = StackNavigator(
         AddressListScreen: { screen: AddressListScreen },
         AddAddressScreen: { screen: AddAddressScreen },
         SelectTimeScreen: { screen: SelectTimeScreen },
-    },
+        PaymentScreen: { screen: PaymentScreen },
+        },
     {
         headerMode: "screen",
     }
@@ -78,16 +80,29 @@ const SecondScreenNav = StackNavigator(
 // Side Menu With Menu Items
 const AppDrawer = DrawerNavigator(
     {
-        CategoryScreen: { screen: CategoryScreenNav },
-        FirstScreen: { screen: DeliveryDetailsNav },
+        Categories: { screen: CategoryScreenNav },
+        "Delivery Details": { screen: DeliveryDetailsNav },
         SecondScreen: { screen: SelectTimeScreen },
     },
     {
         drawerWidth: 300,
+        drawerBackgroundColor: "black",
         navigationOptions: {
             gesturesEnabled: false,
             headerStyle: {
                 backgroundColor: "yellow",
+            },
+        },
+        contentOptions: {
+            activeBackgroundColor: "black",
+            inactiveBackgroundColor: "black",
+            inactiveTintColor: "green",
+            activeTintColor: "yellow",
+            itemsContainerStyle: {
+                marginVertical: 0,
+            },
+            iconContainerStyle: {
+                opacity: 1,
             },
         },
         headerMode: "none",
@@ -96,12 +111,12 @@ const AppDrawer = DrawerNavigator(
             <ScrollView>
                 <View style={styles.maincontainer}>
                     <View style={styles.headercontainer}>
-                        <Image style={styles.userimage} source={require("../Resources/Images/Recurso.png")} />
-                        <Text style={styles.headerTitle}> Android Studio </Text>
-                        <Text style={styles.headerSubTitle}> androidstudio@gmail.com </Text>
+                        <Text style={styles.headerTitle}>
+                            {global.currentUser === null ? "Welcome, Guest" : "Welcome, " + global.currentUser.userName}
+                        </Text>
                     </View>
 
-                    <View style={{ flex: 1, backgroundColor: "white" }}>
+                    <View style={{ flex: 1, backgroundColor: "black" }}>
                         <DrawerItems
                             {...props}
                             onItemPress={({ route, focused }) => {
@@ -112,7 +127,7 @@ const AppDrawer = DrawerNavigator(
                                 } else if (route.key === "SecondScreen") {
                                     // props.getSecondScreenTap()
                                     // props.getSecondScreenTap()
-                                }
+                                }   
                             }}
                             getLabel={scene => (
                                 <View style={styles.rowView}>
@@ -157,7 +172,7 @@ const App = StackNavigator(
 // Mics Methods
 export function onPressLogout() {
     console.log("Logout Pressed");
-    constant.emitter.emit(constant.logoutListener);
+    commonUtilities.logout();
     // this.props.onPressLogout()
 }
 
@@ -172,7 +187,9 @@ function mapStateToProps(state, props) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(actions, dispatch);
+    return {
+
+    }
 }
 
 export default connect(
@@ -183,12 +200,11 @@ export default connect(
 const styles = StyleSheet.create({
     maincontainer: {
         flex: 1,
-        // marginTop: (Platform.OS == 'ios') ? 20 : 0,
     },
     headercontainer: {
         flex: 1,
-        height: 150,
-        backgroundColor: "green",
+        height: 120,
+        backgroundColor: "black",
     },
     userimage: {
         height: 60,
@@ -200,11 +216,12 @@ const styles = StyleSheet.create({
         borderRadius: 30,
     },
     headerTitle: {
-        fontSize: 20,
+        fontFamily: constant.themeFont,
+        fontSize: 16,
         fontWeight: "bold",
         color: "white",
         marginLeft: 20,
-        marginTop: 10,
+        marginTop: 60,
     },
     headerSubTitle: {
         fontSize: 15,
@@ -229,8 +246,9 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     menuTitle: {
-        fontSize: 14,
-        fontWeight: "400",
+        fontFamily: constant.themeFont,
+        fontSize: 17,
         marginLeft: 16,
+        color: "white",
     },
 });

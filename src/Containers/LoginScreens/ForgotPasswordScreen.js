@@ -23,7 +23,6 @@ import * as constant from "../../Helper/Constants";
 
 // Redux
 import { connect } from "react-redux";
-import * as actions from "../../AppRedux/Actions/actions";
 
 // Common Utilities
 import * as CommonUtilities from "../../Helper/CommonUtilities";

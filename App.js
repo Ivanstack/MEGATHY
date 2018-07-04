@@ -40,7 +40,6 @@ export default class App extends Component {
 
         context = this;
         Constants.emitter.addListener(Constants.logoutListener, () => {
-            CommonUtilities.logout();
             context.setState({ isLogin: false, isStoreSet: false });
         });
 

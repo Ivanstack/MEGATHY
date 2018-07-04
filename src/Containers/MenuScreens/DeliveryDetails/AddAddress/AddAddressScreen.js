@@ -16,18 +16,17 @@ import {
     Alert,
     ScrollView,
     Dimensions,
+    Keyboard,
 } from "react-native";
 
 import AppTextField from "../../../../Components/AppTextField";
-import * as constant from "../../../../Helper/Constants";
 
 // Redux
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as actions from "../../../../AppRedux/Actions/actions";
 
 // Common Utilities
 import * as CommonUtilities from "../../../../Helper/CommonUtilities";
+import * as constant from "../../../../Helper/Constants";
 
 // Network Utility
 import * as networkUtility from "../../../../Helper/NetworkUtility";
@@ -50,21 +49,20 @@ class AddAddressScreen extends Component {
         KeyboardManager.setShouldResignOnTouchOutside(true);
         KeyboardManager.setToolbarPreviousNextButtonEnable(false);
 
-        this.onPressBack = this.onPressBack.bind(this);
-        this.onPressSave = this.onPressSave.bind(this);
-        this.onFocus = this.onFocus.bind(this);
-        this.onChangeText = this.onChangeText.bind(this);
-        this.onAccessoryPress = this.onAccessoryPress.bind(this);
+        this._onPressBack = this._onPressBack.bind(this);
+        this._onPressSave = this._onPressSave.bind(this);
+        this._onFocus = this._onFocus.bind(this);
+        this._onChangeText = this._onChangeText.bind(this);
 
-        this.onSubmitFullName = this.onSubmitFullName.bind(this);
-        this.onSubmitPhone = this.onSubmitPhone.bind(this);
-        this.onSubmitAddress = this.onSubmitAddress.bind(this);
-        this.onSubmitNotes = this.onSubmitNotes.bind(this);
+        this._onSubmitFullName = this._onSubmitFullName.bind(this);
+        this._onSubmitPhone = this._onSubmitPhone.bind(this);
+        this._onSubmitNotes = this._onSubmitNotes.bind(this);
+        this._onFocusAddress = this._onFocusAddress.bind(this);
 
-        this.fullNameRef = this.updateRef.bind(this, "fullName");
-        this.phoneRef = this.updateRef.bind(this, "phone");
-        this.addressRef = this.updateRef.bind(this, "address");
-        this.notesRef = this.updateRef.bind(this, "notes");
+        this.fullNameRef = this._updateRef.bind(this, "fullName");
+        this.phoneRef = this._updateRef.bind(this, "phone");
+        this.addressRef = this._updateRef.bind(this, "address");
+        this.notesRef = this._updateRef.bind(this, "notes");
 
         this.state = {
             secureTextEntry: true,
@@ -76,7 +74,7 @@ class AddAddressScreen extends Component {
         };
     }
 
-    static navigationOptions = CommonUtilities.navigationView("Location");
+    static navigationOptions = CommonUtilities.navigationView(baseLocal.t("Location"), true);
 
     componentDidMount() {
         let selectedAddressTemp = this.props.navigation.getParam("selectedAddress", "");
@@ -90,7 +88,7 @@ class AddAddressScreen extends Component {
         }
     }
 
-    onPressSave() {
+    _onPressSave() {
         return;
         if (this.state.fullName.trim() === "") {
             CommonUtilities.showAlert("Full Name cannot be blank");
@@ -146,11 +144,11 @@ class AddAddressScreen extends Component {
         );
     }
 
-    onPressBack() {
+    _onPressBack() {
         this.props.navigation.goBack();
     }
 
-    onFocus() {
+    _onFocus() {
         let { errors = {} } = this.state;
         for (let name in errors) {
             let ref = this[name];
@@ -161,7 +159,12 @@ class AddAddressScreen extends Component {
         this.setState({ errors });
     }
 
-    onChangeText(text) {
+    _onFocusAddress() {
+        Keyboard.dismiss()
+        constant.debugLog("Addres Pressed")
+    }
+
+    _onChangeText(text) {
         ["fullName", "phone", "address", "notes"].map(name => ({ name, ref: this[name] })).forEach(({ name, ref }) => {
             if (ref.isFocused()) {
                 this.setState({ [name]: text });
@@ -169,30 +172,20 @@ class AddAddressScreen extends Component {
         });
     }
 
-    onSubmitFullName() {
+    _onSubmitFullName() {
         // this.phone.focus();
     }
 
-    onSubmitPhone() {
+    _onSubmitPhone() {
         // this.password.focus();
     }
 
-    onSubmitAddress() {
-        // this.confirmPassword.focus();
-    }
-
-    onSubmitNotes() {
+    _onSubmitNotes() {
         // this.confirmPassword.blur();
         // this.onPressSignUp();
     }
 
-    onAccessoryPress() {
-        this.setState(({ secureTextEntry }) => ({
-            secureTextEntry: !secureTextEntry,
-        }));
-    }
-
-    updateRef(name, ref) {
+    _updateRef(name, ref) {
         this[name] = ref;
     }
 
@@ -219,9 +212,9 @@ class AddAddressScreen extends Component {
                             baseColor={constant.themeColor}
                             tintColor={constant.themeColor}
                             returnKeyType="next"
-                            onSubmitEditing={this.onSubmitFullName}
-                            onChangeText={this.onChangeText}
-                            onFocus={this.onFocus}
+                            onSubmitEditing={this._onSubmitFullName}
+                            onChangeText={this._onChangeText}
+                            onFocus={this._onFocus}
                         />
 
                         {/* // Phone No Text Field */}
@@ -234,9 +227,9 @@ class AddAddressScreen extends Component {
                             tintColor={constant.themeColor}
                             returnKeyType="next"
                             keyboardType="numeric"
-                            onSubmitEditing={this.onSubmitPhone}
-                            onChangeText={this.onChangeText}
-                            onFocus={this.onFocus}
+                            onSubmitEditing={this._onSubmitPhone}
+                            onChangeText={this._onChangeText}
+                            onFocus={this._onFocus}
                         />
 
                         {/* // Password Text Field */}
@@ -248,9 +241,11 @@ class AddAddressScreen extends Component {
                             baseColor={constant.themeColor}
                             tintColor={constant.themeColor}
                             returnKeyType="next"
-                            onSubmitEditing={this.onSubmitAddress}
-                            onChangeText={this.onChangeText}
-                            onFocus={this.onFocus}
+                            // editable={false}
+                            // onSubmitEditing={this._onSubmitAddress}
+                            // onChangeText={this._onChangeText}
+                            onFocus={this._onFocusAddress}
+                            // onPress={this._onPressAddress}
                         />
 
                         {/* // Confirm Password Text Field */}
@@ -262,9 +257,9 @@ class AddAddressScreen extends Component {
                             baseColor={constant.themeColor}
                             tintColor={constant.themeColor}
                             returnKeyType="done"
-                            onSubmitEditing={this.onSubmitNotes}
-                            onChangeText={this.onChangeText}
-                            onFocus={this.onFocus}
+                            onSubmitEditing={this._onSubmitNotes}
+                            onChangeText={this._onChangeText}
+                            onFocus={this._onFocus}
                             multiline={true}
                         />
                     </View>
@@ -294,12 +289,12 @@ class AddAddressScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        login: state.dataReducer.login,
+        // login: state.dataReducer.login,
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(actions, dispatch);
+    return {};
 }
 
 export default connect(

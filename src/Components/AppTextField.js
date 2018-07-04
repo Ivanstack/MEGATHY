@@ -16,6 +16,7 @@ export default class AppTextField extends Component {
                     ref={this.props.reference === undefined ? "" : this.props.reference}
                     label={this.props.label === undefined ? "" : this.props.label}
                     value={this.props.value === undefined ? "" : this.props.value}
+                    editable={this.props.editable === undefined ? true : this.props.editable}
                     textColor={this.props.textColor === undefined ? "white" : this.props.textColor}
                     baseColor={this.props.baseColor === undefined ? "white" : this.props.baseColor}
                     tintColor={this.props.tintColor === undefined ? "white" : this.props.tintColor}
@@ -30,6 +31,7 @@ export default class AppTextField extends Component {
                     enablesReturnKeyAutomatically={this.props.enablesReturnKeyAutomatically === undefined ? true : this.props.enablesReturnKeyAutomatically}
                     onChangeText={this.props.onChangeText}
                     onFocus={this.props.onFocus}
+                    onPress={this.props.onPress}
                     onSubmitEditing={this.props.onSubmitEditing}
                 />
             </View>

@@ -11,6 +11,8 @@ export function validateEmail(email) {
 
 export function setInitialGlobalValues() {
     // global.arrCartItems = [];
+    global.selectedTimeSlot = null;
+    global.selectedAddress = null;
     AsyncStorage.getItem(constant.keyCurrentUser).then(val => {
         if (val === undefined) {
             global.currentUser = null;
@@ -104,16 +106,17 @@ export function showAlertYesNo(
 
 export function logout(isNormalLogout = true) {
     if (!isNormalLogout) {
-        CommonUtilities.showAlert("You are already logged into another device. Please login again", false);
+        showAlert("You are already logged into another device. Please login again", false);
     }
     AsyncStorage.removeItem(constant.keyCurrentUser);
     AsyncStorage.removeItem(constant.keyCurrentSettings);
     AsyncStorage.removeItem(constant.keyCurrentStore);
+    constant.emitter.emit(constant.logoutListener);
 }
 
 export function navigationView(title, isGoBack = false) {
     return ({ navigation }) => ({
-        headerLeft: <NavigationView navigation={navigation} title={title} isGoBack={isGoBack}/>,
+        headerLeft: <NavigationView navigation={navigation} title={title} isGoBack={isGoBack} />,
         headerStyle: {
             backgroundColor: constant.themeColor,
         },

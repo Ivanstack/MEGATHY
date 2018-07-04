@@ -20,8 +20,6 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import * as actions from '../../AppRedux/Actions/actions';
-
 class SecondScreen extends Component {
   static  navigationOptions = ({ navigation }) => ( {
     headerLeft: <TouchableOpacity onPress={() => navigation.navigate('DrawerToggle')}>
@@ -61,7 +59,9 @@ function mapStateToProps(state, props) {
 	};
 }
 function mapDispatchToProps(dispatch) {
-	return bindActionCreators(actions, dispatch);
+	return {
+
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SecondScreen)
