@@ -22,6 +22,12 @@ export default class AddressListItem extends Component {
         super(props);
     }
 
+    componentDidMount() {
+        if (this.props.address.selected != undefined) {
+            global.selectedAddress = this.props.address
+        }
+    }
+
     _onPress = () => {
         if (this.props.parentEntryPoint != undefined) this.props.onPressItem(this.props.address);
     };

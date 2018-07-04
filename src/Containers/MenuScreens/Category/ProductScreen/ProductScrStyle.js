@@ -135,7 +135,7 @@ export default StyleSheet.create({
   cartContainer: {
     backgroundColor: constant.themeColor, //"#F5F5F5",
     width: "100%",
-    height: "8%",
+    height: "7.5%",
     // justifyContent:"space-between",
     flexDirection: "row",
     // bottom: 50

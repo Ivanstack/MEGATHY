@@ -44,7 +44,7 @@ export default StyleSheet.create({
     fontFamily: constant.themeFont,
     fontWeight: "bold",
     marginLeft: 10,
-    marginTop: 5
+    marginTop: 3
   },
   cartProductQuentityLbl: {
     fontSize: 14,
@@ -60,10 +60,18 @@ export default StyleSheet.create({
     color: constant.themeColor,
     marginLeft: 10
   },
+  cartproductPriceCutView: {
+    width: "80%",
+    height: 1.5,
+    position: "absolute",
+    bottom: 7,
+    left: 10,
+    backgroundColor: constant.themeColor
+  },
   cartProductImg: {
-    width: 100,
-    height: 100,
-    marginBottom: 5,
+    width: 90,
+    height: 90,
+    margin: 5,
     backgroundColor: "transparent"
   },
   cartItemCountainer: {
@@ -89,8 +97,8 @@ export default StyleSheet.create({
     flexDirection: "row"
   },
   cartImg: {
-    width: 30,
-    height: 30,
+    width: 35,
+    height: 35,
     marginLeft: 20
     // margin: 5
   },
@@ -99,7 +107,7 @@ export default StyleSheet.create({
     // bottom:0,
     backgroundColor: constant.themeColor, //"#F5F5F5",
     width: "100%",
-    height: "8%",
+    height: "7.5%",
     // justifyContent:"space-between",
     flexDirection: "row"
     // marginBottom: 50,

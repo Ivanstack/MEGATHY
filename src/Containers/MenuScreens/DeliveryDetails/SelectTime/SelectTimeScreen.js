@@ -94,6 +94,7 @@ class SelectTimeScreen extends Component {
     });
 
     componentDidMount() {
+        // this.props.onRef(this)
         this._getAPIGetOrderTimeSession();
     }
 
@@ -107,6 +108,11 @@ class SelectTimeScreen extends Component {
                 () => this._getRemainingHours()
             );
         }
+    }
+
+    componentWillUnmount() {
+        // this.props.onRef(undefined)
+        constant.debugLog("componentWillUnmount call from select time .....");
     }
 
     // Convert Time into 12hrs Formate
@@ -147,12 +153,19 @@ class SelectTimeScreen extends Component {
         }
     };
 
+    // Get Selected Time Slot
+    _getSelectedTimeSlote() {
+        // if (this.state.arrForBookedSlote[0] != undefined) {
+        return this.state.arrForBookedSlote[0];
+        // }
+    }
+
     // Check Time Slot Available
     _getBookedTimeSlot = (checkeTimeSlot, strCheckTime) => {
         let objSlot = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].otherBookTime;
 
         let bookedOrderTimeSlot = objSlot[`slot${checkeTimeSlot}`];
-        constant.debugLog("Booked Time Slot : ===> " + bookedOrderTimeSlot);
+        // constant.debugLog("Booked Time Slot : ===> " + bookedOrderTimeSlot);
 
         if (bookedOrderTimeSlot && bookedOrderTimeSlot.lenght > 0) {
             for (let index = 0; index < 6; index++) {
@@ -292,6 +305,7 @@ class SelectTimeScreen extends Component {
                 arrTimeSlote = [];
             }
             item.tempBookedDate = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date;
+            global.selectedTimeSlot = item
             arrTimeSlote.push(item);
             this.setState({ arrForBookedSlote: arrTimeSlote });
         }
@@ -440,7 +454,7 @@ class SelectTimeScreen extends Component {
         return (
             // Main View (Container)
             <View style={{ flex: 1 }}>
-                <SafeAreaView style={{ flex: 1 }}>
+                <SafeAreaView style={{ flex: 1, height:"100%" }}>
                     {/* ----- Segment View ----- */}
                     <View>
                         <ScrollView

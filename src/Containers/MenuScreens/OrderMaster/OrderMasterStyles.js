@@ -66,5 +66,10 @@ export default StyleSheet.create({
     flex: 1,
     marginBottom: goToNextPageViewHeight+0,
     backgroundColor:"white"
+  },
+  paymentContainerStyle: {
+    flex: 1,
+    marginBottom: goToNextPageViewHeight-14,
+    backgroundColor:"white"
   }
 });

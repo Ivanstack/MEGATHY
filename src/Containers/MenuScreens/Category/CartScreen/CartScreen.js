@@ -12,8 +12,6 @@ import {
     Image,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    Alert,
-    AppState,
     SafeAreaView,
     FlatList,
     AsyncStorage,
@@ -23,48 +21,33 @@ import {
 } from "react-native";
 
 // Redux
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as actions from "../../../../AppRedux/Actions/actions";
 
 // Common file
-import CommonStyles from "../../../../Helper/CommonStyle";
 import * as CommonUtilities from "../../../../Helper/CommonUtilities";
 import * as constant from "../../../../Helper/Constants";
 import * as cartFunc from "../../../../Helper/Functions/Cart";
 
 // Lib
-import Icon from "react-native-vector-icons/EvilIcons";
 import ImageLoad from "react-native-image-placeholder";
-import autobind from "autobind-decorator";
-
-// Network Utility
-import * as networkUtility from "../../../../Helper/NetworkUtility";
 
 // Components Style
 import CartStyle from "./CartScreenStyle";
 
-// Screens
-import * as router from "../../../../Router/Router";
-import OrderMasterScreen from "../../OrderMaster/OrderMasterScreen";
-
 // Localization
 import baseLocal from "../../../../Resources/Localization/baseLocalization";
-const orderNowViewHeight = (12 * Dimensions.get("window").height) / 100;
 
 // Variable
+const orderNowViewHeight = (12 * Dimensions.get("window").height) / 100;
 
 class CartScreen extends Component {
     constructor(props) {
         super(props);
         // Class Props
-        (this.currentPage = 1), (this.lastPage = 0), (this.y_translate = new Animated.Value(0));
+        this.y_translate = new Animated.Value(0);
         //Class State
         this.state = {
-            productDataList: [],
-            isRefreshing: false,
             productQuentity: 0,
-            hideDiscountLbl: true,
             showScheduleOrderNow: false,
             orderMasterModalVisible: false,
         };
@@ -168,28 +151,10 @@ class CartScreen extends Component {
                 constant.debugLog("User pressed No");
             }
         );
-        // Alert.alert(
-        //     "Megathy",
-        //     "Are you sure want to remove this item from the cart?",
-        //     [
-        //         {
-        //             text: "No",
-        //             onPress: () => console.log("Cancel Pressed"),
-        //             style: "cancel",
-        //         },
-        //         {
-        //             text: "Yes",
-        //             onPress: () => {
-        //                 this._onPressRemoveProduct(item, true);
-        //             },
-        //         },
-        //     ],
-        //     { cancelable: false }
-        // );
     };
 
     _onPressShowHideScheduleOrderNowBtns = () => {
-        constant.debugLog("orderNow Called ...");
+        // constant.debugLog("orderNow Called ...");
 
         if (!this.state.showScheduleOrderNow) {
             this.setState(
@@ -214,26 +179,30 @@ class CartScreen extends Component {
                     Animated.spring(this.y_translate, {
                         toValue: orderNowViewHeight,
                         friction: 5,
-                        // speed: 0.5
                     }).start();
                 }
             );
         }
     };
 
-
     _renderPriceCutView = item => {
         return (
             <View>
                 <View style={{ alignSelf: "flex-start", justifyContent: "center", backgroundColor: "transparent" }}>
-                    <Text style={ProductStyles.productPriceLbl}>SAR {item.product_price[0].price}</Text>
+                    <Text style={CartStyle.cartProductPriceLbl}>SAR {item.product_price[0].price}</Text>
                     <View>
-                        <View style={ProductStyles.productPriceCutView} />
+                        <View style={CartStyle.cartproductPriceCutView} />
                     </View>
                 </View>
 
                 <View style={{ justifyContent: "center", backgroundColor: "transparent" }}>
-                    <Text style={ProductStyles.productPriceLbl}>SAR {item.product_price[0].discountPrice}</Text>
+                    {item.product_price[0].discountType === constant.kProductDiscountPercentage ? (
+                        <Text style={CartStyle.cartProductPriceLbl}>
+                            SAR {item.product_price[0].discountPrice} ({item.product_price[0].hike}%)
+                        </Text>
+                    ) : (
+                        <Text style={CartStyle.cartProductPriceLbl}>SAR {item.product_price[0].discountPrice}</Text>
+                    )}
                 </View>
             </View>
         );
@@ -241,8 +210,6 @@ class CartScreen extends Component {
 
     _renderOrderNowModel = () => {
         return (
-            // <View>
-            //   {this.state.showScheduleOrderNow ? (
             <TouchableWithoutFeedback onPress={this._onPressShowHideScheduleOrderNowBtns.bind(this)}>
                 <View
                     style={{
@@ -251,7 +218,6 @@ class CartScreen extends Component {
                         left: 0,
                         right: 0,
                         bottom: -1 * orderNowViewHeight,
-                        // backgroundColor: "orange"
                     }}
                 >
                     <Animated.View
@@ -281,8 +247,6 @@ class CartScreen extends Component {
                             style={[CartStyle.scheduleAndOrderBtns, { marginRight: 20 }]}
                             onPress={() => {
                                 this._onPressShowHideScheduleOrderNowBtns();
-                                // this.setState({ orderMasterModalVisible: true });
-
                                 this.props.navigation.navigate(constant.kOrderMasterScreen);
                             }}
                         >
@@ -299,8 +263,6 @@ class CartScreen extends Component {
                     </Animated.View>
                 </View>
             </TouchableWithoutFeedback>
-            //   ) : null}
-            // </View>
         );
     };
 
@@ -328,7 +290,6 @@ class CartScreen extends Component {
                         style={{
                             flexDirection: "row",
                             justifyContent: "space-between",
-                            // backgroundColor: "gray",
                             width: "100%",
                         }}
                     >
@@ -359,22 +320,16 @@ class CartScreen extends Component {
 
                     <View
                         style={{
-                            // marginTop: 3,
                             flexDirection: "row",
                             justifyContent: "space-between",
-                            //   backgroundColor: "red",
                             width: "100%",
                         }}
                     >
-                        <View style={{ marginTop: 3 }}>
-                            <View style={{ flexDirection: "row" }}>
-                                <Text style={CartStyle.cartProductPriceLbl}>SAR {item.product_price[0].price}</Text>
-                                {this.state.hideDiscountLbl ? null : (
-                                    <Text style={CartStyle.cartProductPriceLbl}>SAR {item.product_price[0].price}</Text>
-                                )}
-                            </View>
-                            {this.state.hideDiscountLbl ? null : (
-                                <Text style={CartStyle.cartProductPriceLbl}>SAR {item.product_price[0].price}</Text>
+                        <View>
+                            {item.product_price[0].status === constant.kProductDiscountActive ? (
+                                this._renderPriceCutView(item)
+                            ) : (
+                                <Text style={ProductStyles.productPriceLbl}>SAR {item.product_price[0].price}</Text>
                             )}
                         </View>
 
@@ -383,7 +338,6 @@ class CartScreen extends Component {
                                 marginTop: 3,
                                 flexDirection: "row",
                                 justifyContent: "space-between",
-                                // alignItems: "center",
                                 marginRight: 10,
                             }}
                         >
@@ -404,10 +358,7 @@ class CartScreen extends Component {
                                 {item.totalAddedProduct}
                             </Text>
 
-                            <TouchableOpacity
-                                //   style={CartStyle.addProductBtn}
-                                onPress={this._onPressAddProduct.bind(this, item)}
-                            >
+                            <TouchableOpacity onPress={this._onPressAddProduct.bind(this, item)}>
                                 <Image
                                     style={CartStyle.addProductImg}
                                     source={require("../../../../Resources/Images/CartScr/BtnAddToCart.png")}
@@ -415,10 +366,6 @@ class CartScreen extends Component {
                             </TouchableOpacity>
                         </View>
                     </View>
-
-                    {/* <View style={{ backgroundColor: "blue",marginBottom: 2,marginLeft:5 }}> */}
-
-                    {/* </View> */}
                 </View>
             </View>
         );
@@ -435,24 +382,11 @@ class CartScreen extends Component {
                 <SafeAreaView
                     style={{
                         flex: 1,
-                        // backgroundColor: "yellow"
                     }}
                 >
-                    {/* <Modal
-            animationType="slide"
-            transparent={false}
-            visible={this.state.orderMasterModalVisible}
-            // onRequestClose={() => {
-            //   alert("Modal has been closed.");
-            // }}
-          >
-            <OrderMasterScreen cartScrContext={this} />
-          </Modal> */}
                     {global.arrCartItems.length > 0 ? (
                         <FlatList
                             style={{
-                                // backgroundColor: constant.prodCategoryBGColor,
-                                marginTop: 5,
                                 marginBottom: 10,
                             }}
                             ref={flatList => {
@@ -464,7 +398,6 @@ class CartScreen extends Component {
                             showsHorizontalScrollIndicator={false}
                             removeClippedSubviews={false}
                             directionalLockEnabled
-                            //   numColumns={2}
                         />
                     ) : (
                         <View
@@ -477,9 +410,6 @@ class CartScreen extends Component {
                             <Text style={{ fontSize: 17 }}> Your cart is empty</Text>
                         </View>
                     )}
-                    {/* <TouchableWithoutFeedback
-            onPress={this._onPressShowHideScheduleOrderNowBtns.bind(this)}
-          > */}
                     <View style={CartStyle.cartContainer}>
                         <View
                             style={{
@@ -509,12 +439,11 @@ class CartScreen extends Component {
                                         <Image
                                             style={CartStyle.cartImg}
                                             source={require("../../../../Resources/Images/ProductScr/CartImageRed.png")}
+                                            resizeMode="contain"
                                         />
-                                        {/* {this.state.cartItems > 0 ? ( */}
                                         <View style={CartStyle.cartBadge}>
                                             <Text style={CartStyle.cartItemLbl}>{cartFunc.getCartItemsCount()}</Text>
                                         </View>
-                                        {/* ) : null} */}
                                     </View>
 
                                     <View
@@ -554,51 +483,31 @@ class CartScreen extends Component {
                             >
                                 <TextInput
                                     style={{
-                                        // width: "50%",
                                         height: "100%",
                                         borderColor: "gray",
                                         borderWidth: 1,
                                     }}
-                                    // onChangeText={text => this.setState({ text })}
-                                    // value={this.state.text}
                                 />
                             </View>
                         </View>
-
-                        {/* <View>
-              <TextInput
-                style={{
-                  width: "100%",
-                  height: 40,
-                  borderColor: "gray",
-                  borderWidth: 1
-                }}
-                // onChangeText={text => this.setState({ text })}
-                // value={this.state.text}
-              />
-            </View> */}
 
                         <TouchableWithoutFeedback onPress={this._onPressShowHideScheduleOrderNowBtns.bind(this)}>
                             <View
                                 style={{
                                     backgroundColor: "transparent",
                                     width: "15%",
-                                    // flex: 1,
                                     justifyContent: "center",
                                     alignItems: "center",
-                                    // marginTop: 1
                                 }}
                             >
-                                <Icon
-                                    name="arrow-right"
-                                    // style={{ marginLeft: 15 }}
-                                    size={35}
-                                    color="white"
+                                <Image
+                                    style={{ height: 25, width: 25 }}
+                                    source={require("../../../../Resources/Images/CartScr/BtnRightAero.png")}
+                                    resizeMode="contain"
                                 />
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
-                    {/* </TouchableWithoutFeedback> */}
                     {this.state.showScheduleOrderNow ? (
                         <TouchableWithoutFeedback onPress={this._onPressShowHideScheduleOrderNowBtns.bind(this)}>
                             <View style={CartStyle.overlayLayer} />
@@ -607,20 +516,17 @@ class CartScreen extends Component {
                     {this._renderOrderNowModel()}
                 </SafeAreaView>
             </View>
-            // </KeyboardAvoidingView>
         );
     }
 }
 
 // Store State in store
 function mapStateToProps(state, props) {
-    return {
-        // firstComp: state.dataReducer.firstComp
-    };
+    return {};
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(actions, dispatch);
+    return {};
 }
 
 export default connect(

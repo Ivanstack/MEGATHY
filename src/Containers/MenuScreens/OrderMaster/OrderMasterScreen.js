@@ -5,20 +5,10 @@
  */
 
 import React, { Component } from "react";
-import {
-  Platform,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  AppState,
-  SafeAreaView
-} from "react-native";
+import { Platform, Text, View, Image, TouchableOpacity, AppState, SafeAreaView } from "react-native";
 
 // Redux
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import * as actions from "../../../AppRedux/Actions/actions";
 
 // Common file
 import CommonStyles from "../../../Helper/CommonStyle";
@@ -41,6 +31,7 @@ import OrderMasterStyles from "./OrderMasterStyles";
 // Screen
 import AddressListScreen from "../DeliveryDetails/AddressList/AddressListScreen";
 import SelectTimeScreen from "../DeliveryDetails/SelectTime/SelectTimeScreen";
+import PaymentScreen from "../DeliveryDetails/PaymentScreen/PaymentScreen";
 // import AddressListScreen from "../Category/CartScreen/CartScreen";
 
 // Localization
@@ -52,356 +43,331 @@ const inactiveIndicatorViewHeight = 15;
 const labels = ["Select Address", "Select Time", "Payment"];
 const classContext = null;
 const customStyles = {
-  stepIndicatorSize: inactiveIndicatorViewHeight,
-  currentStepIndicatorSize: activeIndicatorViewHeight,
-  separatorStrokeWidth: 2,
-  currentStepStrokeWidth: 0,
-  stepStrokeCurrentColor: "transparent", //constant.themeColor,
-  stepStrokeWidth: 0,
-  stepStrokeFinishedColor: constant.themeColor,
-  stepStrokeUnFinishedColor: "#aaaaaa",
-  separatorFinishedColor: constant.themeColor,
-  separatorUnFinishedColor: "#aaaaaa",
-  stepIndicatorFinishedColor: constant.themeColor,
-  stepIndicatorUnFinishedColor: "#ffffff",
-  stepIndicatorCurrentColor: "#ffffff",
-  stepIndicatorLabelCurrentColor: constant.themeColor,
-  stepIndicatorLabelFinishedColor: constant.themeColor,
-  stepIndicatorLabelUnFinishedColor: "#aaaaaa",
-  labelColor: "#999999",
-  labelSize: 13,
-  currentStepLabelColor: constant.themeColor
+    stepIndicatorSize: inactiveIndicatorViewHeight,
+    currentStepIndicatorSize: activeIndicatorViewHeight,
+    separatorStrokeWidth: 2,
+    currentStepStrokeWidth: 0,
+    stepStrokeCurrentColor: "transparent", //constant.themeColor,
+    stepStrokeWidth: 0,
+    stepStrokeFinishedColor: constant.themeColor,
+    stepStrokeUnFinishedColor: "#aaaaaa",
+    separatorFinishedColor: constant.themeColor,
+    separatorUnFinishedColor: "#aaaaaa",
+    stepIndicatorFinishedColor: constant.themeColor,
+    stepIndicatorUnFinishedColor: "#ffffff",
+    stepIndicatorCurrentColor: "#ffffff",
+    stepIndicatorLabelCurrentColor: constant.themeColor,
+    stepIndicatorLabelFinishedColor: constant.themeColor,
+    stepIndicatorLabelUnFinishedColor: "#aaaaaa",
+    labelColor: "#999999",
+    labelSize: 13,
+    currentStepLabelColor: constant.themeColor,
 };
 
 class OrderMasterScreen extends Component {
-  constructor(props) {
-    super(props);
-    //Class State
-    this.state = {
-      currentPosition: 0,
-      visible: false,
-      storeTime: "",
-      storeCurrentTime: "",
-      storeCurrentTimeInSeconds: ""
-    };
-    classContext = this;
-  }
+    constructor(props) {
+        super(props);
+        //Class State
+        this.state = {
+            currentPosition: 0,
+            visible: false,
+            storeTime: "",
+            storeCurrentTime: "",
+            storeCurrentTimeInSeconds: "",
+        };
+        classContext = this;
+    }
 
-  static navigationOptions = ({ navigation }) => ({
-    headerLeft: (
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          flex: 1,
-          alignItems: "center"
-        }}
-      >
-        <View style={{ flexDirection: "row", width: "50%", marginLeft: 10 }}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.goBack(null);
-              // classContext.props.cartScrContext.setState({
-              //   orderMasterModalVisible: false
-              // });
-            }}
-          >
-            <Icon name="close-o" size={30} color="white" />
-          </TouchableOpacity>
-        </View>
-        <View>
-          {/* {classContext ? (
+    static navigationOptions = ({ navigation }) => ({
+        headerLeft: (
+            <View
+                style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    flex: 1,
+                    alignItems: "center",
+                }}
+            >
+                <View style={{ flexDirection: "row", width: "50%", marginLeft: 10 }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            navigation.goBack(null);
+                            // classContext.props.cartScrContext.setState({
+                            //   orderMasterModalVisible: false
+                            // });
+                        }}
+                    >
+                        <Icon name="close-o" size={30} color="white" />
+                    </TouchableOpacity>
+                </View>
+                <View>
+                    {/* {classContext ? (
             <Text style={OrderMasterStyles.headerText}>
               {labels[classContext.statecurrentPosition]}
             </Text>
           ) : ( */}
-          <Text style={OrderMasterStyles.headerText}> Select Address </Text>
-          {/* )} */}
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            width: "50%",
-            justifyContent: "flex-end"
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              classContext._onPressBackBtn();
-            }}
-          >
-            <Icon name="arrow-left" size={30} color="white" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              classContext._onPressNextBtn();
-            }}
-          >
-            <Icon name="arrow-right" size={30} color="white" />
-          </TouchableOpacity>
-        </View>
-      </View>
-    ),
-    headerStyle: {
-      backgroundColor: constant.themeColor
-    }
-  });
-
-  // App Life Cycle Methods
-  componentDidMount() {
-    this._getStoreTime();
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.storeCrntTimeInterval);
-  }
-
-  componentWillUpdate() {}
-
-  // Mics Methods
-
-  _timerForStoreCurrentTime = () => {
-    let getStoreTimeInSecond = this.state.storeCurrentTimeInSeconds;
-    if (this.state.storeCurrentTimeInSeconds === "") {
-      getStoreTimeInSecond = new Date(this.state.storeTime).getTime(); // Get Time in ms
-    }
-    getStoreTimeInSecond = getStoreTimeInSecond + 1000;
-    let dateFromTimeStamp = new Date(getStoreTimeInSecond).toLocaleTimeString(
-      "en-us"
-    );
-    this.setState({
-      storeCurrentTime: dateFromTimeStamp,
-      storeCurrentTimeInSeconds: getStoreTimeInSecond
-    });
-  };
-
-  _getStoreTime = () => {
-    let storeTime = networkUtility
-      .getRequest(constant.APIGetStoreTimeZone)
-      .then(
-        result => {
-          let responseData = result.data.data;
-
-          let storeCrtTime = responseData.storeTime;
-          storeCrtTime = new Date(storeCrtTime).toLocaleTimeString("en-us");
-
-          // Hide Loading View
-          this.setState({
-            visible: false,
-            storeTime: responseData.storeTime,
-            storeCurrentTime: storeCrtTime
-          });
-          this.storeCrntTimeInterval = setInterval(
-            this._timerForStoreCurrentTime,
-            1000
-          );
-        },
-        error => {
-          constants.debugLog("\nStatus Code: " + error.status);
-          constants.debugLog("\nError Message: " + error);
-
-          // Hide Loading View
-          this.setState({ visible: false });
-
-          if (error.status != 500) {
-            if (
-              global.currentAppLanguage === constant.languageArabic &&
-              error.data["messageAr"] != undefined
-            ) {
-              commonUtility.showAlert(
-                error.data["messageAr"],
-                false,
-                "Megathy"
-              );
-            } else {
-              commonUtility.showAlert(error.data["message"], false, "Megathy");
-            }
-          } else {
-            constants.debugLog("Internal Server Error: " + error.data);
-            commonUtility.showAlert("Opps! something went wrong");
-          }
-        }
-      );
-  };
-
-  _onPageChange(position) {
-    if (position < 0) {
-      position = 0;
-    }
-    this.setState({ currentPosition: position });
-  }
-
-  _onPressNextBtn = () => {
-    if (this.state.currentPosition < labels.length - 1) {
-      this._swiper.scrollBy(1);
-    }
-  };
-
-  _onPressBackBtn = () => {
-    if (this.state.currentPosition > 0) {
-      this._swiper.scrollBy(-1);
-    }
-  };
-
-  render() {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: constant.darkGrayBGColor
-        }}
-      >
-        <SafeAreaView
-          style={{
-            flex: 1
-          }}
-        >
-          <View style={OrderMasterStyles.orderActionView}>
-            <View style={{ marginTop: 8 }}>
-              <StepIndicator
-                customStyles={customStyles}
-                currentPosition={this.state.currentPosition}
-                labels={labels}
-                onPress={position => this._onPageChange(position)}
-                stepCount={labels.length}
-                renderStepIndicator={item => {
-                  let source = "";
-                  if (item.stepStatus === "current") {
-                    source = require("../../../Resources/Images/OrderStatus/CurrentState.png");
-                  } else if (item.stepStatus === "finished") {
-                    source = require("../../../Resources/Images/OrderStatus/CompleteState.png");
-                  } else if (item.stepStatus === "unfinished") {
-                    source = require("../../../Resources/Images/OrderStatus/PandingState.png");
-                  }
-                  return (
-                    <View>
-                      <Image
-                        style={{
-                          width:
-                            item.stepStatus === "current"
-                              ? activeIndicatorViewHeight
-                              : inactiveIndicatorViewHeight,
-                          height:
-                            item.stepStatus === "current"
-                              ? activeIndicatorViewHeight
-                              : inactiveIndicatorViewHeight
-                          // flex: 1,
+                    <Text style={OrderMasterStyles.headerText}> Select Address </Text>
+                    {/* )} */}
+                </View>
+                <View
+                    style={{
+                        flexDirection: "row",
+                        width: "50%",
+                        justifyContent: "flex-end",
+                    }}
+                >
+                    <TouchableOpacity
+                        onPress={() => {
+                            classContext._onPressBackBtn();
                         }}
-                        source={source}
-                      />
-                    </View>
-                  );
-                }}
-              />
+                    >
+                        <Icon name="arrow-left" size={30} color="white" />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            classContext._onPressNextBtn();
+                        }}
+                    >
+                        <Icon name="arrow-right" size={30} color="white" />
+                    </TouchableOpacity>
+                </View>
             </View>
-            <View style={{ flex: 1, marginRight: 3, marginTop: 7 }}>
-              <Text
-                style={{
-                  fontSize: 13,
-                  fontFamily: constant.themeFont,
-                  color: constant.themeColor,
-                  fontWeight: "bold",
-                  alignSelf: "flex-end"
-                }}
-              >
-                Store Current Time : {this.state.storeCurrentTime}
-              </Text>
-            </View>
-          </View>
+        ),
+        headerStyle: {
+            backgroundColor: constant.themeColor,
+        },
+    });
 
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center"
-              //   backgroundColor: "blue",
-            }}
-          >
-            <Swiper
-              //   style={OrderMasterStyles.swipeViewWrapper}
-              // showPagination
-              //   autoplay={true}
-              //   autoplayTimeout={3}
-              //   autoplayDirection={true}
-              ref={swiper => {
-                this._swiper = swiper;
-              }}
-              loop={false}
-              index={this.state.currentPosition}
-              onIndexChanged={index => this._onPageChange(index)}
-              onMomentumScrollEnd={(e, state, context) => {}}
-              pagingEnabled={true}
+    // App Life Cycle Methods
+    componentDidMount() {
+        this._getStoreTime();
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.storeCrntTimeInterval);
+    }
+
+    componentWillUpdate() {}
+
+    // Mics Methods
+
+    _timerForStoreCurrentTime = () => {
+        let getStoreTimeInSecond = this.state.storeCurrentTimeInSeconds;
+        if (this.state.storeCurrentTimeInSeconds === "") {
+            getStoreTimeInSecond = new Date(this.state.storeTime).getTime(); // Get Time in ms
+        }
+        getStoreTimeInSecond = getStoreTimeInSecond + 1000;
+        let dateFromTimeStamp = new Date(getStoreTimeInSecond).toLocaleTimeString("en-us");
+        this.setState({
+            storeCurrentTime: dateFromTimeStamp,
+            storeCurrentTimeInSeconds: getStoreTimeInSecond,
+        });
+    };
+
+    _getStoreTime = () => {
+        let storeTime = networkUtility.getRequest(constant.APIGetStoreTimeZone).then(
+            result => {
+                let responseData = result.data.data;
+
+                let storeCrtTime = responseData.storeTime;
+                storeCrtTime = new Date(storeCrtTime).toLocaleTimeString("en-us");
+
+                // Hide Loading View
+                this.setState({
+                    visible: false,
+                    storeTime: responseData.storeTime,
+                    storeCurrentTime: storeCrtTime,
+                });
+                this.storeCrntTimeInterval = setInterval(this._timerForStoreCurrentTime, 1000);
+            },
+            error => {
+                constants.debugLog("\nStatus Code: " + error.status);
+                constants.debugLog("\nError Message: " + error);
+
+                // Hide Loading View
+                this.setState({ visible: false });
+
+                if (error.status != 500) {
+                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
+                        commonUtility.showAlert(error.data["messageAr"], false, "Megathy");
+                    } else {
+                        commonUtility.showAlert(error.data["message"], false, "Megathy");
+                    }
+                } else {
+                    constants.debugLog("Internal Server Error: " + error.data);
+                    commonUtility.showAlert("Opps! something went wrong");
+                }
+            }
+        );
+    };
+
+    _onPageChange(position) {
+        if (position < 0) {
+            position = 0;
+        }
+        this.setState({ currentPosition: position });
+    }
+
+    _onPressNextBtn = () => {
+        if (this.state.currentPosition < labels.length - 1) {
+            this._swiper.scrollBy(1);
+        }
+    };
+
+    _onPressBackBtn = () => {
+        if (this.state.currentPosition > 0) {
+            this._swiper.scrollBy(-1);
+        }
+    };
+
+    render() {
+        return (
+            <View
+                style={{
+                    flex: 1,
+                    backgroundColor: constant.darkGrayBGColor,
+                }}
             >
+                <SafeAreaView
+                    style={{
+                        flex: 1,
+                    }}
+                >
+                    <View style={OrderMasterStyles.orderActionView}>
+                        <View style={{ marginTop: 8 }}>
+                            <StepIndicator
+                                customStyles={customStyles}
+                                currentPosition={this.state.currentPosition}
+                                labels={labels}
+                                onPress={position => this._onPageChange(position)}
+                                stepCount={labels.length}
+                                renderStepIndicator={item => {
+                                    let source = "";
+                                    if (item.stepStatus === "current") {
+                                        source = require("../../../Resources/Images/OrderStatus/CurrentState.png");
+                                    } else if (item.stepStatus === "finished") {
+                                        source = require("../../../Resources/Images/OrderStatus/CompleteState.png");
+                                    } else if (item.stepStatus === "unfinished") {
+                                        source = require("../../../Resources/Images/OrderStatus/PandingState.png");
+                                    }
+                                    return (
+                                        <View>
+                                            <Image
+                                                style={{
+                                                    width:
+                                                        item.stepStatus === "current"
+                                                            ? activeIndicatorViewHeight
+                                                            : inactiveIndicatorViewHeight,
+                                                    height:
+                                                        item.stepStatus === "current"
+                                                            ? activeIndicatorViewHeight
+                                                            : inactiveIndicatorViewHeight,
+                                                    // flex: 1,
+                                                }}
+                                                source={source}
+                                            />
+                                        </View>
+                                    );
+                                }}
+                            />
+                        </View>
+                        <View style={{ flex: 1, marginRight: 3, marginTop: 7 }}>
+                            <Text
+                                style={{
+                                    fontSize: 13,
+                                    fontFamily: constant.themeFont,
+                                    color: constant.themeColor,
+                                    fontWeight: "bold",
+                                    alignSelf: "flex-end",
+                                }}
+                            >
+                                Store Current Time : {this.state.storeCurrentTime}
+                            </Text>
+                        </View>
+                    </View>
 
-             {/* ----- AddressListScreen ----- */}
-              <View style={OrderMasterStyles.addressListContainerStyle}>
-                <AddressListScreen entryPoint="OrderMaster"/>
-              </View>
+                    <View
+                        style={{
+                            flex: 1,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            //   backgroundColor: "blue",
+                        }}
+                    >
+                        <Swiper
+                            //   style={OrderMasterStyles.swipeViewWrapper}
+                            ref={swiper => {
+                                this._swiper = swiper;
+                            }}
+                            loop={false}
+                            index={this.state.currentPosition}
+                            onIndexChanged={index => this._onPageChange(index)}
+                            onMomentumScrollEnd={(e, state, context) => {}}
+                            pagingEnabled={true}
+                        >
+                            {/* ----- AddressListScreen ----- */}
+                            <View style={OrderMasterStyles.addressListContainerStyle}>
+                                <AddressListScreen entryPoint="OrderMaster" />
+                            </View>
 
-              {/* ----- SelectTimeScreen ----- */}
-              <View style={OrderMasterStyles.orderTimeSlotContainerStyle}>
-                <SelectTimeScreen />
-              </View>
+                            {/* ----- SelectTimeScreen ----- */}
+                            <View style={OrderMasterStyles.orderTimeSlotContainerStyle}>
+                                <SelectTimeScreen />
+                            </View>
 
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: "green"
-                }}
-              >
-                <Text> Payment </Text>
-              </View>
-            </Swiper>
-          </View>
+                            {/* ----- PaymentScreen ----- */}
+                            <View style={OrderMasterStyles.paymentContainerStyle}>
+                                <PaymentScreen parentContext={this} />
+                            </View>
+                        </Swiper>
+                    </View>
 
-          <View style={OrderMasterStyles.goToNextPageView}>
-            {this.state.currentPosition > 0 ? (
-              <TouchableOpacity onPress={() => this._onPressBackBtn()}>
-                <View style={OrderMasterStyles.nextViewStyle}>
-                  <Image
-                    style={OrderMasterStyles.nextImgStyle}
-                    source={require("../../../Resources/Images/CartScr/BtnLeftAero.png")}
-                  />
-                  <Text style={{ fontSize: 18, color: "white" }}> Back </Text>
-                </View>
-              </TouchableOpacity>
-            ) : (
-              <View style={OrderMasterStyles.nextViewStyle} />
-            )}
+                    <View style={OrderMasterStyles.goToNextPageView}>
+                        {this.state.currentPosition > 0 ? (
+                            <TouchableOpacity onPress={() => this._onPressBackBtn()}>
+                                <View style={OrderMasterStyles.nextViewStyle}>
+                                    <Image
+                                        style={OrderMasterStyles.nextImgStyle}
+                                        source={require("../../../Resources/Images/CartScr/BtnLeftAero.png")}
+                                    />
+                                    <Text style={{ fontSize: 18, color: "white" }}> Back </Text>
+                                </View>
+                            </TouchableOpacity>
+                        ) : (
+                            <View style={OrderMasterStyles.nextViewStyle} />
+                        )}
 
-            {this.state.currentPosition < labels.length - 1 ? (
-              <TouchableOpacity onPress={() => this._onPressNextBtn()}>
-                <View style={OrderMasterStyles.nextViewStyle}>
-                  <Text style={{ fontSize: 18, color: "white" }}> Next </Text>
-                  <Image
-                    style={OrderMasterStyles.nextImgStyle}
-                    source={require("../../../Resources/Images/CartScr/BtnRightAero.png")}
-                  />
-                </View>
-              </TouchableOpacity>
-            ) : null}
-          </View>
-        </SafeAreaView>
-      </View>
-      // </KeyboardAvoidingView>
-    );
-  }
+                        {this.state.currentPosition < labels.length - 1 ? (
+                            <TouchableOpacity onPress={() => this._onPressNextBtn()}>
+                                <View style={OrderMasterStyles.nextViewStyle}>
+                                    <Text style={{ fontSize: 18, color: "white" }}> Next </Text>
+                                    <Image
+                                        style={OrderMasterStyles.nextImgStyle}
+                                        source={require("../../../Resources/Images/CartScr/BtnRightAero.png")}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        ) : null}
+                    </View>
+                </SafeAreaView>
+            </View>
+            // </KeyboardAvoidingView>
+        );
+    }
 }
 
 // Store State in store
 function mapStateToProps(state, props) {
-  return {
-    // firstComp: state.dataReducer.firstComp
-  };
+    return {
+        // firstComp: state.dataReducer.firstComp
+    };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(actions, dispatch);
+    return {};
 }
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(OrderMasterScreen);
