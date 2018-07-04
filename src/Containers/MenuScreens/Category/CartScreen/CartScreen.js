@@ -49,7 +49,6 @@ class CartScreen extends Component {
         this.state = {
             productQuentity: 0,
             showScheduleOrderNow: false,
-            orderMasterModalVisible: false,
         };
     }
 

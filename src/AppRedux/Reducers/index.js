@@ -5,6 +5,9 @@ import saga from "redux-saga";
 import { watcherSaga } from "../Sagas/sagas";
 
 const rootReducer = combineReducers({
+    // General API Call
+    general: require("./GeneralAPICallReducer").reducer,
+
     // Login/SignUp Flow
     login: require("./LoginReducer").reducer,
     signup: require("./SignUpReducer").reducer,

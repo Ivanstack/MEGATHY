@@ -5,6 +5,7 @@ import * as constant from "../../../../Helper/Constants";
 // Variable
 const { width, height } = Dimensions.get("window");
 const paymentMethodImageHeight = 50;
+const redeemPointViewViewHeight = (7.5 * Dimensions.get("window").height) / 100;
 
 export default StyleSheet.create({
     mainContainer: {
@@ -13,6 +14,7 @@ export default StyleSheet.create({
         backgroundColor: "transparent",
         alignItems: "center",
         justifyContent: "center",
+        flex:1
     },
     headerText: {
         color: "white",
@@ -42,7 +44,8 @@ export default StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         height: 30,
-        marginBottom: 4,
+        // marginBottom: 4,
+        marginTop: 8,
         borderRadius: 15,
         borderWidth: 2,
         borderColor: "transparent",
@@ -61,4 +64,27 @@ export default StyleSheet.create({
         borderColor: constant.themeLightGreenColor,
         borderRadius: 5,
     },
+    redeemPointView: {
+        width: "100%",
+        bottom: 0.65 * redeemPointViewViewHeight,
+        position: "absolute",
+        backgroundColor: "white",
+    },
+    txtInputRedeemPoint: {
+        borderColor: "lightgray",
+        borderWidth: 2,
+        borderRadius: 20,
+        height: 40,
+        width: "90%",
+        paddingLeft: 15,
+    },
+    imgRedeemPointShow: {
+        height: 70,
+        width: 70,
+        justifyContent: "center",
+        alignItems: "center",
+        marginRight: 16,
+        marginTop: -20,
+        // backgroundColor: "red"
+    }
 });

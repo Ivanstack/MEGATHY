@@ -14,9 +14,14 @@ import { AddressListScreenCalls } from "./AddressListSagas";
 import { AddAddressScreenCalls } from "./AddAddressSagas";
 import { SubCategoryScreenCalls } from "./SubCategorySagas";
 import { ProductScreenCalls } from "./ProductSagas";
+import { GeneralAPICallSagas } from "./GeneralAPICallSagas";
 
 // watcher saga: watches for actions dispatched to the store, starts worker saga
 export function* watcherSaga(action) {
+
+    // General API Call
+    yield takeEvery(constant.actions.getAppSettingAndRewardPointRequest, GeneralAPICallSagas);
+
     // Login/SignUp Flow
     // Login Screen
     yield takeEvery(constant.actions.loginRequest, LoginScreenCalls);
@@ -27,6 +32,7 @@ export function* watcherSaga(action) {
 
     // Forgot Password Screen
     yield takeEvery(constant.actions.forgotPasswordRequest, ForgotPasswordScreenCalls);
+    
 
     // Verify Code Screen
     yield takeEvery(constant.actions.verifyCodeRequest, VerifyCodeScreenCalls);
@@ -46,6 +52,7 @@ export function* watcherSaga(action) {
     yield takeEvery(constant.actions.getStoreRequest, StoreScreenCalls);
     yield takeEvery(constant.actions.setStoreRequest, StoreScreenCalls);
 
+    // Menu Screens Flow
     // SelectTime Screen
     yield takeEvery(constant.actions.getOrderTimeSessionRequest, SelectTimeScreenCalls);
 

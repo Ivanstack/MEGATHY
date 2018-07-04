@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from "react";
-import { Platform, Text, View, Image, TouchableOpacity, AppState, SafeAreaView } from "react-native";
+import { Platform, Text, View, Image, TouchableOpacity, AppState, SafeAreaView, Keyboard } from "react-native";
 
 // Redux
 import { connect } from "react-redux";
@@ -141,6 +141,7 @@ class OrderMasterScreen extends Component {
     // App Life Cycle Methods
     componentDidMount() {
         this._getStoreTime();
+        this.props.getAppSettingAndReward()
     }
 
     componentWillUnmount() {
@@ -202,11 +203,28 @@ class OrderMasterScreen extends Component {
     };
 
     _onPageChange(position) {
+        // constant.debugLog("Change Index _onPageChange :==> " + position);
+        Keyboard.dismiss()
         if (position < 0) {
             position = 0;
+        } else if (position >= 3) {
+            position = 2;
         }
         this.setState({ currentPosition: position });
     }
+
+    _onPressPageChange = position => {
+        // constant.debugLog("Change Index :==> " + position);
+        Keyboard.dismiss()
+        if (position < 0) {
+            position = 0;
+        } else if (position >= 3) {
+            position = 2;
+        }
+        let scrollIndex = position - this.state.currentPosition;
+        // constant.debugLog("scroll Index :==> " + scrollIndex);
+        this._swiper.scrollBy(scrollIndex, true);
+    };
 
     _onPressNextBtn = () => {
         if (this.state.currentPosition < labels.length - 1) {
@@ -239,7 +257,7 @@ class OrderMasterScreen extends Component {
                                 customStyles={customStyles}
                                 currentPosition={this.state.currentPosition}
                                 labels={labels}
-                                onPress={position => this._onPageChange(position)}
+                                onPress={position => this._onPressPageChange(position)}
                                 stepCount={labels.length}
                                 renderStepIndicator={item => {
                                     let source = "";
@@ -347,7 +365,9 @@ class OrderMasterScreen extends Component {
                                     />
                                 </View>
                             </TouchableOpacity>
-                        ) : null}
+                        ) : (
+                            <View style={OrderMasterStyles.nextViewStyle} />
+                        )}
                     </View>
                 </SafeAreaView>
             </View>
@@ -359,12 +379,24 @@ class OrderMasterScreen extends Component {
 // Store State in store
 function mapStateToProps(state, props) {
     return {
-        // firstComp: state.dataReducer.firstComp
+        totalRewardPoint_SR: state.general.totalRewardPoint,
+        totalRewardPoint_SR: state.general.totalRewardPoint_SR,
+        error: state.general.error,
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return {};
+    return {
+        getAppSettingAndReward: () =>
+            dispatch({
+                type: constant.actions.getAppSettingAndRewardPointRequest,
+                payload: {
+                    endPoint: constant.APIGetAppSettingsAndRewards,
+                    parameters: "",
+                },
+            }),
+        
+    };
 }
 
 export default connect(

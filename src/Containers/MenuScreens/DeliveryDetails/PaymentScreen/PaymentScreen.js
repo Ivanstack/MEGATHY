@@ -9,11 +9,14 @@ import {
     StyleSheet,
     Text,
     View,
-    TouchableOpacity,
     SafeAreaView,
-    FlatList,
     Image,
+    Animated,
+    Dimensions,
+    TextInput,
     ScrollView,
+    ImageBackground,
+    TouchableOpacity,
     TouchableWithoutFeedback,
 } from "react-native";
 
@@ -21,10 +24,6 @@ import * as constant from "../../../../Helper/Constants";
 
 // Redux
 import { connect } from "react-redux";
-
-// Libs
-import CollapsibleList from "react-native-collapsible-list";
-import SegmentedControlTab from "react-native-segmented-control-tab";
 
 // Common Utilities
 import * as CommonUtilities from "../../../../Helper/CommonUtilities";
@@ -45,14 +44,19 @@ import * as fnCart from "../../../../Helper/Functions/Cart";
 // Components
 import AppTextField from "../../../../Components/AppTextField";
 
+// Variable
+const redeemPointViewViewHeight = (6 * Dimensions.get("window").height) / 100;
+
 class PaymentScreen extends Component {
     constructor(props) {
         super(props);
 
         baseLocal.locale = global.currentAppLanguage;
+        this.redeemView_Y_Translate = new Animated.Value(0);
         this.state = {
             txtCoupenCode: "",
             paymentByCard: true,
+            isOpenRedeemPointView: false,
         };
     }
 
@@ -91,8 +95,10 @@ class PaymentScreen extends Component {
     });
 
     componentDidMount() {
-        // constant.debugLog("Selected Time :===> " + global.selectedTimeSlot);
-        // constant.debugLog("Selected Address :===> " + global.selectedAddress);
+        Animated.timing(this.redeemView_Y_Translate, {
+            toValue: redeemPointViewViewHeight,
+            duration: 1.5,
+        }).start();
     }
 
     componentWillUnmount() {}
@@ -111,27 +117,72 @@ class PaymentScreen extends Component {
         //     paymentByCard: !this.state.paymentByCard,
         // });
         if (global.selectedAddress === null) {
-            this.props.parentContext.setState({ currentPosition: 0 });
+            this.props.parentContext._swiper.scrollBy(-2, true);
+            // this.props.parentContext.setState({ currentPosition: 0 });
         } else if (global.selectedTimeSlot === null) {
-            this.props.parentContext.setState({ currentPosition: 1 });
+            this.props.parentContext._swiper.scrollBy(-1, true);
+            // this.props.parentContext.setState({ currentPosition: 1 });
         }
         constant.debugLog("Selected Time :===> " + JSON.stringify(global.selectedTimeSlot));
         constant.debugLog("Selected Address :===> " + JSON.stringify(global.selectedAddress));
     };
 
+    _onPressShowHideRedeemView = () => {
+        // constant.debugLog("orderNow Called ...");
+
+        if (!this.state.isOpenRedeemPointView) {
+            this.setState(
+                {
+                    isOpenRedeemPointView: true,
+                },
+                () => {
+                    this.redeemView_Y_Translate.setValue(0.75 * redeemPointViewViewHeight);
+                    Animated.timing(this.redeemView_Y_Translate, {
+                        toValue: -0.75 * redeemPointViewViewHeight,
+                        duration: 250,
+                        // friction: 3
+                    }).start();
+                }
+            );
+        } else {
+            this.setState(
+                {
+                    isOpenRedeemPointView: false,
+                },
+                () => {
+                    this.redeemView_Y_Translate.setValue(-0.75 * redeemPointViewViewHeight);
+                    Animated.timing(this.redeemView_Y_Translate, {
+                        toValue: redeemPointViewViewHeight,
+                        duration: 250,
+                        // friction: 5,
+                    }).start();
+                }
+            );
+        }
+    };
+
     // Render View
     _renderCartValueView = (leftTitle, rightTitle) => {
         return (
-            <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
+            <View style={{ justifyContent: "space-between", flexDirection: "row", flex: 1 }}>
                 <Text style={PaymentStyle.boldTitleText}>{leftTitle}</Text>
                 <Text style={PaymentStyle.boldTitleText}>{rightTitle}</Text>
             </View>
         );
     };
 
+    _renderExtraChargeView = (leftTitle, rightTitle) => {
+        return (
+            <View style={{ alignSelf: "flex-end", justifyContent: "space-between", flexDirection: "row", flex: 1 }}>
+                <Text style={[PaymentStyle.smallSizeFontTitleText, { marginRight: "10%" }]}> {leftTitle}</Text>
+                <Text style={[PaymentStyle.smallSizeFontTitleText, { right: 8 }]}>{rightTitle}</Text>
+            </View>
+        );
+    };
+
     _renderCartDescriptionView = () => {
         return (
-            <View>
+            <View style={{ flex: 1 }}>
                 <Text style={[PaymentStyle.normalTitleText, { marginLeft: 16 }]}>
                     Delivery Address:{" "}
                     {global.selectedAddress != null && global.selectedAddress.address
@@ -140,18 +191,25 @@ class PaymentScreen extends Component {
                 </Text>
                 {this._renderCartValueView("Description", "Amount(SAR)")}
                 {this._renderCartValueView("Cart Amount", fnCart.getTotalPriceCartItems())}
-                <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
+                {this._renderExtraChargeView("Delivery Charges", "+15.00")}
+                {/* <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
                     <Text style={[PaymentStyle.smallSizeFontTitleText, { marginLeft: "50%" }]}> Delivery Charges</Text>
                     <Text style={[PaymentStyle.smallSizeFontTitleText, { marginRight: 12 }]}>+{"15.00"}</Text>
-                </View>
+                </View> */}
                 {this._renderCartValueView("Order Amount", fnCart.getTotalPriceCartItems() + 15)}
+                {this.state.isOpenRedeemPointView ? (
+                    <View>
+                        {this._renderExtraChargeView("Redeem Points(1768.00)", "-15.00")}
+                        {this._renderCartValueView("Payable Amount", fnCart.getTotalPriceCartItems())}
+                    </View>
+                ) : null}
             </View>
         );
     };
 
     _renderPaymentMethodSelectionView = () => {
         return (
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row", flex: 1 }}>
                 <TouchableOpacity
                     disabled={this.state.paymentByCard}
                     onPress={this.onPressPaymentMethodChange.bind(this)}
@@ -211,33 +269,107 @@ class PaymentScreen extends Component {
         );
     };
 
+    _renderRedeemPointView = () => {
+        let imgRedeemPointView = this.state.isOpenRedeemPointView
+            ? require("../../../../Resources/Images/OrderSummary/selectUserWallet.png")
+            : require("../../../../Resources/Images/OrderSummary/CircleWithShadow.png");
+        return (
+            <Animated.View
+                style={[PaymentStyle.redeemPointView, { transform: [{ translateY: this.redeemView_Y_Translate }] }]}
+            >
+                <TouchableWithoutFeedback onPress={this._onPressShowHideRedeemView.bind(this)}>
+                    <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 10 }}>
+                        <Image style={{ height: 20, width: 20 }} resizeMode="contain" source={imgRedeemPointView} />
+                        <Text style={[PaymentStyle.boldTitleText, { color: constant.themeColor }]}>Redeem Points</Text>
+                    </View>
+                </TouchableWithoutFeedback>
+
+                <View style={{ flexDirection: "row" }}>
+                    <View style={{ flex: 1, marginLeft: "10%" }}>
+                        <TextInput style={PaymentStyle.txtInputRedeemPoint} keyboardType="decimal-pad" />
+                        <Text style={PaymentStyle.smallSizeFontTitleText}>
+                            0 {baseLocal.t("Points will remaining in wallet")}
+                        </Text>
+                    </View>
+                    {this.state.isOpenRedeemPointView ? (
+                        // <View style={{ backgroundColor: "red" }}>
+                        <ImageBackground
+                            style={PaymentStyle.imgRedeemPointShow}
+                            resizeMode="contain"
+                            source={require("../../../../Resources/Images/OrderSummary/CircleWithShadow.png")}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 17,
+                                    color: "gray",
+                                    fontWeight: "bold",
+                                    fontFamily: constant.themeFont,
+                                }}
+                            >
+                                1768
+                            </Text>
+                            <Text
+                                style={{
+                                    fontSize: 14,
+                                    marginBottom: 2,
+                                    color: "gray",
+                                    fontFamily: constant.themeFont,
+                                }}
+                            >
+                                POINTS
+                            </Text>
+                        </ImageBackground>
+                    ) : // </View>
+                    null}
+                </View>
+            </Animated.View>
+        );
+    };
+
     render() {
         return (
             // Main View (Container)
             <View style={{ flex: 1 }}>
                 <SafeAreaView style={{ flex: 1, flexDirection: "column" }}>
-                    {this._renderCartDescriptionView()}
-                    {this._renderCoupenCodeView()}
-                    <Text style={[PaymentStyle.normalTitleText, { marginLeft: 15 }]}>Select payment method</Text>
-                    {this._renderPaymentMethodSelectionView()}
-                    {/* <View style={{alignSelf:"flex-end"}}> */}
-                    <TouchableOpacity
+                    <ScrollView
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        // style={{ flex: 1}}
+                    >
+                        <View style={{ marginBottom: 50 }}>
+                            {this._renderCartDescriptionView()}
+                            {this._renderCoupenCodeView()}
+                            <Text style={[PaymentStyle.normalTitleText, { marginLeft: 15 }]}>
+                                Select payment method
+                            </Text>
+                            {this._renderPaymentMethodSelectionView()}
+                            {this.state.isOpenRedeemPointView ? <View style={{ height: 200 }} /> : null}
+                        </View>
+                    </ScrollView>
+                    {this._renderRedeemPointView()}
+
+                    <View
                         style={{
-                            height: 40,
-                            width: "90%",
-                            // flex:1,
-                            margin: 16,
+                            backgroundColor: "white",
                             bottom: 0,
                             position: "absolute",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            // alignSelf:"flex-end",
-                            backgroundColor: constant.themeColor,
+                            width: "100%",
                         }}
-                        onPress={this.onPressSend.bind(this)}
                     >
-                        <Text style={PaymentStyle.headerText}> SEND </Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{
+                                height: 40,
+                                width: "90%",
+                                margin: 16,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                backgroundColor: constant.themeColor,
+                            }}
+                            onPress={this.onPressSend.bind(this)}
+                        >
+                            <Text style={PaymentStyle.headerText}> SEND </Text>
+                        </TouchableOpacity>
+                    </View>
+
                     {/* </View> */}
                 </SafeAreaView>
             </View>

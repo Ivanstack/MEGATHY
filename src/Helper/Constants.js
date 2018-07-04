@@ -81,6 +81,9 @@ module.exports = {
     APIEditAddress: "address",
     APIDeleteAddress: "address",
     APIGetOrderTimeSession: "getOrderTimeSession",
+    
+    // General API
+    APIGetAppSettingsAndRewards: "getAppSettingsAndRewards",
 
     /// Colors
     themeColor: "#CF2526",
@@ -112,6 +115,11 @@ module.exports = {
         Key formation:
             <API_Name> + <Request|Success|Failure>
         */
+
+        // General API Call
+        getAppSettingAndRewardPointRequest: "getAppSettingAndRewardPointRequest",
+        getAppSettingAndRewardPointSuccess: "getAppSettingAndRewardPointSuccess",
+        getAppSettingAndRewardPointFailure: "getAppSettingAndRewardPointFailure",
 
         // Login Screen
         FBLoginRequest: "FBLoginRequest",
