@@ -30,7 +30,7 @@ import OrderMasterStyles from "./OrderMasterStyles";
 
 // Screen
 import AddressListScreen from "../DeliveryDetails/AddressList/AddressListScreen";
-import SelectTimeScreen from "../DeliveryDetails/SelectTime/SelectTimeScreen";
+import SelectTimeScreen from "./SelectTime/SelectTimeScreen";
 import PaymentScreen from "../DeliveryDetails/PaymentScreen/PaymentScreen";
 // import AddressListScreen from "../Category/CartScreen/CartScreen";
 

@@ -21,7 +21,7 @@ import OrderMasterScreen from "../Containers/MenuScreens/OrderMaster/OrderMaster
 
 import AddressListScreen from "../Containers/MenuScreens/DeliveryDetails/AddressList/AddressListScreen";
 import AddAddressScreen from "../Containers/MenuScreens/DeliveryDetails/AddAddress/AddAddressScreen";
-import SelectTimeScreen from "../Containers/MenuScreens/DeliveryDetails/SelectTime/SelectTimeScreen";
+import SelectTimeScreen from "../Containers/MenuScreens/OrderMaster/SelectTime/SelectTimeScreen";
 import SecondScreen from "../Containers/MenuScreens/SecondScreen";
 import PaymentScreen from "../Containers/MenuScreens/DeliveryDetails/PaymentScreen/PaymentScreen";
 
