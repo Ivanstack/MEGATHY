@@ -6,15 +6,15 @@
 
 import React, { Component } from "react";
 import {
-    StyleSheet,
     Text,
     View,
-    SafeAreaView,
     Image,
     Animated,
-    Dimensions,
     TextInput,
     ScrollView,
+    StyleSheet,
+    Dimensions,
+    SafeAreaView,
     ImageBackground,
     TouchableOpacity,
     TouchableWithoutFeedback,
@@ -36,7 +36,7 @@ import Icon from "react-native-vector-icons/EvilIcons";
 import baseLocal from "../../../../Resources/Localization/baseLocalization";
 
 // Component Style
-import PaymentStyle from "./PaymentStyle";
+import PaymentStyle from "./OrderSummaryStyle";
 
 // Common Function
 import * as fnCart from "../../../../Helper/Functions/Cart";
@@ -47,7 +47,7 @@ import AppTextField from "../../../../Components/AppTextField";
 // Variable
 const redeemPointViewViewHeight = (6 * Dimensions.get("window").height) / 100;
 
-class PaymentScreen extends Component {
+class OrderSummaryScreen extends Component {
     constructor(props) {
         super(props);
 
@@ -55,6 +55,7 @@ class PaymentScreen extends Component {
         this.redeemView_Y_Translate = new Animated.Value(0);
         this.state = {
             txtCoupenCode: "",
+            txtRedeemPoint: "",
             paymentByCard: true,
             isOpenRedeemPointView: false,
         };
@@ -95,6 +96,7 @@ class PaymentScreen extends Component {
     });
 
     componentDidMount() {
+        // constant.debugLog("Date :==> "+new Date().toLocaleDateString())
         Animated.timing(this.redeemView_Y_Translate, {
             toValue: redeemPointViewViewHeight,
             duration: 1.5,
@@ -104,6 +106,17 @@ class PaymentScreen extends Component {
     componentWillUnmount() {}
 
     // Mics Methods
+
+    _isValidRedeemPoint = strRedeemPoint => {
+        if (!isNaN(strRedeemPoint) && strRedeemPoint < this.props.totalRewardPoint) {
+            return true;
+        }
+        return false;
+    };
+
+    _remainingRedeemPoint = (strRedeemPoint) => {
+
+    }
 
     // onPress Methods
     onPressPaymentMethodChange = () => {
@@ -123,8 +136,10 @@ class PaymentScreen extends Component {
             this.props.parentContext._swiper.scrollBy(-1, true);
             // this.props.parentContext.setState({ currentPosition: 1 });
         }
-        constant.debugLog("Selected Time :===> " + JSON.stringify(global.selectedTimeSlot));
-        constant.debugLog("Selected Address :===> " + JSON.stringify(global.selectedAddress));
+        // constant.debugLog("Selected Time :===> " + JSON.stringify(global.selectedTimeSlot));
+        // constant.debugLog("Selected Address :===> " + JSON.stringify(global.selectedAddress));
+        // constant.debugLog("totalRewardPoint :===> " + this.props.totalRewardPoint);
+        // constant.debugLog("totalRewardPoint_SR :===> " + this.props.totalRewardPoint_SR);
     };
 
     _onPressShowHideRedeemView = () => {
@@ -286,9 +301,16 @@ class PaymentScreen extends Component {
 
                 <View style={{ flexDirection: "row" }}>
                     <View style={{ flex: 1, marginLeft: "10%" }}>
-                        <TextInput style={PaymentStyle.txtInputRedeemPoint} keyboardType="decimal-pad" />
+                        <TextInput
+                            style={PaymentStyle.txtInputRedeemPoint}
+                            keyboardType="decimal-pad"
+                            value={this.state.txtRedeemPoint}
+                            onChangeText={text => {
+                                this.setState({ txtRedeemPoint: text });
+                            }}
+                        />
                         <Text style={PaymentStyle.smallSizeFontTitleText}>
-                            0 {baseLocal.t("Points will remaining in wallet")}
+                            {this.props.totalRewardPoint} {baseLocal.t("Points will remaining in wallet")}
                         </Text>
                     </View>
                     {this.state.isOpenRedeemPointView ? (
@@ -306,7 +328,7 @@ class PaymentScreen extends Component {
                                     fontFamily: constant.themeFont,
                                 }}
                             >
-                                1768
+                                {this.props.totalRewardPoint}
                             </Text>
                             <Text
                                 style={{
@@ -379,6 +401,8 @@ class PaymentScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
+        totalRewardPoint: state.general.totalRewardPoint,
+        totalRewardPoint_SR: state.general.totalRewardPoint_SR,
         // isLoading: state.selectTime.isLoading,
         // isSuccess: state.selectTime.isSuccess,
         // objOrderBookedTimeSlote: state.selectTime.objOrderBookedTimeSlote,
@@ -402,4 +426,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(PaymentScreen);
+)(OrderSummaryScreen);
