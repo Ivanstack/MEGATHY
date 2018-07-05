@@ -5,22 +5,19 @@
  */
 
 import React, { Component } from "react";
-import { Platform, Text, View, Image, TouchableOpacity, AppState, SafeAreaView, Keyboard } from "react-native";
+import { Platform, Text, View, Image, TouchableOpacity, SafeAreaView, Keyboard } from "react-native";
 
 // Redux
 import { connect } from "react-redux";
 
 // Common file
-import CommonStyles from "../../../Helper/CommonStyle";
 import * as constant from "../../../Helper/Constants";
 import * as commonUtility from "../../../Helper/CommonUtilities";
 
 // Lib
 import Icon from "react-native-vector-icons/EvilIcons";
-import ImageLoad from "react-native-image-placeholder";
 import Swiper from "react-native-swiper";
 import StepIndicator from "react-native-step-indicator";
-import autobind from "autobind-decorator";
 
 // Network Utility
 import * as networkUtility from "../../../Helper/NetworkUtility";
@@ -31,7 +28,7 @@ import OrderMasterStyles from "./OrderMasterStyles";
 // Screen
 import AddressListScreen from "../DeliveryDetails/AddressList/AddressListScreen";
 import SelectTimeScreen from "./SelectTime/SelectTimeScreen";
-import PaymentScreen from "../DeliveryDetails/PaymentScreen/PaymentScreen";
+import OrderSummaryScreen from "../DeliveryDetails/OrderSummaryScreen/OrderSummaryScreen";
 // import AddressListScreen from "../Category/CartScreen/CartScreen";
 
 // Localization
@@ -141,7 +138,7 @@ class OrderMasterScreen extends Component {
     // App Life Cycle Methods
     componentDidMount() {
         this._getStoreTime();
-        this.props.getAppSettingAndReward()
+        this.props.getAppSettingAndReward();
     }
 
     componentWillUnmount() {
@@ -204,7 +201,7 @@ class OrderMasterScreen extends Component {
 
     _onPageChange(position) {
         // constant.debugLog("Change Index _onPageChange :==> " + position);
-        Keyboard.dismiss()
+        Keyboard.dismiss();
         if (position < 0) {
             position = 0;
         } else if (position >= 3) {
@@ -215,7 +212,7 @@ class OrderMasterScreen extends Component {
 
     _onPressPageChange = position => {
         // constant.debugLog("Change Index :==> " + position);
-        Keyboard.dismiss()
+        Keyboard.dismiss();
         if (position < 0) {
             position = 0;
         } else if (position >= 3) {
@@ -333,9 +330,9 @@ class OrderMasterScreen extends Component {
                                 <SelectTimeScreen />
                             </View>
 
-                            {/* ----- PaymentScreen ----- */}
+                            {/* ----- OrderSummaryScreen ----- */}
                             <View style={OrderMasterStyles.paymentContainerStyle}>
-                                <PaymentScreen parentContext={this} />
+                                <OrderSummaryScreen parentContext={this} />
                             </View>
                         </Swiper>
                     </View>
@@ -395,7 +392,6 @@ function mapDispatchToProps(dispatch) {
                     parameters: "",
                 },
             }),
-        
     };
 }
 
