@@ -549,7 +549,7 @@ class SelectTimeScreen extends Component {
                         </View>
                     </View>
 
-                    {/* ----- Time Slote Status Instruction View ----- */}
+                    {/* ----- Time Slot Status Instruction View ----- */}
                     <View
                         style={{
                             justifyContent: "space-between",

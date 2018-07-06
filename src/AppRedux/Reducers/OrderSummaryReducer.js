@@ -3,8 +3,8 @@ import * as constant from "../../Helper/Constants";
 // reducer with initial state
 export const initialState = {
     isLoading: false,
-    isGetStoreSuccess: false,
-    isSetStoreSuccess: false,
+    isCheckCoupenSuccess: false,
+    isCheckCoupenSuccess: false,
     arrStores:[],
     error: null,
 };

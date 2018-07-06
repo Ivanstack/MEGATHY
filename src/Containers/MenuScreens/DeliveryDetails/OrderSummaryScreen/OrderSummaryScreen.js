@@ -128,6 +128,8 @@ class OrderSummaryScreen extends Component {
         this.objCartDescription["deliveryCharges"] = this._getDeliveryChargesFromOrderAmount(
             this.objCartDescription.basicOrderAmount
         );
+        this.totalRewardPoint = global.currentSettings["totalRewardPoint"]
+        this.totalRewardPoint_SR = global.currentSettings["totalRewardPoint_SR"]
         if (global.currentSettings["vat-percentage"] > 0) {
             this.isAvailableVAT = true;
             this.objCartDescription["vatAmount"] = (
@@ -140,7 +142,7 @@ class OrderSummaryScreen extends Component {
             this.objCartDescription["finalOrderAmount"] = this.objCartDescription.basicOrderAmount;
         }
 
-        this.setState({ txtRedeemPoint: this.props.totalRewardPoint });
+        this.setState({ txtRedeemPoint: this.totalRewardPoint });
         // constant.debugLog("cart description :===> " + JSON.stringify(this.objCartDescription));
     };
 
@@ -149,7 +151,7 @@ class OrderSummaryScreen extends Component {
         if (this._isValidRedeemPoint(strRedeemPoint)) {
             this.setState({ txtRedeemPoint: strRedeemPoint });
         } else {
-            this.setState({ txtRedeemPoint: this.props.totalRewardPoint });
+            this.setState({ txtRedeemPoint: this.totalRewardPoint });
             // CommonUtilities.showAlert("total points is smaller then used point", false);
         }
     };
@@ -199,7 +201,7 @@ class OrderSummaryScreen extends Component {
 
     // Apply Coupne Code
     _applyCoupneCode = () => {
-        
+
     };
 
     // onPress Methods
@@ -234,7 +236,7 @@ class OrderSummaryScreen extends Component {
                 {
                     isOpenRedeemPointView: true,
                     txtRedeemPoint:
-                        this.state.txtRedeemPoint == 0 ? this.props.totalRewardPoint : this.state.txtRedeemPoint,
+                        this.state.txtRedeemPoint == 0 ? this.totalRewardPoint : this.state.txtRedeemPoint,
                 },
                 () => {
                     this.redeemView_Y_Translate.setValue(0.75 * redeemPointViewViewHeight);
@@ -401,14 +403,14 @@ class OrderSummaryScreen extends Component {
                         <TextInput
                             style={PaymentStyle.txtInputRedeemPoint}
                             keyboardType="decimal-pad"
-                            value={this.state.txtRedeemPoint.toString()}
+                            value={this.state.txtRedeemPoint}
                             onChangeText={text => {
                                 this._remainingRedeemPoint(text);
                             }}
-                            maxLength={this.props.totalRewardPoint.length}
+                            maxLength={(this.totalRewardPoint)?this.totalRewardPoint.length:0}
                         />
                         <Text style={PaymentStyle.smallSizeFontTitleText}>
-                            {this.props.totalRewardPoint - this.state.txtRedeemPoint}{" "}
+                            {this.totalRewardPoint - this.state.txtRedeemPoint}{" "}
                             {baseLocal.t("Points will remaining in wallet")}
                         </Text>
                     </View>
@@ -427,7 +429,7 @@ class OrderSummaryScreen extends Component {
                                     fontFamily: constant.themeFont,
                                 }}
                             >
-                                {this.props.totalRewardPoint}
+                                {this.totalRewardPoint}
                             </Text>
                             <Text
                                 style={{
@@ -500,8 +502,8 @@ class OrderSummaryScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        totalRewardPoint: state.general.totalRewardPoint,
-        totalRewardPoint_SR: state.general.totalRewardPoint_SR,
+        // totalRewardPoint: state.general.totalRewardPoint,
+        // totalRewardPoint_SR: state.general.totalRewardPoint_SR,
         // isLoading: state.selectTime.isLoading,
         // isSuccess: state.selectTime.isSuccess,
         // objOrderBookedTimeSlote: state.selectTime.objOrderBookedTimeSlote,
