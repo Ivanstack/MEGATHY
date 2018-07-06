@@ -120,7 +120,7 @@ class SelectTimeScreen extends Component {
     _convertHourFormate = (isTitle, hours) => {
         // let convertHour = ""
         if (isTitle) {
-            if (hours === 12 || hours === 24) {
+            if (hours === 0 || hours === 12) {
                 return hours === 12 ? "12pm" : "12am";
             } else if (hours > 12) {
                 return `${hours - 12}pm`;
@@ -128,11 +128,15 @@ class SelectTimeScreen extends Component {
                 return `${hours}am`;
             }
         } else {
-            if (hours > 12) {
-                return hours - 12;
-            } else {
-                return hours;
-            }
+            hour1 = hours.split("-")[0].split(":")[0];
+            minute1 = hours.split("-")[0].split(":")[1];
+            hour2 = hours.split("-")[1].split(":")[0];
+            minute2 = hours.split("-")[1].split(":")[1];
+
+            hour1 = hour1 == 0 ? 12 : hour1 > 12 ? hour1 - 12 : hour1;
+            hour2 = hour2 == 0 ? 12 : hour2 > 12 ? hour2 - 12 : hour2;
+
+            return hour1 + ":" + minute1 + " - " + hour2 + ":" + minute2;
         }
     };
 
@@ -154,13 +158,6 @@ class SelectTimeScreen extends Component {
         }
     };
 
-    // Get Selected Time Slot
-    _getSelectedTimeSlote() {
-        // if (this.state.arrForBookedSlote[0] != undefined) {
-        return this.state.arrForBookedSlote[0];
-        // }
-    }
-
     // Check Time Slot Available
     _getBookedTimeSlot = (checkeTimeSlot, strCheckTime) => {
         let objSlot = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].otherBookTime;
@@ -168,7 +165,7 @@ class SelectTimeScreen extends Component {
         let bookedOrderTimeSlot = objSlot[`slot${checkeTimeSlot}`];
         // constant.debugLog("Booked Time Slot : ===> " + bookedOrderTimeSlot);
 
-        if (bookedOrderTimeSlot && bookedOrderTimeSlot.lenght > 0) {
+        if (bookedOrderTimeSlot && bookedOrderTimeSlot.length > 0) {
             for (let index = 0; index < 6; index++) {
                 const bookedTimeSlotElement = bookedOrderTimeSlot[index];
                 if (bookedTimeSlotElement && bookedTimeSlotElement.includes(checkeTimeSlot)) {
@@ -184,14 +181,15 @@ class SelectTimeScreen extends Component {
     _creatTimeSlotWithTime = timeslote => {
         let arrTimeSlot = [];
         let oldTimeSlot = timeslote;
-        timeslote = this._convertHourFormate(false, timeslote);
+        // timeslote = this._convertHourFormate(false, timeslote);
         for (let index = 0; index < arrTimeInterval.length; index++) {
             let showTimeSlotTitle = "";
             if (index === arrTimeInterval.length - 1) {
-                showTimeSlotTitle = `${timeslote}:${arrTimeInterval[index]} - ${this._convertHourFormate(
-                    false,
-                    timeslote + 1
-                )}:${arrTimeInterval[0]}`;
+                showTimeSlotTitle = `${timeslote}:${arrTimeInterval[index]} - ${timeslote + 1}:${arrTimeInterval[0]}`;
+                // showTimeSlotTitle = `${timeslote}:${arrTimeInterval[index]} - ${this._convertHourFormate(
+                //     false,
+                //     timeslote + 1
+                // )}:${arrTimeInterval[0]}`;
             } else {
                 showTimeSlotTitle = `${timeslote}:${arrTimeInterval[index]} - ${timeslote}:${
                     arrTimeInterval[index + 1]
@@ -202,7 +200,6 @@ class SelectTimeScreen extends Component {
             timeSlotStatus["isBooked"] = this._getBookedTimeSlot(oldTimeSlot, arrTimeInterval[index]);
             arrTimeSlot.push(timeSlotStatus);
         }
-
         return arrTimeSlot;
     };
 
@@ -243,19 +240,38 @@ class SelectTimeScreen extends Component {
         // console.log("Todays Hours : ==> ", crntDateForCompare);
         // console.log("Compare Date Hours : ==> ", dateForSegment);
 
+        let strNextDay = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date + " " + "00:00:00";
+        if (global.currentSettings != null && global.currentSettings != undefined) {
+            strNextDay =
+                this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date +
+                " " +
+                global.currentSettings["working-hours"].start;
+        }
         if (crntDateForCompare === dateForSegment) {
-            nextDay.setHours(0, 0, 0, 0);
-            var delta = Math.abs(nextDay.getTime() - today.getTime()) / 1000;
+            if (this.state.crntSelectedSegment + 1 <= this.state.arrOrderBookedTimeSlote.length) {
+                nextDay = new Date(this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment + 1].date);
+            }
+            if (global.currentSettings != null && global.currentSettings != undefined) {
+                strNextDay =
+                    this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment + 1].date +
+                    " " +
+                    global.currentSettings["working-hours"].start;
+            }
+
+            // nextDay.setHours(0, 0, 0, 0);
+            var delta = Math.abs(Date.parse(strNextDay) - today.getTime()) / 1000;
             remainigHours = Math.floor(delta / 3600);
             // console.log("Todays Hours : ==> ", new Date().toLocaleDateString("en-us"));
         } else {
-            todayHour = 0;
-            remainigHours = 23;
+            let nextDate = new Date(strNextDay);
+            todayHour = nextDate.getHours();
+            remainigHours = 23 - todayHour;
         }
         // console.log("Next Hours : ==> ", nextDay);
 
         let arrRemainig = [];
         let timeSloteData = {};
+
         timeSloteData["time"] = todayHour;
         timeSloteData["timeSlot"] = this._creatTimeSlotWithTime(todayHour);
         timeSloteData["isOpen"] = false;
@@ -338,7 +354,7 @@ class SelectTimeScreen extends Component {
                         },
                     ]}
                 >
-                    <Text style={SelectTimeStyle.headerText}> {item.title} </Text>
+                    <Text style={SelectTimeStyle.headerText}> {this._convertHourFormate(false, item.title)} </Text>
                 </View>
             </TouchableWithoutFeedback>
         );
@@ -494,7 +510,7 @@ class SelectTimeScreen extends Component {
         return (
             // Main View (Container)
             <View style={{ flex: 1 }}>
-                <SafeAreaView style={{ flex: 1, height: "100%" }}>
+                <SafeAreaView style={{ flex: 1 }}>
                     {/* ----- Segment View ----- */}
                     <View>
                         {this.props.parentScreen === undefined ? null : this._renderCustomNavigationView()}
@@ -531,19 +547,21 @@ class SelectTimeScreen extends Component {
                                 renderItem={this._renderItem}
                             />
                         </View>
+                    </View>
 
-                        {/* ----- Time Slote Status Instruction View ----- */}
-                        <View
-                            style={{
-                                justifyContent: "space-between",
-                                position: "absolute",
-                                bottom: 0,
-                                flexDirection: "row",
-                                backgroundColor: "white",
-                            }}
-                        >
-                            {this._renderTimeSlotStatusInstructorView()}
-                        </View>
+                    {/* ----- Time Slote Status Instruction View ----- */}
+                    <View
+                        style={{
+                            justifyContent: "space-between",
+                            position: "absolute",
+                            bottom: 0,
+                            flexDirection: "row",
+                            backgroundColor: "white",
+                            position: "absolute",
+                            bottom: 0,
+                        }}
+                    >
+                        {this._renderTimeSlotStatusInstructorView()}
                     </View>
                 </SafeAreaView>
             </View>

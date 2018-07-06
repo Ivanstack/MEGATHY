@@ -81,12 +81,9 @@ export default StyleSheet.create({
     },
     slotStatusIndicatorView: {
         width: "33%",
-        // height:30,
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "row",
-        // position: "absolute",
-        // bottom: 50,
     },
     txtTimeSlotStatus: {
         fontFamily: constant.themeFont,
