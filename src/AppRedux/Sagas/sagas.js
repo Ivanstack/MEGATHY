@@ -21,6 +21,7 @@ export function* watcherSaga(action) {
 
     // General API Call
     yield takeEvery(constant.actions.getAppSettingAndRewardPointRequest, GeneralAPICallSagas);
+    yield takeEvery(constant.actions.getStoreTimezoneRequest, GeneralAPICallSagas);
 
     // Login/SignUp Flow
     // Login Screen

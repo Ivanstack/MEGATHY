@@ -5,20 +5,8 @@
  */
 
 import React, { Component } from "react";
-import {
-    Platform,
-    Text,
-    View,
-    Image,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    SafeAreaView,
-    FlatList,
-    AsyncStorage,
-    Animated,
-    Dimensions,
-    TextInput,
-} from "react-native";
+import { Platform, SafeAreaView, AsyncStorage, Animated, Dimensions, Modal } from "react-native";
+import { Text, View, Image, TouchableOpacity, TouchableWithoutFeedback, FlatList, TextInput } from "react-native";
 
 // Redux
 import { connect } from "react-redux";
@@ -37,8 +25,12 @@ import CartStyle from "./CartScreenStyle";
 // Localization
 import baseLocal from "../../../../Resources/Localization/baseLocalization";
 
+// Order Master Screen
+import OrderMasterScreen from "../../OrderMaster/OrderMasterScreen";
+
 // Variable
 const orderNowViewHeight = (12 * Dimensions.get("window").height) / 100;
+var isScheduleOrder = false;
 
 class CartScreen extends Component {
     constructor(props) {
@@ -49,6 +41,7 @@ class CartScreen extends Component {
         this.state = {
             productQuentity: 0,
             showScheduleOrderNow: false,
+            isOrderMasterVisible: false,
         };
     }
 
@@ -229,7 +222,14 @@ class CartScreen extends Component {
                     >
                         <TouchableOpacity
                             style={[CartStyle.scheduleAndOrderBtns, { marginLeft: 20 }]}
-                            onPress={this._onPressShowHideScheduleOrderNowBtns.bind(this)}
+                            onPress={() => {
+                                this.isScheduleOrder = true;
+                                this._onPressShowHideScheduleOrderNowBtns();
+                                // this.props.navigation.navigate(constant.kOrderMasterScreen);
+                                this.setState({
+                                    isOrderMasterVisible: true
+                                })
+                            }}
                         >
                             <Text
                                 style={{
@@ -245,8 +245,12 @@ class CartScreen extends Component {
                         <TouchableOpacity
                             style={[CartStyle.scheduleAndOrderBtns, { marginRight: 20 }]}
                             onPress={() => {
+                                this.isScheduleOrder = false;
+                                // this.props.navigation.navigate(constant.kOrderMasterScreen);
                                 this._onPressShowHideScheduleOrderNowBtns();
-                                this.props.navigation.navigate(constant.kOrderMasterScreen);
+                                this.setState({
+                                    isOrderMasterVisible: true
+                                })
                             }}
                         >
                             <Text
@@ -328,7 +332,7 @@ class CartScreen extends Component {
                             {item.product_price[0].status === constant.kProductDiscountActive ? (
                                 this._renderPriceCutView(item)
                             ) : (
-                                <Text style={ProductStyles.productPriceLbl}>SAR {item.product_price[0].price}</Text>
+                                <Text style={CartStyle.productPriceLbl}>SAR {item.product_price[0].price}</Text>
                             )}
                         </View>
 
@@ -370,6 +374,21 @@ class CartScreen extends Component {
         );
     };
 
+    _renderOrderMasterScreenWithModal = () => {
+        return (
+            <Modal
+                animationType="slide"
+                transparent={false}
+                visible={this.state.isOrderMasterVisible}
+                onRequestClose={() => {
+                    alert("Modal has been closed.");
+                }}
+            >
+                <OrderMasterScreen parentScreen={this} />
+            </Modal>
+        );
+    };
+
     render() {
         return (
             <View
@@ -383,6 +402,7 @@ class CartScreen extends Component {
                         flex: 1,
                     }}
                 >
+                    {this._renderOrderMasterScreenWithModal()}
                     {global.arrCartItems.length > 0 ? (
                         <FlatList
                             style={{

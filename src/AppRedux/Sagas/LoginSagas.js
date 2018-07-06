@@ -32,6 +32,7 @@ loginWithEmail = payload => {
     return networkUtility.postRequest(payload.endPoint, payload.parameters).then(
         result => {
             global.currentUser = result.data.data.userData;
+            global.currentSettings = result.data.data.settingData;
             AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data.data.userData));
             AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data.data.settingData));
             AsyncStorage.removeItem(constant.keyCurrentStore);
@@ -109,7 +110,8 @@ checkFBIdExistance = (error, fbResult) => {
                 if (result.status == 206) {
                     this.props.navigation.navigate("SignUpScreen", { fbResult: fbResult });
                 } else {
-                    global.loginKey = result.data.data.userData.loginKey;
+                    global.currentUser = result.data.data.userData;
+                    global.currentSettings = result.data.data.settingData;
                     AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data.data.userData));
                     AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data.data.settingData));
                     AsyncStorage.removeItem(constant.keyCurrentStore);

@@ -19,27 +19,28 @@ export function* SignUpScreenCalls(action) {
 signUpCall = payload => {
     return networkUtility.postRequest(payload.endPoint, payload.parameters).then(
         result => {
-            global.loginKey = result.data.data.userData.loginKey;
+            global.currentUser = result.data.data.userData;
+            global.currentSettings = result.data.data.settingData;
             AsyncStorage.setItem(constant.keyCurrentUser, JSON.stringify(result.data.data.userData));
             AsyncStorage.setItem(constant.keyCurrentSettings, JSON.stringify(result.data.data.settingData));
             AsyncStorage.removeItem(constant.keyCurrentStore);
             constant.debugLog("User Signup Success");
-            return result
+            return result;
         },
         error => {
             constant.debugLog("Status Code: " + error.status);
             constant.debugLog("Error Message: " + error.message);
             if (error.status != 500) {
                 if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                    CommonUtilities.showAlert(error.data["messageAr"], false)
+                    CommonUtilities.showAlert(error.data["messageAr"], false);
                 } else {
-                        CommonUtilities.showAlert(error.data["message"], false)
+                    CommonUtilities.showAlert(error.data["message"], false);
                 }
             } else {
                 constant.debugLog("Internal Server Error: " + error.data);
-                CommonUtilities.showAlert('Opps! something went wrong')
+                CommonUtilities.showAlert("Opps! something went wrong");
             }
-            throw error
+            throw error;
         }
     );
 };

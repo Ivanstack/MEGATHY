@@ -15,7 +15,7 @@ import * as networkUtility from "../../../../Helper/NetworkUtility"; // Network 
 import Spinner from "react-native-loading-spinner-overlay"; // Loading View
 import baseLocal from "../../../../Resources/Localization/baseLocalization"; // Localization
 import { CalendarList } from "react-native-calendars";
-import SelectTimeScreen from "../SelectTime/SelectTimeScreen";
+import SelectTimeScheduleScreen from "../SelectTimeSchedule/SelectTimeScheduleScreen";
 
 var selectedDay = null;
 class CalendarScreen extends Component {
@@ -25,8 +25,10 @@ class CalendarScreen extends Component {
         baseLocal.locale = global.currentAppLanguage;
         this._onPressCalendarDate = this._onPressCalendarDate.bind(this);
         this.state = {
-            selectedDates: {},
+            selectedDatesCalendar: {},
+            selectedDates:[],
             selectTimeScreenVisible: false,
+            
         };
     }
 
@@ -84,7 +86,7 @@ class CalendarScreen extends Component {
                     pagingEnabled
                     hideArrows
                     onDayPress={this._onPressCalendarDate}
-                    markedDates={this.state.selectedDates}
+                    markedDates={this.state.selectedDatesCalendar}
                     style={styles.calendar}
                     theme={{
                         calendarBackground: "white",
@@ -107,7 +109,7 @@ class CalendarScreen extends Component {
                     alert("Modal has been closed.");
                 }}
             >
-                <SelectTimeScreen parentScreen={this} day={this.selectedDay}/>
+                <SelectTimeScheduleScreen parentScreen={this}/>
             </Modal>
         );
     };

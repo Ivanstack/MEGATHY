@@ -55,6 +55,7 @@ module.exports = {
     baseURL: "http://192.168.0.3/megathylaravel/public/api/v1/", // Jay Kaneriya
     // baseURL: "http://192.168.0.11/Megathy/MegathyLaravel/public/api/v1/", // BharatBhai
     // baseURL: "http://192.168.0.2/MegathyLaravel/public/api/v1/", //Chintan Adatiya
+    // baseURL: "http://manage.megathykom.com/api/v1/", // Live
 
     /// End Points
     // Login/Signup
@@ -75,15 +76,16 @@ module.exports = {
     APIGetSubCategory: "getSubCategory",
     APIGetBanners: "banners",
     APIGetProductList: "getProduct",
-    APIGetStoreTimeZone: "getStoreTimeZone",
     APIGetAddress: "address",
     APIAddAddress: "address",
     APIEditAddress: "address",
     APIDeleteAddress: "address",
     APIGetOrderTimeSession: "getOrderTimeSession",
+    APICheckCoupenCode: "checkCoupon",
     
     // General API
     APIGetAppSettingsAndRewards: "getAppSettingsAndRewards",
+    APIGetStoreTimeZone: "getStoreTimeZone",
 
     /// Colors
     themeColor: "#CF2526",
@@ -93,7 +95,7 @@ module.exports = {
     themeGreenColor: "#3B7F38",
     themeYellowColor: "#FAC818",
     themeLightGreenColor: "#53B326",
-    
+
     /// Font Family
     themeFont: "Ebrima",
 
@@ -120,6 +122,10 @@ module.exports = {
         getAppSettingAndRewardPointRequest: "getAppSettingAndRewardPointRequest",
         getAppSettingAndRewardPointSuccess: "getAppSettingAndRewardPointSuccess",
         getAppSettingAndRewardPointFailure: "getAppSettingAndRewardPointFailure",
+
+        getStoreTimezoneRequest: "getStoreTimezoneRequest",
+        getStoreTimezoneSuccess: "getStoreTimezoneSuccess",
+        getStoreTimezoneFailure: "getStoreTimezoneFailure",
 
         // Login Screen
         FBLoginRequest: "FBLoginRequest",
@@ -185,7 +191,7 @@ module.exports = {
         getSubCategoryRequest: "getSubCategoryRequest",
         getSubCategorySuccess: "getSubCategorySuccess",
         getSubCategoryFailure: "getSubCategoryFailure",
-        
+
         // Product Screen
         getProductRequest: "getProductRequest",
         getProductSuccess: "getProductSuccess",
@@ -206,6 +212,16 @@ module.exports = {
         editAddressRequest: "editAddressRequest",
         editAddressSuccess: "editAddressSuccess",
         editAddressFailure: "editAddressFailure",
+
+        // OrderMaster Screen
+        addAddressRequest: "addAddressRequest",
+        addAddressSuccess: "addAddressSuccess",
+        addAddressFailure: "addAddressFailure",
+
+        // Order Summary Screen
+        checkCoupenCodeRequest: "checkCoupenCodeRequest",
+        checkCoupenCodeSuccess: "checkCoupenCodeSuccess",
+        checkCoupenCodeFailure: "checkCoupenCodeFailure",
     },
 
     /*

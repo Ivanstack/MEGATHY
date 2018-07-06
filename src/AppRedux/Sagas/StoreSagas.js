@@ -41,7 +41,7 @@ getStoreCall = payload => {
                 constant.debugLog("Internal Server Error: " + error.data);
                 CommonUtilities.showAlert("Opps! something went wrong");
             }
-            return error;
+            throw error;
         }
     );
 };
@@ -64,7 +64,7 @@ setStoreCall = payload => {
                 constant.debugLog("Internal Server Error: " + error.data);
                 CommonUtilities.showAlert("Opps! something went wrong");
             }
-            return error;
+            throw error;
         }
     );
 };

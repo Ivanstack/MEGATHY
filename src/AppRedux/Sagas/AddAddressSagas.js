@@ -48,7 +48,7 @@ getAddressCall = payload => {
                 constant.debugLog("Internal Server Error: " + error.data);
                 CommonUtilities.showAlert("Opps! something went wrong");
             }
-            return error;
+            throw error;
         }
     );
 };
@@ -71,7 +71,7 @@ deleteAddressCall = payload => {
                 constant.debugLog("Internal Server Error: " + error.data);
                 CommonUtilities.showAlert("Opps! something went wrong");
             }
-            return error;
+            throw error;
         }
     );
 };

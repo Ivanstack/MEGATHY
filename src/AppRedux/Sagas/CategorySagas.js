@@ -41,7 +41,7 @@ getCategoryCall = payload => {
                 constant.debugLog("Internal Server Error: " + error.data);
                 CommonUtilities.showAlert("Opps! something went wrong");
             }
-            return error;
+            throw error;
         }
     );
 };
@@ -64,7 +64,7 @@ getBannerCall = payload => {
                 constant.debugLog("Internal Server Error: " + error.data);
                 CommonUtilities.showAlert("Opps! something went wrong");
             }
-            return error;
+            throw error;
         }
     );
 };

@@ -73,6 +73,15 @@ export function showAlert(message, isLocalized = true, title = constant.alertTit
     }, 200);
 }
 
+export function showNetworkAlert() {
+    setTimeout(() => {
+        baseLocal.locale = global.currentAppLanguage;
+        Alert.alert(baseLocal.t(constant.alertTitle), baseLocal.t("Please check internet/wifi connection"), [
+            { text: baseLocal.t("OK") },
+        ]);
+    }, 200);
+}
+
 export function showAlertYesNo(
     message,
     isLocalized = true,
@@ -111,6 +120,8 @@ export function logout(isNormalLogout = true) {
     AsyncStorage.removeItem(constant.keyCurrentUser);
     AsyncStorage.removeItem(constant.keyCurrentSettings);
     AsyncStorage.removeItem(constant.keyCurrentStore);
+    AsyncStorage.removeItem(constant.keyCurrentAppLanguage);
+    AsyncStorage.removeItem(constant.keyCurrentCartItems);
     constant.emitter.emit(constant.logoutListener);
 }
 
@@ -133,6 +144,20 @@ export function dateAddingHours(hours, oldDate = new Date()) {
     var newMilliSeconds = oldDate.getTime() + hours * 3600000;
     // 3600000 ms in an hour
     return new Date(newMilliSeconds);
+}
+
+export function dateInDDMMYYYYFormat(oldDateString) {
+    var today = new Date(oldDateString);
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var yyyy = today.getFullYear();
+    if (dd < 10) {
+        dd = "0" + dd;
+    }
+    if (mm < 10) {
+        mm = "0" + mm;
+    }
+    return dd + "/" + mm + "/" + yyyy;
 }
 
 // Way to implement showAlertYesNo function

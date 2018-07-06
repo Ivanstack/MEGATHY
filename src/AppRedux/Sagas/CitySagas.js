@@ -33,7 +33,7 @@ getCityCall = payload => {
                 constant.debugLog("Internal Server Error: " + error.data);
                 CommonUtilities.showAlert("Opps! something went wrong");
             }
-            return error;
+            throw error;
         }
     );
 };

@@ -23,10 +23,11 @@ import StepIndicator from "react-native-step-indicator";
 import * as networkUtility from "../../../Helper/NetworkUtility";
 
 // Components Style
-import OrderMasterStyles from "./OrderMasterStyles";
+import styles from "./OrderMasterStyles";
 
 // Screen
 import AddressListScreen from "../DeliveryDetails/AddressList/AddressListScreen";
+import CalendarScreen from "./Calendar/CalendarScreen";
 import SelectTimeScreen from "./SelectTime/SelectTimeScreen";
 import OrderSummaryScreen from "../DeliveryDetails/OrderSummaryScreen/OrderSummaryScreen";
 // import AddressListScreen from "../Category/CartScreen/CartScreen";
@@ -61,6 +62,7 @@ const customStyles = {
     currentStepLabelColor: constant.themeColor,
 };
 
+var isScheduleOrder = false;
 class OrderMasterScreen extends Component {
     constructor(props) {
         super(props);
@@ -68,13 +70,11 @@ class OrderMasterScreen extends Component {
         this.state = {
             currentPosition: 0,
             visible: false,
-            storeTime: "",
-            storeCurrentTime: "",
-            storeCurrentTimeInSeconds: "",
+            storeTime: new Date().getTime(),
         };
         classContext = this;
     }
-
+    /*
     static navigationOptions = ({ navigation }) => ({
         headerLeft: (
             <View
@@ -98,13 +98,8 @@ class OrderMasterScreen extends Component {
                     </TouchableOpacity>
                 </View>
                 <View>
-                    {/* {classContext ? (
-            <Text style={OrderMasterStyles.headerText}>
-              {labels[classContext.statecurrentPosition]}
-            </Text>
-          ) : ( */}
-                    <Text style={OrderMasterStyles.headerText}> Select Address </Text>
-                    {/* )} */}
+                    <Text style={styles.headerText}> Select Address </Text>
+                    {/ )} /}
                 </View>
                 <View
                     style={{
@@ -134,10 +129,11 @@ class OrderMasterScreen extends Component {
             backgroundColor: constant.themeColor,
         },
     });
-
+*/
     // App Life Cycle Methods
     componentDidMount() {
-        this._getStoreTime();
+        isScheduleOrder = this.props.parentScreen.isScheduleOrder;
+        this.props.getStoreTime();
         this.props.getAppSettingAndReward();
     }
 
@@ -147,56 +143,52 @@ class OrderMasterScreen extends Component {
 
     componentWillUpdate() {}
 
+    componentWillReceiveProps(newProps) {
+        if (newProps.isStoreTimeSuccess === true) {
+            let storeDate = new Date(newProps.storeDate);
+            this.setState(
+                {
+                    storeTime: storeDate.getTime(),
+                },
+                () => {
+                    this.storeCrntTimeInterval = setInterval(this._timerForStoreCurrentTime, 1000);
+                }
+            );
+        }
+    }
+
+    _displayNavigationHeader(){
+        if(this.state.currentPosition == 0){
+            return baseLocal.t("Select Address")
+        }else if(this.state.currentPosition == 1){
+            return baseLocal.t("Select Time")
+        }else{
+            return baseLocal.t("Payment")
+        }
+    }
+
     // Mics Methods
+    _displayStoreTime() {
+        return new Date(this.state.storeTime).toLocaleTimeString("en-us");
+
+        // let storeDateTemp = new Date(this.state.storeTime)
+        // let hh = storeDateTemp.getHours()
+        // let mm = storeDateTemp.getMinutes()
+        // let ss = storeDateTemp.getSeconds()
+        // let am_pm = ""
+        // hh > 11 ? am_pm = "PM" : am_pm = "AM"
+        // hh = hh > 12 ? hh - 12 : hh === 0 ? 12 : hh
+        // hh = hh < 10 ? "0" + hh : hh
+        // mm = mm < 10 ? "0" + mm : mm
+        // ss = ss < 10 ? "0" + ss : ss
+
+        // return hh + ":" + mm + ":" + ss + " " + am_pm
+    }
 
     _timerForStoreCurrentTime = () => {
-        let getStoreTimeInSecond = this.state.storeCurrentTimeInSeconds;
-        if (this.state.storeCurrentTimeInSeconds === "") {
-            getStoreTimeInSecond = new Date(this.state.storeTime).getTime(); // Get Time in ms
-        }
-        getStoreTimeInSecond = getStoreTimeInSecond + 1000;
-        let dateFromTimeStamp = new Date(getStoreTimeInSecond).toLocaleTimeString("en-us");
         this.setState({
-            storeCurrentTime: dateFromTimeStamp,
-            storeCurrentTimeInSeconds: getStoreTimeInSecond,
+            storeTime: this.state.storeTime + 1000,
         });
-    };
-
-    _getStoreTime = () => {
-        let storeTime = networkUtility.getRequest(constant.APIGetStoreTimeZone).then(
-            result => {
-                let responseData = result.data.data;
-
-                let storeCrtTime = responseData.storeTime;
-                storeCrtTime = new Date(storeCrtTime).toLocaleTimeString("en-us");
-
-                // Hide Loading View
-                this.setState({
-                    visible: false,
-                    storeTime: responseData.storeTime,
-                    storeCurrentTime: storeCrtTime,
-                });
-                this.storeCrntTimeInterval = setInterval(this._timerForStoreCurrentTime, 1000);
-            },
-            error => {
-                constants.debugLog("\nStatus Code: " + error.status);
-                constants.debugLog("\nError Message: " + error);
-
-                // Hide Loading View
-                this.setState({ visible: false });
-
-                if (error.status != 500) {
-                    if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                        commonUtility.showAlert(error.data["messageAr"], false, "Megathy");
-                    } else {
-                        commonUtility.showAlert(error.data["message"], false, "Megathy");
-                    }
-                } else {
-                    constants.debugLog("Internal Server Error: " + error.data);
-                    commonUtility.showAlert("Opps! something went wrong");
-                }
-            }
-        );
     };
 
     _onPageChange(position) {
@@ -235,6 +227,42 @@ class OrderMasterScreen extends Component {
         }
     };
 
+    _renderCustomNavigationView() {
+        return (
+            <View style={styles.navigationView}>
+                <TouchableOpacity
+                    style={styles.navCloseButton}
+                    onPress={() => {
+                        this.props.parentScreen.setState({
+                            isOrderMasterVisible: false,
+                        });
+                    }}
+                >
+                    <Icon name="close-o" size={30} color="white" />
+                </TouchableOpacity>
+                <Text style={styles.navHeaderText}> {this._displayNavigationHeader()} </Text>
+                <View
+                    style={styles.navArrowButtons}
+                >
+                    <TouchableOpacity
+                        onPress={() => {
+                            classContext._onPressBackBtn();
+                        }}
+                    >
+                        <Icon name="arrow-left" size={30} color="white" />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            classContext._onPressNextBtn();
+                        }}
+                    >
+                        <Icon name="arrow-right" size={30} color="white" />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        );
+    }
+
     render() {
         return (
             <View
@@ -248,7 +276,8 @@ class OrderMasterScreen extends Component {
                         flex: 1,
                     }}
                 >
-                    <View style={OrderMasterStyles.orderActionView}>
+                    {this._renderCustomNavigationView()}
+                    <View style={styles.orderActionView}>
                         <View style={{ marginTop: 8 }}>
                             <StepIndicator
                                 customStyles={customStyles}
@@ -296,7 +325,7 @@ class OrderMasterScreen extends Component {
                                     alignSelf: "flex-end",
                                 }}
                             >
-                                Store Current Time : {this.state.storeCurrentTime}
+                                Store Current Time : {this._displayStoreTime()}
                             </Text>
                         </View>
                     </View>
@@ -310,7 +339,7 @@ class OrderMasterScreen extends Component {
                         }}
                     >
                         <Swiper
-                            //   style={OrderMasterStyles.swipeViewWrapper}
+                            //   style={styles.swipeViewWrapper}
                             ref={swiper => {
                                 this._swiper = swiper;
                             }}
@@ -321,49 +350,57 @@ class OrderMasterScreen extends Component {
                             pagingEnabled={true}
                         >
                             {/* ----- AddressListScreen ----- */}
-                            <View style={OrderMasterStyles.addressListContainerStyle}>
-                                <AddressListScreen entryPoint="OrderMaster" />
+                            <View style={styles.addressListContainerStyle}>
+                                <AddressListScreen parentScreen={this} />
                             </View>
 
-                            {/* ----- SelectTimeScreen ----- */}
-                            <View style={OrderMasterStyles.orderTimeSlotContainerStyle}>
-                                <SelectTimeScreen />
-                            </View>
+                            {this.props.parentScreen.isScheduleOrder != undefined &&
+                            this.props.parentScreen.isScheduleOrder === true ? (
+                                // {/* ----- SelectTimeScreen ----- */}
+                                <View style={styles.orderTimeSlotContainerStyle}>
+                                    <CalendarScreen parentScreen={this} />
+                                </View>
+                            ) : (
+                                // {/* ----- SelectTimeScreen ----- */}
+                                <View style={styles.orderTimeSlotContainerStyle}>
+                                    <SelectTimeScreen parentScreen={this} />
+                                </View>
+                            )}
 
                             {/* ----- OrderSummaryScreen ----- */}
-                            <View style={OrderMasterStyles.paymentContainerStyle}>
-                                <OrderSummaryScreen parentContext={this} />
+                            <View style={styles.paymentContainerStyle}>
+                                <OrderSummaryScreen parentScreen={this} />
                             </View>
                         </Swiper>
                     </View>
 
-                    <View style={OrderMasterStyles.goToNextPageView}>
+                    <View style={styles.goToNextPageView}>
                         {this.state.currentPosition > 0 ? (
                             <TouchableOpacity onPress={() => this._onPressBackBtn()}>
-                                <View style={OrderMasterStyles.nextViewStyle}>
+                                <View style={styles.nextViewStyle}>
                                     <Image
-                                        style={OrderMasterStyles.nextImgStyle}
+                                        style={styles.nextImgStyle}
                                         source={require("../../../Resources/Images/CartScr/BtnLeftAero.png")}
                                     />
                                     <Text style={{ fontSize: 18, color: "white" }}> Back </Text>
                                 </View>
                             </TouchableOpacity>
                         ) : (
-                            <View style={OrderMasterStyles.nextViewStyle} />
+                            <View style={styles.nextViewStyle} />
                         )}
 
                         {this.state.currentPosition < labels.length - 1 ? (
                             <TouchableOpacity onPress={() => this._onPressNextBtn()}>
-                                <View style={OrderMasterStyles.nextViewStyle}>
+                                <View style={styles.nextViewStyle}>
                                     <Text style={{ fontSize: 18, color: "white" }}> Next </Text>
                                     <Image
-                                        style={OrderMasterStyles.nextImgStyle}
+                                        style={styles.nextImgStyle}
                                         source={require("../../../Resources/Images/CartScr/BtnRightAero.png")}
                                     />
                                 </View>
                             </TouchableOpacity>
                         ) : (
-                            <View style={OrderMasterStyles.nextViewStyle} />
+                            <View style={styles.nextViewStyle} />
                         )}
                     </View>
                 </SafeAreaView>
@@ -376,8 +413,10 @@ class OrderMasterScreen extends Component {
 // Store State in store
 function mapStateToProps(state, props) {
     return {
-        totalRewardPoint_SR: state.general.totalRewardPoint,
-        totalRewardPoint_SR: state.general.totalRewardPoint_SR,
+        isLoading: state.general.isLoading,
+        isSettingsSuccess: state.general.isSettingsSuccess,
+        isStoreTimeSuccess: state.general.isStoreTimeSuccess,
+        storeDate: state.general.storeDate,
         error: state.general.error,
     };
 }
@@ -389,6 +428,14 @@ function mapDispatchToProps(dispatch) {
                 type: constant.actions.getAppSettingAndRewardPointRequest,
                 payload: {
                     endPoint: constant.APIGetAppSettingsAndRewards,
+                    parameters: "",
+                },
+            }),
+        getStoreTime: () =>
+            dispatch({
+                type: constant.actions.getStoreTimezoneRequest,
+                payload: {
+                    endPoint: constant.APIGetStoreTimeZone,
                     parameters: "",
                 },
             }),

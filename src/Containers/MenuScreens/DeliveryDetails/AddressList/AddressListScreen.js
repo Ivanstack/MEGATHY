@@ -100,7 +100,7 @@ class AddressListScreen extends Component {
     _renderAddressItem = ({ item }) => (
         <AddressListItem
             address={item}
-            parentEntryPoint={this.props.entryPoint}
+            parentEntryPoint={this.props.parentScreen}
             onPressItem={this._onPressItem}
             onPressEditItem={this._onPressEditItem}
             onPressDeleteItem={this._onPressDeleteItem}
@@ -144,7 +144,7 @@ class AddressListScreen extends Component {
         return (
             // Main View (Container)
             <View style={{ flex: 1 }}>
-                <Spinner visible={this.props.isLoading} cancelable={true} textStyle={{ color: "#FFF" }} />
+                {/* <Spinner visible={this.props.isLoading} cancelable={true} textStyle={{ color: "#FFF" }} /> */}
                 <SafeAreaView style={styles.container}>
                     {/* // Address List */}
                     {this.props.arrAddress.length > 0 ? (

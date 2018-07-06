@@ -23,7 +23,7 @@ import AddressListScreen from "../Containers/MenuScreens/DeliveryDetails/Address
 import AddAddressScreen from "../Containers/MenuScreens/DeliveryDetails/AddAddress/AddAddressScreen";
 import SelectTimeScreen from "../Containers/MenuScreens/OrderMaster/SelectTime/SelectTimeScreen";
 import SecondScreen from "../Containers/MenuScreens/SecondScreen";
-import PaymentScreen from "../Containers/MenuScreens/DeliveryDetails/PaymentScreen/PaymentScreen";
+import OrderSummaryScreen from "../Containers/MenuScreens/DeliveryDetails/OrderSummaryScreen/OrderSummaryScreen";
 import CalendarScreen from "../Containers/MenuScreens/OrderMaster/Calendar/CalendarScreen"
 
 // Constant
@@ -61,7 +61,7 @@ const DeliveryDetailsNav = StackNavigator(
         AddressListScreen: { screen: AddressListScreen },
         AddAddressScreen: { screen: AddAddressScreen },
         SelectTimeScreen: { screen: SelectTimeScreen },
-        PaymentScreen: { screen: PaymentScreen },
+        OrderSummaryScreen: { screen: OrderSummaryScreen },
         },
     {
         headerMode: "screen",
