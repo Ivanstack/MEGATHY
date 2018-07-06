@@ -46,16 +46,20 @@ export function getRequest(endPoint, parameters = "") {
                 params: parameters === undefined || parameters === null ? "" : parameters,
             })
             .then(function(response) {
-                console.log(response);
+                constants.debugLog(response);
                 resolve(response);
             })
             .catch(function(error) {
-                console.log(error);
-                if (error.response.status === 403) {
+                constants.debugLog(error)
+                let errorResponse = ""
+                if(error.message === "Network Error"){
+                    CommonUtilities.showNetworkAlert()
+                }else if (error.response.status === 403) {
                     CommonUtilities.logout(false)
                 } else {
-                    reject(error.response);
+                    errorResponse = error.response
                 }
+                reject(error.response);
             });
     });
 }
@@ -85,16 +89,20 @@ export function postRequest(endPoint, parameters = "") {
         axios
             .post(endPoint, parameters)
             .then(response => {
-                console.log(response);
+                constants.debugLog(response);
                 resolve(response);
             })
             .catch(error => {
-                console.log(error.response);
-                if (error.response.status === 403) {
+                constants.debugLog(error)
+                let errorResponse = ""
+                if(error.message === "Network Error"){
+                    CommonUtilities.showNetworkAlert()
+                }else if (error.response.status === 403) {
                     CommonUtilities.logout(false)
                 } else {
-                    reject(error.response);
+                    errorResponse = error.response
                 }
+                reject(error.response);
             });
     });
 }
@@ -124,16 +132,20 @@ export function putRequest(endPoint, parameters = "") {
         axios
             .put(endPoint, parameters)
             .then(response => {
-                console.log(response);
+                constants.debugLog(response);
                 resolve(response);
             })
             .catch(error => {
-                console.log(error.response);
-                if (error.response.status === 403) {
+                constants.debugLog(error)
+                let errorResponse = ""
+                if(error.message === "Network Error"){
+                    CommonUtilities.showNetworkAlert()
+                }else if (error.response.status === 403) {
                     CommonUtilities.logout(false)
                 } else {
-                    reject(error.response);
+                    errorResponse = error.response
                 }
+                reject(error.response);
             });
     });
 }
@@ -163,16 +175,20 @@ export function deleteRequest(endPoint, parameters = "") {
         axios
             .delete(endPoint, parameters)
             .then(response => {
-                console.log(response);
+                constants.debugLog(response);
                 resolve(response);
             })
             .catch(error => {
-                console.log(error.response);
-                if (error.response.status === 403) {
+                constants.debugLog(error)
+                let errorResponse = ""
+                if(error.message === "Network Error"){
+                    CommonUtilities.showNetworkAlert()
+                }else if (error.response.status === 403) {
                     CommonUtilities.logout(false)
                 } else {
-                    reject(error.response);
+                    errorResponse = error.response
                 }
+                reject(error.response);
             });
     });
 }
