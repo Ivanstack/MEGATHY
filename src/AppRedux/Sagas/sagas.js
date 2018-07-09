@@ -10,6 +10,7 @@ import { AreaScreenCalls } from "./AreaSagas";
 import { StoreScreenCalls } from "./StoreSagas";
 import { SelectTimeScreenCalls } from "./SelectTimeSagas";
 import { SelectTimeScheduleScreenCalls } from "./SelectTimeScheduleSagas";
+import { CalendarScreenCalls } from "./CalendarSagas";
 import { CategoryScreenCalls } from "./CategorySagas";
 import { AddressListScreenCalls } from "./AddressListSagas";
 import { AddAddressScreenCalls } from "./AddAddressSagas";
@@ -60,7 +61,10 @@ export function* watcherSaga(action) {
     yield takeEvery(constant.actions.getOrderTimeSessionRequest, SelectTimeScreenCalls);
 
     // SelectTimeSchedule Screen
-    yield takeEvery(constant.actions.getUserBookedSessionRequest, SelectTimeScheduleScreenCalls);
+    yield takeEvery(constant.actions.setOrderTimeSessionRequest, SelectTimeScheduleScreenCalls);
+
+    // Calendar Screen
+    yield takeEvery(constant.actions.getUserBookedSessionRequest, CalendarScreenCalls);
 
     // Category Screen
     yield takeEvery(constant.actions.getCategoryRequest, CategoryScreenCalls);

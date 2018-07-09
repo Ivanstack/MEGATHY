@@ -71,7 +71,7 @@ export default class App extends Component {
                     isStoreSet: true,
                 });
             }
-        }, 400); // Time to display Splash Screen
+        }, 200); // Time to display Splash Screen
     }
 
     render() {

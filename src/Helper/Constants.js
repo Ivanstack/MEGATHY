@@ -33,6 +33,7 @@ module.exports = {
     keyCurrentAppLanguage: "currentAppLanguage",
     keyCurrentCartItems: "cartItems",
     keyScheduleOrderParent: "parent",
+    keyCurrentCity: "currentCity",
 
     //Screen Name Keys
     kCategoryScreen: "CategoryScreen",
@@ -82,9 +83,10 @@ module.exports = {
     APIEditAddress: "address",
     APIDeleteAddress: "address",
     APIGetOrderTimeSession: "getOrderTimeSession",
+    APISetOrderTimeSession: "setOrderTimeSession",
     APIGetUserBookedSession: "getUserBookedSession",
     APICheckCoupenCode: "checkCoupon",
-    
+
     // General API
     APIGetAppSettingsAndRewards: "getAppSettingsAndRewards",
     APIGetStoreTimeZone: "getStoreTimeZone",
@@ -112,6 +114,12 @@ module.exports = {
     kProductDiscountInactive: "Inactive",
     kProductDiscountType: "fixed",
     kProductDiscountPercentage: "percentage",
+    
+    //Coupen Code Key
+    kCoupenCodeDiscountActive: "Active",
+    kCoupenCodeDiscountInactive: "Inactive",
+    kCoupenCodeDiscountTypeFixed: "fixed",
+    kCoupenCodeDiscountTypePercentage: "percentage",
 
     actions: {
         /*
@@ -176,10 +184,15 @@ module.exports = {
         setStoreSuccess: "setStoreSuccess",
         setStoreFailure: "setStoreFailure",
 
-        // SelectTime Screen
+        // SelectTime Screen & SelectTimeSchedule Screen
         getOrderTimeSessionRequest: "getOrderTimeSessionRequest",
         getOrderTimeSessionSuccess: "getOrderTimeSessionSuccess",
         getOrderTimeSessionFailure: "getOrderTimeSessionFailure",
+
+        // SelectTimeSchedule Screen
+        setOrderTimeSessionRequest: "setOrderTimeSessionRequest",
+        setOrderTimeSessionSuccess: "setOrderTimeSessionSuccess",
+        setOrderTimeSessionFailure: "setOrderTimeSessionFailure",
 
         // SelectTime Screen
         getUserBookedSessionRequest: "getUserBookedSessionRequest",

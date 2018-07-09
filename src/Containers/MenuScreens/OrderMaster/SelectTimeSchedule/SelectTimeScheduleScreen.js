@@ -16,6 +16,7 @@ import {
     ScrollView,
     TouchableWithoutFeedback,
     Platform,
+    AsyncStorage,
 } from "react-native";
 
 import * as constant from "../../../../Helper/Constants";
@@ -51,7 +52,7 @@ class SelectTimeScheduleScreen extends Component {
         this.state = {
             arrSetTimeSlote: [],
             arrOrderBookedTimeSlote: [],
-            arrForBookedSlote: [],
+            selectedTimeSlot: null,
             crntStoreTime: "",
             storeTime: new Date().getTime(),
             isTimeSlotOpen: false,
@@ -112,13 +113,16 @@ class SelectTimeScheduleScreen extends Component {
                     this.storeCrntTimeInterval = setInterval(this._timerForStoreCurrentTime, 1000);
                 }
             );
+        } else if (newProps.isSetTimeSuccess === true) {
+            this.props.parentScreen.setState(
+                { selectedDatesCalendar: updatedDates, selectTimeScreenVisible: false },
+                () => this.props.parentScreen.props.getUserBookedSession()
+            );
         }
     }
 
     componentWillUnmount() {
-        // this.props.onRef(undefined)
         clearInterval(this.storeCrntTimeInterval);
-        constant.debugLog("componentWillUnmount call from select time .....");
     }
 
     _displayStoreTime() {
@@ -184,13 +188,6 @@ class SelectTimeScheduleScreen extends Component {
         }
     };
 
-    // Get Selected Time Slot
-    _getSelectedTimeSlote() {
-        // if (this.state.arrForBookedSlote[0] != undefined) {
-        return this.state.arrForBookedSlote[0];
-        // }
-    }
-
     // Check Time Slot Available
     _getBookedTimeSlot = (checkeTimeSlot, strCheckTime) => {
         let objSlot = this.state.arrOrderBookedTimeSlote[0].otherBookTime;
@@ -207,7 +204,6 @@ class SelectTimeScheduleScreen extends Component {
             }
         }
         return false;
-        // constant.debugLog("Booked Time Slot item : ===> " + checkeTimeSlot);
     };
 
     // Create Time Slot in 10 Minutes Gap
@@ -219,10 +215,6 @@ class SelectTimeScheduleScreen extends Component {
             let showTimeSlotTitle = "";
             if (index === arrTimeInterval.length - 1) {
                 showTimeSlotTitle = `${timeslote}:${arrTimeInterval[index]} - ${timeslote + 1}:${arrTimeInterval[0]}`;
-                // showTimeSlotTitle = `${timeslote}:${arrTimeInterval[index]} - ${this._convertHourFormate(
-                //     false,
-                //     timeslote + 1
-                // )}:${arrTimeInterval[0]}`;
             } else {
                 showTimeSlotTitle = `${timeslote}:${arrTimeInterval[index]} - ${timeslote}:${
                     arrTimeInterval[index + 1]
@@ -239,9 +231,16 @@ class SelectTimeScheduleScreen extends Component {
 
     // API Call for Get Booked Time Slotes
     _getAPIGetOrderTimeSession = () => {
-        let cityIds = global.currentStore.cityId.toString().split(",");
+        let cityId = "";
+        let orderMasterScreen = this.props.parentScreen.props.parentScreen;
+        if (orderMasterScreen.selectedAddress != null) {
+            cityId = orderMasterScreen.selectedAddress.cityId;
+        } else {
+            AsyncStorage.getItem(constant.keyCurrentCity).then(value => (cityId = value.PkId));
+        }
+
         var orderTimeSessionParameters = {
-            city_id: cityIds[0],
+            city_id: cityId,
             date: this.props.parentScreen.selectedDay.dateString,
             dynamic_hour: true,
         };
@@ -256,7 +255,6 @@ class SelectTimeScheduleScreen extends Component {
         var remainigHours = 0;
         var nextDay = new Date(today);
         let selectedDate = this.state.arrOrderBookedTimeSlote[0].date;
-        CommonUtilities.showAlert(today, false);
         let storeDate = today.toISOString().substring(0, 10);
 
         nextDay.setDate(today.getDate() + 1);
@@ -289,35 +287,38 @@ class SelectTimeScheduleScreen extends Component {
     }
 
     _checkedSlotBookedByCrntUser = slot => {
-        let slotBookedDate = this.state.arrOrderBookedTimeSlote[0].date;
-        if (
-            this.state.arrForBookedSlote[0] != undefined &&
-            this.state.arrForBookedSlote[0].tempBookedDate === slotBookedDate &&
-            this.state.arrForBookedSlote[0].title === slot.title
-        ) {
+        if (this.state.selectedTimeSlot != null && this.state.selectedTimeSlot.title === slot.title) {
             return true;
         }
 
         return false;
     };
 
-    _onPressSelectTimeSlot = item => {
-        // let arrTimeSlote = new Array(this.state.arrForBookedSlote);
-        if (!item.isBooked) {
-            let arrTimeSlote = this.state.arrForBookedSlote;
-
-            if (arrTimeSlote.length != 0) {
-                arrTimeSlote = [];
-            }
-            let selectedSlot = this.state.arrOrderBookedTimeSlote[0].date;
-            selectedSlot = selectedSlot + " " + item.title.split(" - ")[0];
-
-            item.tempBookedDate = this.state.arrOrderBookedTimeSlote[0].date;
-            global.selectedTimeSlot = item;
-            arrTimeSlote.push(item);
-            this.setState({ arrForBookedSlote: arrTimeSlote });
+    _onPressSave() {
+        if (this.state.selectedTimeSlot === null) {
+            CommonUtilities.showAlert("Please select a time slot");
+            return;
         }
-    };
+
+        let parent = 0;
+        AsyncStorage.getItem(constant.keyScheduleOrderParent).then(value => (parent = value));
+
+        let cityId = "";
+        let orderMasterScreen = this.props.parentScreen.props.parentScreen;
+        if (orderMasterScreen.selectedAddress != null) {
+            cityId = orderMasterScreen.selectedAddress.cityId;
+        } else {
+            AsyncStorage.getItem(constant.keyCurrentCity).then(value => (cityId = value.PkId));
+        }
+
+        var setOrderTimeSessionParameters = {
+            city_id: cityId,
+            parent: parent,
+            date: this.props.parentScreen.selectedDay.dateString,
+            time: this.state.selectedTimeSlot.title.split(" - ")[0] + ":00",
+        };
+        this.props.setOrderTimeSession(setOrderTimeSessionParameters);
+    }
 
     _onPressCalendarDate() {
         let key = this.props.parentScreen.selectedDay.dateString;
@@ -330,9 +331,14 @@ class SelectTimeScheduleScreen extends Component {
 
     // Render Methods
     _renderTagItem = ({ item, index }) => {
-        // constant.debugLog("Tag item :===> " + JSON.stringify(item));
         return (
-            <TouchableWithoutFeedback onPress={() => this._onPressSelectTimeSlot(item)}>
+            <TouchableWithoutFeedback
+                onPress={() => {
+                    this.setState({
+                        selectedTimeSlot: item,
+                    });
+                }}
+            >
                 <View
                     style={[
                         styles.tagBtnStyle,
@@ -449,7 +455,6 @@ class SelectTimeScheduleScreen extends Component {
             { status: "Partial", color: constant.themeYellowColor },
         ];
         const renderedTimeSlotStatusView = arrTimeSlotStatus.map(timeSlotStatus => {
-            // constant.debugLog("Render timeslotstatus : " + timeSlotStatus);
             return (
                 <View style={styles.slotStatusIndicatorView} key={timeSlotStatus.status}>
                     <View
@@ -489,7 +494,8 @@ class SelectTimeScheduleScreen extends Component {
                     </View>
                     <TouchableOpacity
                         onPress={() => {
-                            this._onPressCalendarDate();
+                            this._onPressSave();
+                            // this._onPressCalendarDate();
                         }}
                     >
                         <Text style={styles.navigationButtonText}> Save </Text>
@@ -564,8 +570,7 @@ function mapStateToProps(state, props) {
     return {
         isLoading: state.selectTime.isLoading,
         isSuccess: state.selectTime.isSuccess,
-        isStoreTimeSuccess: state.general.isStoreTimeSuccess,
-        storeDate: state.general.storeDate,
+        isSetTimeSuccess: state.selectTimeSchedule.isSetTimeSuccess,
         objOrderBookedTimeSlote: state.selectTime.objOrderBookedTimeSlote,
         error: state.selectTime.error,
     };
@@ -578,6 +583,14 @@ function mapDispatchToProps(dispatch) {
                 type: constant.actions.getOrderTimeSessionRequest,
                 payload: {
                     endPoint: constant.APIGetOrderTimeSession,
+                    parameters: parameters,
+                },
+            }),
+        setOrderTimeSession: parameters =>
+            dispatch({
+                type: constant.actions.setOrderTimeSessionRequest,
+                payload: {
+                    endPoint: constant.APISetOrderTimeSession,
                     parameters: parameters,
                 },
             }),

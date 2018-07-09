@@ -1,28 +1,25 @@
-import { AsyncStorage } from "react-native";
 import { takeLatest, takeEvery, call, put } from "redux-saga/effects";
 import * as constant from "../../Helper/Constants";
 import * as networkUtility from "../../Helper/NetworkUtility";
 import * as CommonUtilities from "../../Helper/CommonUtilities";
 
-export function* CityScreenCalls(action) {
-    if (action.payload.endPoint === constant.APIGetCity) {
+export function* CalendarScreenCalls(action) {
+    if (action.payload.endPoint === constant.APIGetUserBookedSession) {
         try {
-            const response = yield call(getCityCall, action.payload);
-            yield put({ type: constant.actions.getCitySuccess, response });
+            const response = yield call(getUserBookedSessionCall, action.payload);
+            yield put({ type: constant.actions.getUserBookedSessionSuccess, response });
         } catch (error) {
             constant.debugLog("Error: " + JSON.stringify(error));
-            yield put({ type: constant.actions.getCityFailure, error });
+            yield put({ type: constant.actions.getUserBookedSessionFailure, error });
         }
     }
 }
 
-getCityCall = payload => {
+getUserBookedSessionCall = payload => {
     return networkUtility.getRequest(payload.endPoint, payload.parameters).then(
         result => {
-            if(result.data.data.length){
-                AsyncStorage.setItem(constant.keyCurrentCity, JSON.stringify(result.data.data[0]));
-            }
-            return result.data.data;
+            AsyncStorage.setItem(constant.keyScheduleOrderParent, result.data.parent);
+            return result.data;
         },
         error => {
             constant.debugLog("Status Code: " + error.status);

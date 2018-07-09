@@ -63,6 +63,10 @@ const customStyles = {
 };
 
 var isScheduleOrder = false;
+var selectedAddress = null;
+var selectedTimeSlot = null;
+var selectedDates = [];
+
 class OrderMasterScreen extends Component {
     constructor(props) {
         super(props);
@@ -74,62 +78,7 @@ class OrderMasterScreen extends Component {
         };
         classContext = this;
     }
-    /*
-    static navigationOptions = ({ navigation }) => ({
-        headerLeft: (
-            <View
-                style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    flex: 1,
-                    alignItems: "center",
-                }}
-            >
-                <View style={{ flexDirection: "row", width: "50%", marginLeft: 10 }}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            navigation.goBack(null);
-                            // classContext.props.cartScrContext.setState({
-                            //   orderMasterModalVisible: false
-                            // });
-                        }}
-                    >
-                        <Icon name="close-o" size={30} color="white" />
-                    </TouchableOpacity>
-                </View>
-                <View>
-                    <Text style={styles.headerText}> Select Address </Text>
-                    {/ )} /}
-                </View>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        width: "50%",
-                        justifyContent: "flex-end",
-                    }}
-                >
-                    <TouchableOpacity
-                        onPress={() => {
-                            classContext._onPressBackBtn();
-                        }}
-                    >
-                        <Icon name="arrow-left" size={30} color="white" />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => {
-                            classContext._onPressNextBtn();
-                        }}
-                    >
-                        <Icon name="arrow-right" size={30} color="white" />
-                    </TouchableOpacity>
-                </View>
-            </View>
-        ),
-        headerStyle: {
-            backgroundColor: constant.themeColor,
-        },
-    });
-*/
+
     // App Life Cycle Methods
     componentDidMount() {
         isScheduleOrder = this.props.parentScreen.isScheduleOrder;
@@ -157,13 +106,13 @@ class OrderMasterScreen extends Component {
         }
     }
 
-    _displayNavigationHeader(){
-        if(this.state.currentPosition == 0){
-            return baseLocal.t("Select Address")
-        }else if(this.state.currentPosition == 1){
-            return baseLocal.t("Select Time")
-        }else{
-            return baseLocal.t("Payment")
+    _displayNavigationHeader() {
+        if (this.state.currentPosition == 0) {
+            return baseLocal.t("Select Address");
+        } else if (this.state.currentPosition == 1) {
+            return baseLocal.t("Select Time");
+        } else {
+            return baseLocal.t("Payment");
         }
     }
 
@@ -241,9 +190,7 @@ class OrderMasterScreen extends Component {
                     <Icon name="close-o" size={30} color="white" />
                 </TouchableOpacity>
                 <Text style={styles.navHeaderText}> {this._displayNavigationHeader()} </Text>
-                <View
-                    style={styles.navArrowButtons}
-                >
+                <View style={styles.navArrowButtons}>
                     <TouchableOpacity
                         onPress={() => {
                             classContext._onPressBackBtn();

@@ -69,6 +69,10 @@ class AddressListScreen extends Component {
     }
 
     componentWillReceiveProps(newProps) {
+        if(newProps.isGetSuccess === true && newProps.arrAddress.length){
+            this.props.parentScreen.selectedAddress = newProps.arrAddress[0]
+        }
+
         if (newProps.isDeleteSuccess === true) {
             this._onRefresh();
         }
@@ -117,6 +121,8 @@ class AddressListScreen extends Component {
                 delete addressTemp.selected;
             }
         });
+
+        this.props.parentScreen.selectedAddress = address;
         this.setState({ reloadPage: !this.state.reloadPage });
     }
 

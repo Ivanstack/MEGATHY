@@ -32,7 +32,9 @@ class CalendarScreen extends Component {
         };
     }
 
-    componentDidMount() {}
+    componentDidMount() {
+        this.props.getUserBookedSession()
+    }
 
     componentWillReceiveProps(newProps) {}
 
@@ -41,12 +43,6 @@ class CalendarScreen extends Component {
         this.setState({
             selectTimeScreenVisible: true,
         });
-        // let key = day.dateString;
-        // let selected = true;
-        // if (!this.state.selectedDates.hasOwnProperty(key)) {
-        //     const updatedDates = { ...this.state.selectedDates, ...{ [key]: { selected } } };
-        //     this.setState({ selectedDates: updatedDates });
-        // }
     }
 
     _renderInfoViewTimeRemaining = () => {
@@ -135,19 +131,24 @@ class CalendarScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        isLoading: state.login.isLoading,
-        isSuccess: state.login.isSuccess,
-        result: state.login.result,
-        error: state.login.error,
+        isLoading: state.selectTimeSchedule.isLoading,
+        isSuccess: state.selectTimeSchedule.isSuccess,
+        error: state.selectTimeSchedule.error,
+        arrUserBookedSessions: state.selectTimeSchedule.arrUserBookedSessions,
+        serverCurrentTime: state.selectTimeSchedule.serverCurrentTime,
+        bookTime: state.selectTimeSchedule.bookTime,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onLogin: parameters =>
+        getUserBookedSession: parameters =>
             dispatch({
-                type: constant.actions.loginRequest,
-                payload: { endPoint: constant.APILogin, parameters: parameters },
+                type: constant.actions.getUserBookedSessionRequest,
+                payload: {
+                    endPoint: constant.APIGetUserBookedSession,
+                    parameters: "",
+                },
             }),
     };
 }
