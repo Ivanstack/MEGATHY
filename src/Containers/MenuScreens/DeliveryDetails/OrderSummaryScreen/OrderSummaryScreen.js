@@ -128,8 +128,8 @@ class OrderSummaryScreen extends Component {
         this.objCartDescription["deliveryCharges"] = this._getDeliveryChargesFromOrderAmount(
             this.objCartDescription.basicOrderAmount
         );
-        this.totalRewardPoint = global.currentSettings["totalRewardPoint"]
-        this.totalRewardPoint_SR = global.currentSettings["totalRewardPoint_SR"]
+        this.totalRewardPoint = global.currentSettings["totalRewardPoint"];
+        this.totalRewardPoint_SR = global.currentSettings["totalRewardPoint_SR"];
         if (global.currentSettings["vat-percentage"] > 0) {
             this.isAvailableVAT = true;
             this.objCartDescription["vatAmount"] = (
@@ -199,16 +199,23 @@ class OrderSummaryScreen extends Component {
         return deliveryCharges;
     };
 
-    // Apply Coupne Code
-    _applyCoupneCode = () => {
-
-    };
-
     // onPress Methods
     onPressPaymentMethodChange = () => {
         this.setState({
             paymentByCard: !this.state.paymentByCard,
         });
+    };
+
+    // Apply Coupne Code
+    onPressCoupenCodeApply = () => {
+        var coupenCodeParameters = {
+            city_id: 1, // Change According To Selected Address
+            couponCode: this.state.txtCoupenCode,
+            // loginKey: global.currentUser.loginKey,
+            userId: global.currentUser.id,
+        };
+
+        this.props.checkCoupenCode(coupenCodeParameters);
     };
 
     onPressSend = () => {
@@ -235,8 +242,7 @@ class OrderSummaryScreen extends Component {
             this.setState(
                 {
                     isOpenRedeemPointView: true,
-                    txtRedeemPoint:
-                        this.state.txtRedeemPoint == 0 ? this.totalRewardPoint : this.state.txtRedeemPoint,
+                    txtRedeemPoint: this.state.txtRedeemPoint == 0 ? this.totalRewardPoint : this.state.txtRedeemPoint,
                 },
                 () => {
                     this.redeemView_Y_Translate.setValue(0.75 * redeemPointViewViewHeight);
@@ -372,7 +378,7 @@ class OrderSummaryScreen extends Component {
                     />
                 </View>
 
-                <TouchableOpacity style={PaymentStyle.applyBtn}>
+                <TouchableOpacity style={PaymentStyle.applyBtn} onPress={this.onPressCoupenCodeApply}>
                     <View>
                         <Text style={[PaymentStyle.headerText, { fontSize: 13, fontWeight: "bold", marginBottom: 2 }]}>
                             Apply
@@ -407,7 +413,7 @@ class OrderSummaryScreen extends Component {
                             onChangeText={text => {
                                 this._remainingRedeemPoint(text);
                             }}
-                            maxLength={(this.totalRewardPoint)?this.totalRewardPoint.length:0}
+                            maxLength={this.totalRewardPoint ? this.totalRewardPoint.length : 0}
                         />
                         <Text style={PaymentStyle.smallSizeFontTitleText}>
                             {this.totalRewardPoint - this.state.txtRedeemPoint}{" "}
@@ -502,6 +508,8 @@ class OrderSummaryScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
+        isLoading: state.orderSummary.isLoading,
+        objCoupenCode: state.orderSummary.objCoupenCode,
         // totalRewardPoint: state.general.totalRewardPoint,
         // totalRewardPoint_SR: state.general.totalRewardPoint_SR,
         // isLoading: state.selectTime.isLoading,
@@ -513,14 +521,14 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        // getOrderTimeSession: parameters =>
-        //     dispatch({
-        //         type: constant.actions.getOrderTimeSessionRequest,
-        //         payload: {
-        //             endPoint: constant.APIGetOrderTimeSession,
-        //             parameters: parameters,
-        //         },
-        //     }),
+        checkCoupenCode: parameters =>
+            dispatch({
+                type: constant.actions.checkCoupenCodeRequest,
+                payload: {
+                    endPoint: constant.APICheckCoupenCode,
+                    parameters: parameters,
+                },
+            }),
     };
 }
 

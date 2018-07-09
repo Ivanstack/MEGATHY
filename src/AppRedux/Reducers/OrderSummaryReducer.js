@@ -4,59 +4,31 @@ import * as constant from "../../Helper/Constants";
 export const initialState = {
     isLoading: false,
     isCheckCoupenSuccess: false,
-    isCheckCoupenSuccess: false,
-    arrStores:[],
+    objCoupenCode:null,
     error: null,
 };
 
 export const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case constant.actions.getStoreRequest:
+        case constant.actions.checkCoupenCodeRequest:
             return {
                 ...state,
-                isGetStoreSuccess: false,
-                isSetStoreSuccess: false,
+                isCheckCoupenSuccess: false,
                 isLoading: true,
                 error: null,
             };
-        case constant.actions.getStoreSuccess:
+        case constant.actions.checkCoupenCodeSuccess:
             return {
                 ...state,
-                arrStores: action.response,
-                isGetStoreSuccess: true,
-                isSetStoreSuccess: false,
+                objCoupenCode: action.response,
+                isCheckCoupenSuccess: true,
                 isLoading: false,
                 error: null,
             };
-        case constant.actions.getStoreFailure:
+        case constant.actions.checkCoupenCodeFailure:
             return {
                 ...state,
-                isGetStoreSuccess: false,
-                isSetStoreSuccess: false,
-                isLoading: false,
-                error: action.error,
-            };
-        case constant.actions.setStoreRequest:
-            return {
-                ...state,
-                isGetStoreSuccess: false,
-                isSetStoreSuccess: false,
-                isLoading: true,
-                error: null,
-            };
-        case constant.actions.setStoreSuccess:
-            return {
-                ...state,
-                isGetStoreSuccess: false,
-                isSetStoreSuccess: true,
-                isLoading: false,
-                error: null,
-            };
-        case constant.actions.setStoreFailure:
-            return {
-                ...state,
-                isGetStoreSuccess: false,
-                isSetStoreSuccess: false,
+                isCheckCoupenSuccess: false,
                 isLoading: false,
                 error: action.error,
             };

@@ -24,9 +24,11 @@ const rootReducer = combineReducers({
     subcategory: require("./SubCategoryReducer").reducer,
     category: require("./CategoryReducer").reducer,
     selectTime: require("./SelectTimeReducer").reducer,
+    selectTimeSchedule: require("./SelectTimeScheduleReducer").reducer,
     addressList: require("./AddressListReducer").reducer,
     addAddress: require("./AddAddressReducer").reducer,
     productList: require("./ProductReducer").reducer,
+    orderSummary: require("./OrderSummaryReducer").reducer,
 });
 
 export let sagaMiddleware = saga();

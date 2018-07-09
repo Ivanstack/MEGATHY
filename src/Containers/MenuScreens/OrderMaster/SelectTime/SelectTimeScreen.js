@@ -513,7 +513,6 @@ class SelectTimeScreen extends Component {
                 <SafeAreaView style={{ flex: 1 }}>
                     {/* ----- Segment View ----- */}
                     <View>
-                        {this.props.parentScreen === undefined ? null : this._renderCustomNavigationView()}
                         <ScrollView
                             // style={{ backgroundColor: "orange"}}
                             horizontal={true}
@@ -557,8 +556,6 @@ class SelectTimeScreen extends Component {
                             bottom: 0,
                             flexDirection: "row",
                             backgroundColor: "white",
-                            position: "absolute",
-                            bottom: 0,
                         }}
                     >
                         {this._renderTimeSlotStatusInstructorView()}

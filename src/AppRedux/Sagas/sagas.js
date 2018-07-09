@@ -9,12 +9,14 @@ import { CityScreenCalls } from "./CitySagas";
 import { AreaScreenCalls } from "./AreaSagas";
 import { StoreScreenCalls } from "./StoreSagas";
 import { SelectTimeScreenCalls } from "./SelectTimeSagas";
+import { SelectTimeScheduleScreenCalls } from "./SelectTimeScheduleSagas";
 import { CategoryScreenCalls } from "./CategorySagas";
 import { AddressListScreenCalls } from "./AddressListSagas";
 import { AddAddressScreenCalls } from "./AddAddressSagas";
 import { SubCategoryScreenCalls } from "./SubCategorySagas";
 import { ProductScreenCalls } from "./ProductSagas";
 import { GeneralAPICallSagas } from "./GeneralAPICallSagas";
+import { OrderSummaryScreenCalls } from "./OrderSummarySagas";
 
 // watcher saga: watches for actions dispatched to the store, starts worker saga
 export function* watcherSaga(action) {
@@ -57,6 +59,9 @@ export function* watcherSaga(action) {
     // SelectTime Screen
     yield takeEvery(constant.actions.getOrderTimeSessionRequest, SelectTimeScreenCalls);
 
+    // SelectTimeSchedule Screen
+    yield takeEvery(constant.actions.getUserBookedSessionRequest, SelectTimeScheduleScreenCalls);
+
     // Category Screen
     yield takeEvery(constant.actions.getCategoryRequest, CategoryScreenCalls);
     yield takeEvery(constant.actions.getBannerRequest, CategoryScreenCalls);
@@ -70,8 +75,11 @@ export function* watcherSaga(action) {
     // Address List Screen
     yield takeEvery(constant.actions.getAddressRequest, AddressListScreenCalls);
     yield takeEvery(constant.actions.deleteAddressRequest, AddressListScreenCalls);
-
+    
     // Add Address Screen
     yield takeEvery(constant.actions.addAddressRequest, AddAddressScreenCalls);
     yield takeEvery(constant.actions.editAddressRequest, AddAddressScreenCalls);
+    
+    // Order Summary Screen
+    yield takeEvery(constant.actions.checkCoupenCodeRequest, OrderSummaryScreenCalls);
 }
