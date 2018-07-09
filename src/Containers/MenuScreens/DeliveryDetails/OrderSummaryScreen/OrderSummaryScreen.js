@@ -65,6 +65,9 @@ class OrderSummaryScreen extends Component {
         this.objCartDescription["basicOrderAmount"] =
             fnCart.getTotalPriceCartItems() +
             parseFloat(this._getDeliveryChargesFromOrderAmount(fnCart.getTotalPriceCartItems()));
+
+        this.onPressShowHideRedeemView = this.onPressShowHideRedeemView.bind(this);
+        this._renderCartDescriptionView = this._renderCartDescriptionView.bind(this);
     }
 
     static navigationOptions = ({ navigation }) => ({
@@ -108,18 +111,18 @@ class OrderSummaryScreen extends Component {
         }).start();
 
         this._prepareCartDescription();
+        constant.emitter.addListener(constant.reloadOrderMasterListener, () => {
+            this._prepareCartDescription();
+        });
     }
 
-    componentWillUnmount() {}
-
-    componentWillReceiveProps (newProps) {
-        if (newProps.isCheckCoupenSuccess) {
-            this._prepareCartDescription()
+    componentWillReceiveProps(newProps) {
+        if (newProps.isCheckCoupenSuccess && newProps.error != null) {
+            this._prepareCartDescription();
         }
     }
 
     // Mics Methods
-
     _isValidRedeemPoint = strRedeemPoint => {
         if (!isNaN(strRedeemPoint) && Number(strRedeemPoint) < Number(this.totalRewardPoint)) {
             return true;
@@ -189,9 +192,11 @@ class OrderSummaryScreen extends Component {
             grossAmount = grossAmount - this.objCartDescription.coupenDiscount;
         }
         let pointAmount = (this.state.txtRedeemPoint * global.currentSettings["reward-sr"]) / 100;
-        if (pointAmount > grossAmount) {
+        if (pointAmount.toFixed(2) > grossAmount.toFixed(2)) {
             pointAmount = (grossAmount * this.state.txtRedeemPoint) / pointAmount;
-            this.setState({ txtRedeemPoint: pointAmount.toFixed(0) });
+            if (Math.round(pointAmount) != this.state.txtRedeemPoint) {
+                this.setState({ txtRedeemPoint: pointAmount.toFixed(0) });
+            }
         }
         pointAmount = pointAmount.toFixed(2);
 
@@ -217,7 +222,10 @@ class OrderSummaryScreen extends Component {
     _getFinalOrderAmount = () => {
         let finalAmount = this.objCartDescription.finalOrderAmount;
         if (this.isCoupenCodeAvailable && this.state.isOpenRedeemPointView) {
-            finalAmount = this.objCartDescription.finalOrderAmount - this.objCartDescription.coupenDiscount - this._getSARValueFromRewardPoint();
+            finalAmount =
+                this.objCartDescription.finalOrderAmount -
+                this.objCartDescription.coupenDiscount -
+                this._getSARValueFromRewardPoint();
         } else if (this.isCoupenCodeAvailable) {
             finalAmount = this.objCartDescription.finalOrderAmount - this.objCartDescription.coupenDiscount;
         } else if (this.state.isOpenRedeemPointView) {
@@ -235,8 +243,12 @@ class OrderSummaryScreen extends Component {
 
     // Apply Coupne Code
     onPressCoupenCodeApply = () => {
+        let cityIds = global.currentStore.cityId.toString().split(",");
+        let orderCityIds = this.props.parentScreen.selectedAddress
+            ? this.props.parentScreen.selectedAddress.cityId
+            : cityIds[0];
         var coupenCodeParameters = {
-            city_id: 1, // Change According To Selected Address
+            city_id: orderCityIds, // Change According To Selected Address
             couponCode: this.state.txtCoupenCode,
             // loginKey: global.currentUser.loginKey,
             userId: global.currentUser.id,
@@ -253,10 +265,8 @@ class OrderSummaryScreen extends Component {
         // });
         if (global.selectedAddress === null) {
             this.props.parentScreen._swiper.scrollBy(-2, true);
-            // this.props.parentScreen.setState({ currentPosition: 0 });
         } else if (global.selectedTimeSlot === null) {
             this.props.parentScreen._swiper.scrollBy(-1, true);
-            // this.props.parentScreen.setState({ currentPosition: 1 });
         }
         // constant.debugLog("Selected Time :===> " + JSON.stringify(global.selectedTimeSlot));
         // constant.debugLog("Selected Address :===> " + JSON.stringify(global.selectedAddress));
@@ -265,14 +275,14 @@ class OrderSummaryScreen extends Component {
     };
 
     onPressShowHideRedeemView = () => {
-        // constant.debugLog("orderNow Called ...");
+        constant.debugLog("orderNow Called ...");
         if (this.totalRewardPoint) {
             if (!this.state.isOpenRedeemPointView) {
                 this.setState(
                     {
                         isOpenRedeemPointView: true,
                         txtRedeemPoint:
-                            this.state.txtRedeemPoint == 0 ? (this.totalRewardPoint) : this.state.txtRedeemPoint,
+                            this.state.txtRedeemPoint == 0 ? this.totalRewardPoint : this.state.txtRedeemPoint,
                     },
                     () => {
                         this.redeemView_Y_Translate.setValue(0.75 * redeemPointViewViewHeight);
@@ -305,8 +315,8 @@ class OrderSummaryScreen extends Component {
     _renderCartValueView = (leftTitle, rightTitle) => {
         return (
             <View style={{ justifyContent: "space-between", flexDirection: "row", flex: 1 }}>
-                <Text style={PaymentStyle.boldTitleText}>{leftTitle}</Text>
-                <Text style={PaymentStyle.boldTitleText}>{rightTitle}</Text>
+                <Text style={[PaymentStyle.boldTitleText, { margin: 6, marginLeft: 8 }]}>{leftTitle}</Text>
+                <Text style={[PaymentStyle.boldTitleText, { margin: 6, marginRight: 8 }]}>{rightTitle}</Text>
             </View>
         );
     };
@@ -352,10 +362,7 @@ class OrderSummaryScreen extends Component {
                     : null}
 
                 {this.isCoupenCodeAvailable
-                    ? this._renderExtraChargeView(
-                          "Coupen Discount",
-                          "-" + this.objCartDescription.coupenDiscount
-                      )
+                    ? this._renderExtraChargeView("Coupen Discount", "-" + this.objCartDescription.coupenDiscount)
                     : null}
 
                 {this.state.isOpenRedeemPointView || this.isAvailableVAT || this.isCoupenCodeAvailable
@@ -416,7 +423,7 @@ class OrderSummaryScreen extends Component {
                     />
                 </View>
 
-                <TouchableOpacity style={PaymentStyle.applyBtn} onPress={this.onPressCoupenCodeApply}>
+                <TouchableOpacity style={PaymentStyle.applyBtn} onPress={this.onPressCoupenCodeApply.bind(this)}>
                     <View>
                         <Text style={[PaymentStyle.headerText, { fontSize: 13, fontWeight: "bold", marginBottom: 2 }]}>
                             Apply
@@ -435,7 +442,7 @@ class OrderSummaryScreen extends Component {
             <Animated.View
                 style={[PaymentStyle.redeemPointView, { transform: [{ translateY: this.redeemView_Y_Translate }] }]}
             >
-                <TouchableWithoutFeedback onPress={this.onPressShowHideRedeemView.bind(this)}>
+                <TouchableWithoutFeedback onPress={this.onPressShowHideRedeemView}>
                     <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 10 }}>
                         <Image style={{ height: 20, width: 20 }} resizeMode="contain" source={imgRedeemPointView} />
                         <Text style={[PaymentStyle.boldTitleText, { color: constant.themeColor }]}>Redeem Points</Text>
@@ -447,11 +454,11 @@ class OrderSummaryScreen extends Component {
                         <TextInput
                             style={PaymentStyle.txtInputRedeemPoint}
                             keyboardType="decimal-pad"
-                            value={this.state.txtRedeemPoint}
+                            value={this.state.txtRedeemPoint.toString()}
                             onChangeText={text => {
                                 this._remainingRedeemPoint(text);
                             }}
-                            maxLength={this.totalRewardPoint ? (this.totalRewardPoint + "").length : 0}
+                            maxLength={this.totalRewardPoint ? this.totalRewardPoint.toString().length : 0}
                         />
                         <Text style={PaymentStyle.smallSizeFontTitleText}>
                             {this.totalRewardPoint - this.state.txtRedeemPoint}{" "}
@@ -509,9 +516,11 @@ class OrderSummaryScreen extends Component {
                                 Select payment method
                             </Text>
                             {this._renderPaymentMethodSelectionView()}
-                            {this.state.isOpenRedeemPointView ? <View style={{ height: 200 }} /> : null}
+                            {/* {this.state.isOpenRedeemPointView ? <View style={{ height: 200 }} /> : null} */}
+                            <View style={{ height: 150 }} />
                         </View>
                     </ScrollView>
+
                     {this._renderRedeemPointView()}
 
                     <View
@@ -549,6 +558,7 @@ function mapStateToProps(state, props) {
         isLoading: state.orderSummary.isLoading,
         isCheckCoupenSuccess: state.orderSummary.isCheckCoupenSuccess,
         objCoupenCode: state.orderSummary.objCoupenCode,
+        error: state.orderSummary.error,
         // isSuccess: state.selectTime.isSuccess,
         // objOrderBookedTimeSlote: state.selectTime.objOrderBookedTimeSlote,
         // error: state.selectTime.error,

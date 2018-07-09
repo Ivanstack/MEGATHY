@@ -75,13 +75,14 @@ class OrderMasterScreen extends Component {
             currentPosition: 0,
             visible: false,
             storeTime: new Date().getTime(),
+            isReload: false
         };
         classContext = this;
     }
 
     // App Life Cycle Methods
     componentDidMount() {
-        isScheduleOrder = this.props.parentScreen.isScheduleOrder;
+        this.isScheduleOrder = this.props.parentScreen.isScheduleOrder;
         this.props.getStoreTime();
         this.props.getAppSettingAndReward();
     }
@@ -89,8 +90,6 @@ class OrderMasterScreen extends Component {
     componentWillUnmount() {
         clearInterval(this.storeCrntTimeInterval);
     }
-
-    componentWillUpdate() {}
 
     componentWillReceiveProps(newProps) {
         if (newProps.isStoreTimeSuccess === true) {

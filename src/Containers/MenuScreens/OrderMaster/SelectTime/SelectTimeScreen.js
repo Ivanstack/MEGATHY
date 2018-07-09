@@ -96,7 +96,15 @@ class SelectTimeScreen extends Component {
 
     componentDidMount() {
         // this.props.onRef(this)
-        this._getAPIGetOrderTimeSession();
+        setTimeout(() => {
+            this._getAPIGetOrderTimeSession();
+        }, 500);
+        constant.emitter.addListener(constant.reloadOrderMasterListener, () => {
+            setTimeout(() => {
+                this._getAPIGetOrderTimeSession();
+            }, 500);
+            // this.forceUpdate();
+        });
     }
 
     componentWillReceiveProps(newProps) {
@@ -113,7 +121,7 @@ class SelectTimeScreen extends Component {
 
     componentWillUnmount() {
         // this.props.onRef(undefined)
-        constant.debugLog("componentWillUnmount call from select time .....");
+        // constant.debugLog("componentWillUnmount call from select time .....");
     }
 
     // Convert Time into 12hrs Formate
@@ -215,9 +223,13 @@ class SelectTimeScreen extends Component {
 
     // API Call for Get Booked Time Slotes
     _getAPIGetOrderTimeSession = () => {
+        constant.debugLog("Select Address :==> " + JSON.stringify(this.props.parentScreen.selectedAddress));
         let cityIds = global.currentStore.cityId.toString().split(",");
+        let orderCityIds = this.props.parentScreen.selectedAddress
+            ? this.props.parentScreen.selectedAddress.cityId
+            : cityIds[0];
         var orderTimeSessionParameters = {
-            city_id: cityIds[0],
+            city_id: orderCityIds,
             dynamic_hour: true,
         };
 
@@ -327,15 +339,6 @@ class SelectTimeScreen extends Component {
             this.setState({ arrForBookedSlote: arrTimeSlote });
         }
     };
-
-    _onPressCalendarDate() {
-        let key = this.props.day.dateString;
-        let selected = true;
-        if (!this.props.parentScreen.state.selectedDates.hasOwnProperty(key)) {
-            const updatedDates = { ...this.props.parentScreen.state.selectedDates, ...{ [key]: { selected } } };
-            this.props.parentScreen.setState({ selectedDates: updatedDates, selectTimeScreenVisible: false });
-        }
-    }
 
     // Render Methods
     _renderTagItem = ({ item, index }) => {
@@ -496,7 +499,7 @@ class SelectTimeScreen extends Component {
                 <TouchableOpacity
                     onPress={() => {
                         this.props.parentScreen != undefined
-                            ? this._onPressCalendarDate()
+                            ? this.props.parentScreen.setState({ selectTimeScreenVisible: false })
                             : constant.debugLog("Parent is not calendar");
                     }}
                 >

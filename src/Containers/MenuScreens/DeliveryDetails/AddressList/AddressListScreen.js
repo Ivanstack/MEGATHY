@@ -124,6 +124,8 @@ class AddressListScreen extends Component {
 
         this.props.parentScreen.selectedAddress = address;
         this.setState({ reloadPage: !this.state.reloadPage });
+        
+        constant.emitter.emit(constant.reloadOrderMasterListener)
     }
 
     _onPressEditItem(address) {}
