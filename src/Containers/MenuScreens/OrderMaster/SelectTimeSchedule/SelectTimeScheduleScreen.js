@@ -156,13 +156,13 @@ class SelectTimeScheduleScreen extends Component {
                 return `${hours}am`;
             }
         } else {
-            let hour1 = hours.split(" - ")[0].split(":")[0]
-            let hour2 = hours.split(" - ")[1].split(":")[0]
-            let minute1 = hours.split(" - ")[0].split(":")[1]
-            let minute2 = hours.split(" - ")[1].split(":")[1]
-            hour1 = hour1 == 0 ? 12 : hour1 > 12 ? hour1 - 12 : hour1
-            hour2 = hour2 == 0 ? 12 : hour2 > 12 ? hour2 - 12 : hour2
-            return hour1 + ":" + minute1 + " - " + hour2 + ":" + minute2
+            let hour1 = hours.split(" - ")[0].split(":")[0];
+            let hour2 = hours.split(" - ")[1].split(":")[0];
+            let minute1 = hours.split(" - ")[0].split(":")[1];
+            let minute2 = hours.split(" - ")[1].split(":")[1];
+            hour1 = hour1 == 0 ? 12 : hour1 > 12 ? hour1 - 12 : hour1;
+            hour2 = hour2 == 0 ? 12 : hour2 > 12 ? hour2 - 12 : hour2;
+            return hour1 + ":" + minute1 + " - " + hour2 + ":" + minute2;
         }
     };
 
@@ -256,7 +256,7 @@ class SelectTimeScheduleScreen extends Component {
         var remainigHours = 0;
         var nextDay = new Date(today);
         let selectedDate = this.state.arrOrderBookedTimeSlote[0].date;
-        CommonUtilities.showAlert(today,false)
+        CommonUtilities.showAlert(today, false);
         let storeDate = today.toISOString().substring(0, 10);
 
         nextDay.setDate(today.getDate() + 1);
@@ -287,50 +287,7 @@ class SelectTimeScheduleScreen extends Component {
         // console.log("TimeSlot In Json :===> ", arrRemainig);
         this.setState({ arrSetTimeSlote: arrRemainig });
     }
-    /*
-    _getRemainingHours() {
-        let today = new Date(this.state.crntStoreTime);
-        var todayHour = today.getHours();
 
-        var nextDay = new Date(today);
-        var remainigHours = 0;
-        nextDay.setDate(today.getDate() + 1);
-
-        let dateForSegment = this.state.arrOrderBookedTimeSlote[0].date;
-        let crntDateForCompare = today.toISOString().substring(0, 10);
-        // console.log("Todays Hours : ==> ", crntDateForCompare);
-        // console.log("Compare Date Hours : ==> ", dateForSegment);
-
-        if (crntDateForCompare === dateForSegment) {
-            nextDay.setHours(0, 0, 0, 0);
-            var delta = Math.abs(nextDay.getTime() - today.getTime()) / 1000;
-            remainigHours = Math.floor(delta / 3600);
-            // console.log("Todays Hours : ==> ", new Date().toLocaleDateString("en-us"));
-        } else {
-            todayHour = 0;
-            remainigHours = 23;
-        }
-        // console.log("Next Hours : ==> ", nextDay);
-
-        let arrRemainig = [];
-        let timeSloteData = {};
-        timeSloteData["time"] = todayHour;
-        timeSloteData["timeSlot"] = this._creatTimeSlotWithTime(todayHour);
-        timeSloteData["isOpen"] = false;
-        arrRemainig.push(timeSloteData);
-
-        for (let index = 0; index < remainigHours; index++) {
-            todayHour = todayHour + 1;
-            let newTimeSloteData = {};
-            newTimeSloteData["time"] = todayHour;
-            newTimeSloteData["timeSlot"] = this._creatTimeSlotWithTime(todayHour);
-            newTimeSloteData["isOpen"] = false;
-            arrRemainig.push(newTimeSloteData);
-        }
-        // console.log("TimeSlot In Json :===> ", arrRemainig);
-        this.setState({ arrSetTimeSlote: arrRemainig });
-    }
-*/
     _checkedSlotBookedByCrntUser = slot => {
         let slotBookedDate = this.state.arrOrderBookedTimeSlote[0].date;
         if (
@@ -353,6 +310,7 @@ class SelectTimeScheduleScreen extends Component {
                 arrTimeSlote = [];
             }
             let selectedSlot = this.state.arrOrderBookedTimeSlote[0].date;
+            selectedSlot = selectedSlot + " " + item.title.split(" - ")[0];
 
             item.tempBookedDate = this.state.arrOrderBookedTimeSlote[0].date;
             global.selectedTimeSlot = item;
@@ -583,19 +541,18 @@ class SelectTimeScheduleScreen extends Component {
                                 renderItem={this._renderItem}
                             />
                         </View>
-
-                        {/* ----- Time Slote Status Instruction View ----- */}
-                        <View
-                            style={{
-                                justifyContent: "space-between",
-                                position: "absolute",
-                                bottom: 0,
-                                flexDirection: "row",
-                                backgroundColor: "white",
-                            }}
-                        >
-                            {this._renderTimeSlotStatusInstructorView()}
-                        </View>
+                    </View>
+                    {/* ----- Time Slot Status Instruction View ----- */}
+                    <View
+                        style={{
+                            justifyContent: "space-between",
+                            flexDirection: "row",
+                            backgroundColor: "white",
+                            position: "absolute",
+                            bottom: 0,
+                        }}
+                    >
+                        {this._renderTimeSlotStatusInstructorView()}
                     </View>
                 </SafeAreaView>
             </View>

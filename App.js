@@ -71,23 +71,16 @@ export default class App extends Component {
                     isStoreSet: true,
                 });
             }
-        }, 200); // Time to display Splash Screen
+        }, 400); // Time to display Splash Screen
     }
 
-    // onLogin = () => {
-    //     this.setState({
-    //         isLogin: true,
-    //     });
-    // };
-
-    // onLogout = () => {
-    //     this.setState({
-    //         isLogin: false,
-    //     });
-    // };
-
     render() {
-        if (this.state.isStoreSet) {
+        if (this.state.isLogin == null) {
+            return (
+                <View />
+            )
+        }
+        else if (this.state.isStoreSet) {
             return (
                 <Provider store={store}>
                     <Router />
@@ -109,11 +102,5 @@ export default class App extends Component {
                 </Provider>
             );
         }
-
-        // return (
-        //     <Provider store={store}>
-        //         <Router onPressLogout={this.onLogout} />
-        //     </Provider>
-        // );
     }
 }

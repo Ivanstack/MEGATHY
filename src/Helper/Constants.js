@@ -32,6 +32,7 @@ module.exports = {
     keyCurrentStore: "currentStore",
     keyCurrentAppLanguage: "currentAppLanguage",
     keyCurrentCartItems: "cartItems",
+    keyScheduleOrderParent: "parent",
 
     //Screen Name Keys
     kCategoryScreen: "CategoryScreen",
@@ -81,6 +82,7 @@ module.exports = {
     APIEditAddress: "address",
     APIDeleteAddress: "address",
     APIGetOrderTimeSession: "getOrderTimeSession",
+    APIGetUserBookedSession: "getUserBookedSession",
     APICheckCoupenCode: "checkCoupon",
     
     // General API
@@ -178,6 +180,11 @@ module.exports = {
         getOrderTimeSessionRequest: "getOrderTimeSessionRequest",
         getOrderTimeSessionSuccess: "getOrderTimeSessionSuccess",
         getOrderTimeSessionFailure: "getOrderTimeSessionFailure",
+
+        // SelectTime Screen
+        getUserBookedSessionRequest: "getUserBookedSessionRequest",
+        getUserBookedSessionSuccess: "getUserBookedSessionSuccess",
+        getUserBookedSessionFailure: "getUserBookedSessionFailure",
 
         // Category Screen
         getCategoryRequest: "getCategoryRequest",

@@ -84,8 +84,6 @@ export default StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "row",
-        // position: "absolute",
-        // bottom: 50,
     },
     txtTimeSlotStatus: {
         fontFamily: constant.themeFont,
