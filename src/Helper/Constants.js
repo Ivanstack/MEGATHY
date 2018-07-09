@@ -17,8 +17,9 @@ module.exports = {
     setStoreListener: "setStoreListener",
     languageEnglish: "en",
     languageArabic: "ar",
+    reloadOrderMasterListener: "reloadOrderMasterListener",
     DeviceInfo: require("react-native-device-info"),
-
+    
     /// Common Functions
     debugLog: log => {
         console.log("\n====================>");
@@ -84,6 +85,7 @@ module.exports = {
     APIDeleteAddress: "address",
     APIGetOrderTimeSession: "getOrderTimeSession",
     APISetOrderTimeSession: "setOrderTimeSession",
+    APIUnsetOrderTimeSession: "unsetOrderTimeSession",
     APIGetUserBookedSession: "getUserBookedSession",
     APICheckCoupenCode: "checkCoupon",
 
@@ -194,10 +196,14 @@ module.exports = {
         setOrderTimeSessionSuccess: "setOrderTimeSessionSuccess",
         setOrderTimeSessionFailure: "setOrderTimeSessionFailure",
 
-        // SelectTime Screen
+        // Calendar Screen
         getUserBookedSessionRequest: "getUserBookedSessionRequest",
         getUserBookedSessionSuccess: "getUserBookedSessionSuccess",
         getUserBookedSessionFailure: "getUserBookedSessionFailure",
+        
+        unsetOrderTimeSessionRequest: "unsetOrderTimeSessionRequest",
+        unsetOrderTimeSessionSuccess: "unsetOrderTimeSessionSuccess",
+        unsetOrderTimeSessionFailure: "unsetOrderTimeSessionFailure",
 
         // Category Screen
         getCategoryRequest: "getCategoryRequest",

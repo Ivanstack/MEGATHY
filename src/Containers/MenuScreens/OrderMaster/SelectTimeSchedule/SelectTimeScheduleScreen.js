@@ -115,7 +115,7 @@ class SelectTimeScheduleScreen extends Component {
             );
         } else if (newProps.isSetTimeSuccess === true) {
             this.props.parentScreen.setState(
-                { selectedDatesCalendar: updatedDates, selectTimeScreenVisible: false },
+                { selectTimeScreenVisible: false },
                 () => this.props.parentScreen.props.getUserBookedSession()
             );
         }
@@ -320,15 +320,6 @@ class SelectTimeScheduleScreen extends Component {
         this.props.setOrderTimeSession(setOrderTimeSessionParameters);
     }
 
-    _onPressCalendarDate() {
-        let key = this.props.parentScreen.selectedDay.dateString;
-        let selected = true;
-        if (!this.props.parentScreen.state.selectedDatesCalendar.hasOwnProperty(key)) {
-            const updatedDates = { ...this.props.parentScreen.state.selectedDatesCalendar, ...{ [key]: { selected } } };
-            this.props.parentScreen.setState({ selectedDatesCalendar: updatedDates, selectTimeScreenVisible: false });
-        }
-    }
-
     // Render Methods
     _renderTagItem = ({ item, index }) => {
         return (
@@ -498,7 +489,7 @@ class SelectTimeScheduleScreen extends Component {
                             // this._onPressCalendarDate();
                         }}
                     >
-                        <Text style={styles.navigationButtonText}> Save </Text>
+                        <Text style={[styles.navigationButtonText, {marginRight:10}]}> Save </Text>
                     </TouchableOpacity>
                 </View>
                 {this._renderDateTimeView()}
@@ -569,7 +560,7 @@ class SelectTimeScheduleScreen extends Component {
 function mapStateToProps(state, props) {
     return {
         isLoading: state.selectTime.isLoading,
-        isSuccess: state.selectTime.isSuccess,
+        isSuccess: state.selectTimeSchedule.isSetTimeSuccess === true ? false : state.selectTime.isSuccess,
         isSetTimeSuccess: state.selectTimeSchedule.isSetTimeSuccess,
         objOrderBookedTimeSlote: state.selectTime.objOrderBookedTimeSlote,
         error: state.selectTime.error,

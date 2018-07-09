@@ -65,6 +65,7 @@ export function* watcherSaga(action) {
 
     // Calendar Screen
     yield takeEvery(constant.actions.getUserBookedSessionRequest, CalendarScreenCalls);
+    yield takeEvery(constant.actions.unsetOrderTimeSessionRequest, CalendarScreenCalls);
 
     // Category Screen
     yield takeEvery(constant.actions.getCategoryRequest, CategoryScreenCalls);

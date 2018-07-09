@@ -6,7 +6,7 @@
 
 import React, { Component } from "react";
 import { Platform, StyleSheet, AsyncStorage, Dimensions } from "react-native";
-import { Text, View, TouchableOpacity, ScrollView, Modal } from "react-native";
+import { Text, View, Image, TouchableOpacity, ScrollView, Modal, FlatList } from "react-native";
 
 import { connect } from "react-redux"; // Redux
 import * as constant from "../../../../Helper/Constants"; // Constants
@@ -16,6 +16,7 @@ import Spinner from "react-native-loading-spinner-overlay"; // Loading View
 import baseLocal from "../../../../Resources/Localization/baseLocalization"; // Localization
 import { CalendarList } from "react-native-calendars";
 import SelectTimeScheduleScreen from "../SelectTimeSchedule/SelectTimeScheduleScreen";
+import moment from "moment";
 
 var selectedDay = null;
 class CalendarScreen extends Component {
@@ -25,24 +26,55 @@ class CalendarScreen extends Component {
         baseLocal.locale = global.currentAppLanguage;
         this._onPressCalendarDate = this._onPressCalendarDate.bind(this);
         this.state = {
-            selectedDatesCalendar: {},
-            selectedDates:[],
+            selectedCalendarDates: {},
+            selectedDates: [],
             selectTimeScreenVisible: false,
-            
         };
     }
 
     componentDidMount() {
-        this.props.getUserBookedSession()
+        this.props.getUserBookedSession();
     }
 
-    componentWillReceiveProps(newProps) {}
+    componentWillReceiveProps(newProps) {
+        if (newProps.isGetSuccess === true) {
+            this.setState({
+                selectedCalendarDates:{}
+            })
+            newProps.arrUserBookedSessions.map((value, index) => {
+                let key = value.date;
+                let selected = true;
+                if (!this.state.selectedCalendarDates.hasOwnProperty(key)) {
+                    const updatedDates = {
+                        ...this.props.parentScreen.state.selectedCalendarDates,
+                        ...{ [key]: { selected } },
+                    };
+                    this.setState({
+                        selectedCalendarDates: updatedDates,
+                    });
+                }
+            });
+        } else if (newProps.isUnsetSuccess === true) {
+            this.props.getUserBookedSession();
+        }
+    }
 
-    _onPressCalendarDate(day) {
-        this.selectedDay = day
+    _onPressCalendarDate() {}
+
+    _onPressCalendarDate = day => {
+        this.selectedDay = day;
+        constant.debugLog("Selected Address: ", this.props.parentScreen.selectedAddress);
         this.setState({
             selectTimeScreenVisible: true,
         });
+    }
+
+    _onRemoveBookedTimeSlot = item => {
+        var orderTimeSessionParameters = {
+            date: item.date,
+        };
+
+        this.props.unsetOrderTimeSession(item.orderTimeSessionId, orderTimeSessionParameters);
     }
 
     _renderInfoViewTimeRemaining = () => {
@@ -69,6 +101,16 @@ class CalendarScreen extends Component {
         );
     };
 
+    _renderInfoViewSelectedTimeSlot = () => {
+        return (
+            /* // Info View Selected Time Slots */
+            <View style={styles.infoView}>
+                <Text>{baseLocal.t("Selected time slots")}</Text>
+                <Text>{"*" + baseLocal.t("Tap on a time slot to remove")}</Text>
+            </View>
+        );
+    };
+
     _renderCalendarComponent = () => {
         return (
             <View style={styles.calendar}>
@@ -82,7 +124,7 @@ class CalendarScreen extends Component {
                     pagingEnabled
                     hideArrows
                     onDayPress={this._onPressCalendarDate}
-                    markedDates={this.state.selectedDatesCalendar}
+                    markedDates={this.state.selectedCalendarDates}
                     style={styles.calendar}
                     theme={{
                         calendarBackground: "white",
@@ -91,6 +133,34 @@ class CalendarScreen extends Component {
                         selectedDayBackgroundColor: "#CF2526",
                     }}
                 />
+            </View>
+        );
+    };
+
+    _renderBookedTimeSlotItem = item => {
+        return (
+            <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 8 }}>
+                <Text style={{ fontFamily: constant.themeFont, fontSize: 18, marginLeft: 5 }}>
+                    {moment(item.item.date, "YYYY-MM-DD").format("DD-MM-YYYY") +
+                        " | " +
+                        moment(item.item.time, "HH:mm:ss").format("hh:mm A")}
+                </Text>
+                <TouchableOpacity style={{ marginRight: 5 }} onPress={() => this._onRemoveBookedTimeSlot(item.item)}>
+                    <Image
+                        style={{ height: 20, width: 20 }}
+                        source={require("../../../../Resources/Images/CartScr/BtnRemoveFromCart.png")}
+                    />
+                </TouchableOpacity>
+            </View>
+        );
+    };
+
+    _renderHeaderComponent = () => {
+        return (
+            <View style={{ width: "100%" }}>
+                {this._renderInfoViewTimeRemaining()}
+                {this._renderCalendarComponent()}
+                {this._renderInfoViewSelectedTimeSlot()}
             </View>
         );
     };
@@ -105,7 +175,7 @@ class CalendarScreen extends Component {
                     alert("Modal has been closed.");
                 }}
             >
-                <SelectTimeScheduleScreen parentScreen={this}/>
+                <SelectTimeScheduleScreen parentScreen={this} />
             </Modal>
         );
     };
@@ -115,15 +185,33 @@ class CalendarScreen extends Component {
             // Main View (Container)
             <View style={styles.container}>
                 {this._renderSelectTimeScreenWithModal()}
-                <Spinner visible={this.props.isLoading} cancelable={true} textStyle={{ color: "#FFF" }} />
+                {/* <Spinner visible={this.props.isLoading} cancelable={true} textStyle={{ color: "#FFF" }} /> */}
                 {/* // Main Scroll View */}
-                <ScrollView style={{ width: "100%" }} contentContainerStyle={styles.scrollView}>
-                    {/* // Info View Time Remaining */}
-                    {this._renderInfoViewTimeRemaining()}
+                <FlatList
+                    style={{
+                        marginTop: 8,
+                        width: "100%",
+                        height: "89%",
+                    }}
+                    ref={flatList => {
+                        this.arrUserBookedSessions = flatList;
+                    }}
+                    data={this.props.arrUserBookedSessions}
+                    keyExtractor={(item, index) => item.orderTimeSessionId.toString()}
+                    renderItem={this._renderBookedTimeSlotItem}
+                    ListHeaderComponent={this._renderHeaderComponent}
+                    showsHorizontalScrollIndicator={false}
+                    removeClippedSubviews={false}
+                    directionalLockEnabled
+                />
 
-                    {/* // Calendar View */}
-                    {this._renderCalendarComponent()}
-                </ScrollView>
+                {/* <ScrollView style={{ width: "100%" }} contentContainerStyle={styles.scrollView}> */}
+                {/* // Info View Time Remaining */}
+                {/* {this._renderInfoViewTimeRemaining()} */}
+
+                {/* // Calendar View */}
+                {/* {this._renderCalendarComponent()} */}
+                {/* </ScrollView> */}
             </View>
         );
     }
@@ -131,12 +219,13 @@ class CalendarScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        isLoading: state.selectTimeSchedule.isLoading,
-        isSuccess: state.selectTimeSchedule.isSuccess,
-        error: state.selectTimeSchedule.error,
-        arrUserBookedSessions: state.selectTimeSchedule.arrUserBookedSessions,
-        serverCurrentTime: state.selectTimeSchedule.serverCurrentTime,
-        bookTime: state.selectTimeSchedule.bookTime,
+        isLoading: state.calendar.isLoading,
+        isGetSuccess: state.calendar.isGetSuccess,
+        isUnsetSuccess: state.calendar.isUnsetSuccess,
+        error: state.calendar.error,
+        arrUserBookedSessions: state.calendar.arrUserBookedSessions,
+        serverCurrentTime: state.calendar.serverCurrentTime,
+        bookTime: state.calendar.bookTime,
     };
 }
 
@@ -148,6 +237,14 @@ function mapDispatchToProps(dispatch) {
                 payload: {
                     endPoint: constant.APIGetUserBookedSession,
                     parameters: "",
+                },
+            }),
+        unsetOrderTimeSession: (orderTimeSessionId, parameters) =>
+            dispatch({
+                type: constant.actions.unsetOrderTimeSessionRequest,
+                payload: {
+                    endPoint: constant.APIUnsetOrderTimeSession + "/" + orderTimeSessionId,
+                    parameters: parameters,
                 },
             }),
     };
