@@ -7,6 +7,7 @@ export function* OrderSummaryScreenCalls(action) {
     if (action.payload.endPoint === constant.APICheckCoupenCode) {
         try {
             const response = yield call(checkCoupenCodeCall, action.payload);
+            constant.debugLog("Check Coupen response: " + JSON.stringify(response));
             yield put({ type: constant.actions.checkCoupenCodeSuccess, response });
         } catch (error) {
             constant.debugLog("Error: " + JSON.stringify(error));
@@ -16,8 +17,9 @@ export function* OrderSummaryScreenCalls(action) {
 }
 
 checkCoupenCodeCall = payload => {
-    return networkUtility.getRequest(payload.endPoint, payload.parameters).then(
+    return networkUtility.putRequest(payload.endPoint, payload.parameters).then(
         result => {
+            constant.debugLog("Coupen Code Response: " + JSON.stringify(result.data.data));
             return result.data.data;
         },
         error => {

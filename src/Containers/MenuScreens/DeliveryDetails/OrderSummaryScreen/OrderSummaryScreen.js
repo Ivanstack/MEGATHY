@@ -59,10 +59,8 @@ class OrderSummaryScreen extends Component {
             paymentByCard: true,
             isOpenRedeemPointView: false,
         };
-        this.orderAmount =
-            fnCart.getTotalPriceCartItems() +
-            parseFloat(this._getDeliveryChargesFromOrderAmount(fnCart.getTotalPriceCartItems()));
         this.isAvailableVAT = false;
+        this.isCoupenCodeAvailable = false;
         this.objCartDescription = {};
         this.objCartDescription["basicOrderAmount"] =
             fnCart.getTotalPriceCartItems() +
@@ -114,10 +112,16 @@ class OrderSummaryScreen extends Component {
 
     componentWillUnmount() {}
 
+    componentWillReceiveProps (newProps) {
+        if (newProps.isCheckCoupenSuccess) {
+            this._prepareCartDescription()
+        }
+    }
+
     // Mics Methods
 
     _isValidRedeemPoint = strRedeemPoint => {
-        if (!isNaN(strRedeemPoint) && Number(strRedeemPoint) < Number(this.props.totalRewardPoint)) {
+        if (!isNaN(strRedeemPoint) && Number(strRedeemPoint) < Number(this.totalRewardPoint)) {
             return true;
         }
         return false;
@@ -128,18 +132,26 @@ class OrderSummaryScreen extends Component {
         this.objCartDescription["deliveryCharges"] = this._getDeliveryChargesFromOrderAmount(
             this.objCartDescription.basicOrderAmount
         );
-        this.totalRewardPoint = global.currentSettings["totalRewardPoint"];
-        this.totalRewardPoint_SR = global.currentSettings["totalRewardPoint_SR"];
+        this.totalRewardPoint = global.currentUser["total_reward"];
         if (global.currentSettings["vat-percentage"] > 0) {
             this.isAvailableVAT = true;
             this.objCartDescription["vatAmount"] = (
-                ((this.objCartDescription.basicOrderAmount + this.objCartDescription.deliveryCharges) *
-                    global.currentSettings["vat-percentage"]) /
+                (this.objCartDescription.basicOrderAmount * global.currentSettings["vat-percentage"]) /
                 100
             ).toFixed(2);
             this.objCartDescription["finalOrderAmount"] = this._getOrderAmountIncludingVAT();
         } else {
             this.objCartDescription["finalOrderAmount"] = this.objCartDescription.basicOrderAmount;
+        }
+
+        if (this.props.objCoupenCode) {
+            this.isCoupenCodeAvailable = true;
+            if (this.props.objCoupenCode.type === constant.kCoupenCodeDiscountTypePercentage) {
+                this.objCartDescription["coupenDiscount"] =
+                    (this.props.objCoupenCode.discount * this.objCartDescription.basicOrderAmount) / 100;
+            } else {
+                this.objCartDescription["coupenDiscount"] = this.props.objCoupenCode.discount;
+            }
         }
 
         this.setState({ txtRedeemPoint: this.totalRewardPoint });
@@ -173,6 +185,9 @@ class OrderSummaryScreen extends Component {
     // Get Final Order After Applied Reward Point
     _getSARValueFromRewardPoint = () => {
         let grossAmount = this.objCartDescription.finalOrderAmount;
+        if (this.isCoupenCodeAvailable) {
+            grossAmount = grossAmount - this.objCartDescription.coupenDiscount;
+        }
         let pointAmount = (this.state.txtRedeemPoint * global.currentSettings["reward-sr"]) / 100;
         if (pointAmount > grossAmount) {
             pointAmount = (grossAmount * this.state.txtRedeemPoint) / pointAmount;
@@ -199,6 +214,18 @@ class OrderSummaryScreen extends Component {
         return deliveryCharges;
     };
 
+    _getFinalOrderAmount = () => {
+        let finalAmount = this.objCartDescription.finalOrderAmount;
+        if (this.isCoupenCodeAvailable && this.state.isOpenRedeemPointView) {
+            finalAmount = this.objCartDescription.finalOrderAmount - this.objCartDescription.coupenDiscount - this._getSARValueFromRewardPoint();
+        } else if (this.isCoupenCodeAvailable) {
+            finalAmount = this.objCartDescription.finalOrderAmount - this.objCartDescription.coupenDiscount;
+        } else if (this.state.isOpenRedeemPointView) {
+            finalAmount = this.objCartDescription.finalOrderAmount - this._getSARValueFromRewardPoint();
+        }
+        return finalAmount.toFixed(2);
+    };
+
     // onPress Methods
     onPressPaymentMethodChange = () => {
         this.setState({
@@ -216,6 +243,8 @@ class OrderSummaryScreen extends Component {
         };
 
         this.props.checkCoupenCode(coupenCodeParameters);
+
+        constant.debugLog("Coupen Obj :===> ", this.props.objCoupenCode);
     };
 
     onPressSend = () => {
@@ -235,38 +264,40 @@ class OrderSummaryScreen extends Component {
         // constant.debugLog("totalRewardPoint_SR :===> " + this.props.totalRewardPoint_SR);
     };
 
-    _onPressShowHideRedeemView = () => {
+    onPressShowHideRedeemView = () => {
         // constant.debugLog("orderNow Called ...");
-
-        if (!this.state.isOpenRedeemPointView) {
-            this.setState(
-                {
-                    isOpenRedeemPointView: true,
-                    txtRedeemPoint: this.state.txtRedeemPoint == 0 ? this.totalRewardPoint : this.state.txtRedeemPoint,
-                },
-                () => {
-                    this.redeemView_Y_Translate.setValue(0.75 * redeemPointViewViewHeight);
-                    Animated.timing(this.redeemView_Y_Translate, {
-                        toValue: -0.75 * redeemPointViewViewHeight,
-                        duration: 250,
-                        // friction: 3
-                    }).start();
-                }
-            );
-        } else {
-            this.setState(
-                {
-                    isOpenRedeemPointView: false,
-                },
-                () => {
-                    this.redeemView_Y_Translate.setValue(-0.75 * redeemPointViewViewHeight);
-                    Animated.timing(this.redeemView_Y_Translate, {
-                        toValue: redeemPointViewViewHeight,
-                        duration: 250,
-                        // friction: 5,
-                    }).start();
-                }
-            );
+        if (this.totalRewardPoint) {
+            if (!this.state.isOpenRedeemPointView) {
+                this.setState(
+                    {
+                        isOpenRedeemPointView: true,
+                        txtRedeemPoint:
+                            this.state.txtRedeemPoint == 0 ? (this.totalRewardPoint) : this.state.txtRedeemPoint,
+                    },
+                    () => {
+                        this.redeemView_Y_Translate.setValue(0.75 * redeemPointViewViewHeight);
+                        Animated.timing(this.redeemView_Y_Translate, {
+                            toValue: -0.75 * redeemPointViewViewHeight,
+                            duration: 250,
+                            // friction: 3
+                        }).start();
+                    }
+                );
+            } else {
+                this.setState(
+                    {
+                        isOpenRedeemPointView: false,
+                    },
+                    () => {
+                        this.redeemView_Y_Translate.setValue(-0.75 * redeemPointViewViewHeight);
+                        Animated.timing(this.redeemView_Y_Translate, {
+                            toValue: redeemPointViewViewHeight,
+                            duration: 250,
+                            // friction: 5,
+                        }).start();
+                    }
+                );
+            }
         }
     };
 
@@ -305,23 +336,30 @@ class OrderSummaryScreen extends Component {
                     "+" + parseFloat(this._getDeliveryChargesFromOrderAmount(fnCart.getTotalPriceCartItems()))
                 )}
                 {this._renderCartValueView("Order Amount", this.objCartDescription.basicOrderAmount)}
+
                 {this.isAvailableVAT
                     ? this._renderExtraChargeView(
                           global.currentSettings["vat-percentage"] + "% VAT",
                           "+" + this.objCartDescription.vatAmount
                       )
                     : null}
+
                 {this.state.isOpenRedeemPointView
                     ? this._renderExtraChargeView(
                           "Redeem Points(" + this.state.txtRedeemPoint + ")",
                           "-" + this._getSARValueFromRewardPoint()
                       )
                     : null}
-                {this.state.isOpenRedeemPointView || this.isAvailableVAT
-                    ? this._renderCartValueView(
-                          "Payable Amount",
-                          this.objCartDescription.finalOrderAmount.toFixed(2) - this._getSARValueFromRewardPoint()
+
+                {this.isCoupenCodeAvailable
+                    ? this._renderExtraChargeView(
+                          "Coupen Discount",
+                          "-" + this.objCartDescription.coupenDiscount
                       )
+                    : null}
+
+                {this.state.isOpenRedeemPointView || this.isAvailableVAT || this.isCoupenCodeAvailable
+                    ? this._renderCartValueView("Payable Amount", this._getFinalOrderAmount())
                     : null}
             </View>
         );
@@ -397,7 +435,7 @@ class OrderSummaryScreen extends Component {
             <Animated.View
                 style={[PaymentStyle.redeemPointView, { transform: [{ translateY: this.redeemView_Y_Translate }] }]}
             >
-                <TouchableWithoutFeedback onPress={this._onPressShowHideRedeemView.bind(this)}>
+                <TouchableWithoutFeedback onPress={this.onPressShowHideRedeemView.bind(this)}>
                     <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 10 }}>
                         <Image style={{ height: 20, width: 20 }} resizeMode="contain" source={imgRedeemPointView} />
                         <Text style={[PaymentStyle.boldTitleText, { color: constant.themeColor }]}>Redeem Points</Text>
@@ -413,7 +451,7 @@ class OrderSummaryScreen extends Component {
                             onChangeText={text => {
                                 this._remainingRedeemPoint(text);
                             }}
-                            maxLength={this.totalRewardPoint ? this.totalRewardPoint.length : 0}
+                            maxLength={this.totalRewardPoint ? (this.totalRewardPoint + "").length : 0}
                         />
                         <Text style={PaymentStyle.smallSizeFontTitleText}>
                             {this.totalRewardPoint - this.state.txtRedeemPoint}{" "}
@@ -509,10 +547,8 @@ class OrderSummaryScreen extends Component {
 function mapStateToProps(state, props) {
     return {
         isLoading: state.orderSummary.isLoading,
+        isCheckCoupenSuccess: state.orderSummary.isCheckCoupenSuccess,
         objCoupenCode: state.orderSummary.objCoupenCode,
-        // totalRewardPoint: state.general.totalRewardPoint,
-        // totalRewardPoint_SR: state.general.totalRewardPoint_SR,
-        // isLoading: state.selectTime.isLoading,
         // isSuccess: state.selectTime.isSuccess,
         // objOrderBookedTimeSlote: state.selectTime.objOrderBookedTimeSlote,
         // error: state.selectTime.error,
