@@ -22,16 +22,12 @@ module.exports = {
     DeviceInfo: require("react-native-device-info"),
 
     // Useful Images
-    radioImage: (isSelected) => {
-        let selectedRadioImage = "../Resources/Images/DeliveryDetails/RadioButtonSelectedRed.png"
-        let unselectedRadioImage = "../Resources/Images/DeliveryDetails/RadioButton.png"
-
-        return (
-            <Image
-                style={{ width: 20, height: 20 }}
-                source={require(isSelected === true ? selectedRadioImage : unselectedRadioImage)}
-            />
-        );
+    radioImage: isSelected => {
+        var imageName = require("../Resources/Images/DeliveryDetails/RadioButtonSelectedRed.png")
+        if(isSelected === false){
+            imageName = require("../Resources/Images/DeliveryDetails/RadioButton.png")
+        }
+        return <Image style={{ width: 20, height: 20 }}  source={imageName}/>;
     },
 
     /// Common Functions
