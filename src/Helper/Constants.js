@@ -1,6 +1,7 @@
 // Localization
 import baseLocal from "../Resources/Localization/baseLocalization";
-import { Dimensions } from "react-native";
+import React from "react";
+import { Image, Dimensions } from "react-native";
 var { EventEmitter } = require("fbemitter");
 
 module.exports = {
@@ -19,7 +20,20 @@ module.exports = {
     languageArabic: "ar",
     reloadOrderMasterListener: "reloadOrderMasterListener",
     DeviceInfo: require("react-native-device-info"),
-    
+
+    // Useful Images
+    radioImage: (isSelected) => {
+        let selectedRadioImage = "../Resources/Images/DeliveryDetails/RadioButtonSelectedRed.png"
+        let unselectedRadioImage = "../Resources/Images/DeliveryDetails/RadioButton.png"
+
+        return (
+            <Image
+                style={{ width: 20, height: 20 }}
+                source={require(isSelected === true ? selectedRadioImage : unselectedRadioImage)}
+            />
+        );
+    },
+
     /// Common Functions
     debugLog: log => {
         console.log("\n====================>");
@@ -116,7 +130,7 @@ module.exports = {
     kProductDiscountInactive: "Inactive",
     kProductDiscountType: "fixed",
     kProductDiscountPercentage: "percentage",
-    
+
     //Coupen Code Key
     kCoupenCodeDiscountActive: "Active",
     kCoupenCodeDiscountInactive: "Inactive",
@@ -200,7 +214,7 @@ module.exports = {
         getUserBookedSessionRequest: "getUserBookedSessionRequest",
         getUserBookedSessionSuccess: "getUserBookedSessionSuccess",
         getUserBookedSessionFailure: "getUserBookedSessionFailure",
-        
+
         unsetOrderTimeSessionRequest: "unsetOrderTimeSessionRequest",
         unsetOrderTimeSessionSuccess: "unsetOrderTimeSessionSuccess",
         unsetOrderTimeSessionFailure: "unsetOrderTimeSessionFailure",
