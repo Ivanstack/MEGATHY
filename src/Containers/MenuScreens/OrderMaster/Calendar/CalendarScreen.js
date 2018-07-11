@@ -19,12 +19,15 @@ import SelectTimeScheduleScreen from "../SelectTimeSchedule/SelectTimeScheduleSc
 import moment from "moment";
 
 var selectedDay = null;
+var sessionDuration = 0;
 class CalendarScreen extends Component {
     constructor(props) {
         super(props);
 
+        sessionDuration = Number(global.currentSettings["order-time-session"]) * 60 * 1000;
         baseLocal.locale = global.currentAppLanguage;
         this.state = {
+            sessionTime: 0, // in milliseconds
             selectedCalendarDates: {},
             selectTimeScreenVisible: false,
         };
@@ -34,30 +37,63 @@ class CalendarScreen extends Component {
         this.props.getUserBookedSession();
     }
 
+    componentWillUnmount() {
+        clearInterval(this.timerSession);
+    }
+
     componentWillReceiveProps(newProps) {
         if (newProps.isGetSuccess === true) {
-            this.setState({
-                selectedCalendarDates:{}
-            })
+            this.setState(
+                {
+                    selectedCalendarDates: {},
+                },
+                () => {
+                    this.props.parentScreen.selectedDates = newProps.arrUserBookedSessions;
+                    var updatedDates = {};
+                    newProps.arrUserBookedSessions.map((value, index) => {
+                        let key = value.date;
+                        let selected = true;
+                        if (!this.state.selectedCalendarDates.hasOwnProperty(key)) {
+                            updatedDates[key] = { selected };
+                        }
+                    });
 
-            this.props.parentScreen.selectedDates = newProps.arrUserBookedSessions
-            newProps.arrUserBookedSessions.map((value, index) => {
-                let key = value.date;
-                let selected = true;
-                if (!this.state.selectedCalendarDates.hasOwnProperty(key)) {
-                    const updatedDates = {
-                        ...this.state.selectedCalendarDates,
-                        ...{ [key]: { selected } },
-                    };
+                    let storeTime = new Date(newProps.serverCurrentTime).getTime();
+                    let bookTime = new Date(newProps.bookTime).getTime();
+
+                    if (storeTime < bookTime + sessionDuration) {
+                        this.setState(
+                            {
+                                sessionTime: bookTime + sessionDuration - storeTime,
+                            },
+                            () => {
+                                if (this.timerSession === undefined) {
+                                    this.timerSession = setInterval(this._updateSessionTimer, 1000);
+                                }
+                            }
+                        );
+                    }
+
                     this.setState({
                         selectedCalendarDates: updatedDates,
                     });
                 }
-            })
+            );
         } else if (newProps.isUnsetSuccess === true) {
             this.props.getUserBookedSession();
         }
     }
+
+    _updateSessionTimer = () => {
+        let newTime = this.state.sessionTime - 1000;
+        if (newTime < 1000) {
+            clearInterval(this.timerSession);
+            newTime = 0;
+        }
+        this.setState({
+            sessionTime: newTime,
+        });
+    };
 
     _onPressCalendarDate = day => {
         this.selectedDay = day;
@@ -65,7 +101,7 @@ class CalendarScreen extends Component {
         this.setState({
             selectTimeScreenVisible: true,
         });
-    }
+    };
 
     _onRemoveBookedTimeSlot = item => {
         var orderTimeSessionParameters = {
@@ -73,7 +109,7 @@ class CalendarScreen extends Component {
         };
 
         this.props.unsetOrderTimeSession(item.orderTimeSessionId, orderTimeSessionParameters);
-    }
+    };
 
     _renderInfoViewTimeRemaining = () => {
         return (
@@ -92,7 +128,7 @@ class CalendarScreen extends Component {
                             color: constant.themeColor,
                         }}
                     >
-                        00:00
+                        {moment.utc(this.state.sessionTime).format("mm:ss")}
                     </Text>
                 </View>
             </View>

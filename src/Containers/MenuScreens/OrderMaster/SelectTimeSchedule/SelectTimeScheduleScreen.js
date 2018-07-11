@@ -322,7 +322,7 @@ class SelectTimeScheduleScreen extends Component {
 
     _checkSelectedTimeSlot = item => {
         if (!item.isBooked) {
-            // deliveryDuration in miliSeconds
+            // deliveryDuration in milliSeconds
             let deliveryDuration = Number(global.currentSettings["schedule-order-delivery-duration-min"]) * 60000;
             let selectedTimeStamp = new Date(
                 this.props.parentScreen.selectedDay.dateString + " " + item.title.split(" - ")[0]
