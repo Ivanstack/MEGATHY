@@ -5,8 +5,10 @@ export const initialState = {
     isLoading: false,
     isCheckCoupenSuccess: false,
     isSetOrderSuccess: false,
+    isSetScheduleOrderSuccess: false,
     objCoupenCode: null,
     objSetOrder: null,
+    objSetScheduleOrder: null,
     error: null,
 };
 
@@ -55,6 +57,30 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isSetOrderSuccess: false,
+                isLoading: false,
+                error: action.error,
+            };
+
+        // set schedule order call
+        case constant.actions.setScheduleOrderRequest:
+            return {
+                ...state,
+                isSetScheduleOrderSuccess: false,
+                isLoading: true,
+                error: null,
+            };
+        case constant.actions.setScheduleOrderSuccess:
+            return {
+                ...state,
+                objSetScheduleOrder: action.response,
+                isSetOrderSuccess: true,
+                isLoading: false,
+                error: null,
+            };
+        case constant.actions.setScheduleOrderFailure:
+            return {
+                ...state,
+                isSetScheduleOrderSuccess: false,
                 isLoading: false,
                 error: action.error,
             };

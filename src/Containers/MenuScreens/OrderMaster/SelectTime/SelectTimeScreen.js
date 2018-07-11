@@ -99,7 +99,7 @@ class SelectTimeScreen extends Component {
         setTimeout(() => {
             this._getAPIGetOrderTimeSession();
         }, 500);
-        constant.emitter.addListener(constant.reloadOrderMasterListener, () => {
+        constant.emitter.addListener(constant.reloadOrderSummaryListener, () => {
             setTimeout(() => {
                 this._getAPIGetOrderTimeSession();
             }, 500);
@@ -176,7 +176,7 @@ class SelectTimeScreen extends Component {
         if (bookedOrderTimeSlot && bookedOrderTimeSlot.length > 0) {
             for (let index = 0; index < 6; index++) {
                 const bookedTimeSlotElement = bookedOrderTimeSlot[index];
-                if (bookedTimeSlotElement && bookedTimeSlotElement.includes(checkeTimeSlot)) {
+                if (bookedTimeSlotElement && bookedTimeSlotElement.includes(strCheckTime)) {
                     return true;
                 }
             }
@@ -205,7 +205,7 @@ class SelectTimeScreen extends Component {
             }
             let timeSlotStatus = {};
             timeSlotStatus["title"] = showTimeSlotTitle;
-            timeSlotStatus["isBooked"] = this._getBookedTimeSlot(oldTimeSlot, arrTimeInterval[index]);
+            timeSlotStatus["isBooked"] = this._getBookedTimeSlot(oldTimeSlot, showTimeSlotTitle.split(" - ")[0]);
             arrTimeSlot.push(timeSlotStatus);
         }
         return arrTimeSlot;
@@ -317,7 +317,7 @@ class SelectTimeScreen extends Component {
     };
 
     _checkSelectedTimeSlot = item => {
-        // deliveryDuration in miliSeconds
+        // deliveryDuration in milliSeconds
         let deliveryDuration = Number(global.currentSettings["schedule-order-delivery-duration-min"]) * 60000;
         let selectedTimeStamp = new Date(
             this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date + " " + item.title.split(" - ")[0]

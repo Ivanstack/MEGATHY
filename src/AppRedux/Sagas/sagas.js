@@ -90,4 +90,5 @@ export function* watcherSaga(action) {
     // Order Summary Screen
     yield takeEvery(constant.actions.checkCoupenCodeRequest, OrderSummaryScreenCalls);
     yield takeEvery(constant.actions.setOrderRequest, OrderSummaryScreenCalls);
+    yield takeEvery(constant.actions.setScheduleOrderRequest, OrderSummaryScreenCalls);
 }

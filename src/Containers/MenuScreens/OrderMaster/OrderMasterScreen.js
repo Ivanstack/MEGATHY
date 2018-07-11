@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from "react";
-import { Platform, Text, View, Image, TouchableOpacity, SafeAreaView, Keyboard, Modal } from "react-native";
+import { Platform, Text, View, Image, TouchableOpacity, SafeAreaView, Keyboard, Modal, Alert } from "react-native";
 
 // Redux
 import { connect } from "react-redux";
@@ -18,6 +18,7 @@ import * as commonUtility from "../../../Helper/CommonUtilities";
 import Icon from "react-native-vector-icons/EvilIcons";
 import Swiper from "react-native-swiper";
 import StepIndicator from "react-native-step-indicator";
+import Spinner from "react-native-loading-spinner-overlay";
 
 // Network Utility
 import * as networkUtility from "../../../Helper/NetworkUtility";
@@ -90,11 +91,12 @@ class OrderMasterScreen extends Component {
             isItemAvailableModalVisible: false,
         };
         classContext = this;
+        this.isScheduleOrder = this.props.parentScreen.isScheduleOrder;
     }
 
     // App Life Cycle Methods
     componentDidMount() {
-        this.isScheduleOrder = this.props.parentScreen.isScheduleOrder;
+        isScheduleOrder = this.props.parentScreen.isScheduleOrder;
         this.props.getStoreTime();
         this.props.getAppSettingAndReward();
     }
@@ -104,6 +106,20 @@ class OrderMasterScreen extends Component {
     }
 
     componentWillReceiveProps(newProps) {
+        if (
+            newProps.objSetOrder != this.props.objSetOrder ||
+            newProps.objSetScheduleOrder != this.props.objSetScheduleOrder
+        ) {
+            let strMsg = this.state.paymentByCard
+                ? "Thank you for your order, our employee will deliver your grocery and charge your credit card upon arrival"
+                : "Thank you for your order, our employee will deliver your grocery on time.";
+            setTimeout(() => {
+                Alert.alert(baseLocal.t("Megathy"), baseLocal.t(strMsg), [
+                    { text: baseLocal.t("OK"), onPress: this._onPressAlertOkBtn.bind(this), style: "cancel" },
+                ]);
+            }, 500);
+        }
+
         if (newProps.isStoreTimeSuccess === true) {
             let storeDate = new Date(newProps.storeDate);
             this.setState(
@@ -153,53 +169,36 @@ class OrderMasterScreen extends Component {
 
     // Set Order
     _setOrderForDelivery = () => {
-        //     addressId = 4508;
-        // "city_id" = 3;
-        // customerNote = "\n\nDelete it";
-        // deliveryCharg = "0.00";
-        // deliveryTime = "2018-07-10 16:10:00";
-        // "item[0]" =     {
-        //     itemId = 713;
-        //     quentity = 3;
-        // };
-        // loginKey = 468ba539fd31b01bb13eee7056f3cec3;
-        // paymentMode = Cash;
-        // storeId = 23;
-        // userId = 86;
-        // vendorId = "C06F1D07-1F57-4265-8D0A-CD36BB1636A4";
-
-        constant.debugLog(
-            "Set Order selectedTimeSlot :===> " +
-                JSON.stringify(this.selectedTimeSlot) +
-                "\n\nAddress:==> " +
-                JSON.stringify(this.selectedAddress) +
-                "\n\nAction:==> " +
-                selectedAction
-        );
-
-        let deliveryTime =
-            this.selectedTimeSlot.tempBookedDate + " " + this.selectedTimeSlot.title.split(" - ")[0] + ":00";
+        // constant.debugLog(
+        //     "Set Order selectedTimeSlot :===> " +
+        //         JSON.stringify(this.selectedTimeSlot) +
+        //         "\n\nAddress:==> " +
+        //         JSON.stringify(this.selectedAddress) +
+        //         "\n\nAction:==> " +
+        //         selectedAction
+        // );
 
         var setOrderParameters = {
             city_id: this.selectedAddress.cityId,
             addressId: this.selectedAddress.id, //
             customerNote: selectedAction,
             deliveryCharg: this.objCartDetail.deliveryCharges,
-            deliveryTime: deliveryTime,
+            // deliveryTime: deliveryTime,
             paymentMode: this.state.paymentByCard ? constant.kPaymentModeCard : constant.kPaymentModeCash,
-            userId: global.currentUser.id,
+            // userId: global.currentUser.id,
             vendorId: constant.DeviceInfo.getUniqueID(),
         };
 
-        // Add Cart Item
+        // Set Cart Item
+        let arrItem = [];
         for (let index = 0; index < global.arrCartItems.length; index++) {
             const cartItem = global.arrCartItems[index];
             let objItem = {};
             objItem["itemId"] = cartItem.PkId;
             objItem["quentity"] = cartItem.totalAddedProduct;
-
-            setOrderParameters[`item[${index}]`] = objItem;
+            arrItem.push(objItem);
         }
+        setOrderParameters["item"] = arrItem;
 
         // Coupen Code Detail
         if (this.props.objCoupenCode != (null || undefined)) {
@@ -209,21 +208,62 @@ class OrderMasterScreen extends Component {
 
         //Redeem Point
         if (this.usedRedeemPoints != 0) {
-            setOrderParameters["redeem_reward_points"] = this.usedRedeemPoints
+            setOrderParameters["redeem_reward_points"] = this.usedRedeemPoints;
         }
 
-        constant.debugLog("Set Order Parameters :===> " + JSON.stringify(setOrderParameters));
+        // constant.debugLog("Set Order Parameters :===> " + JSON.stringify(setOrderParameters));
 
-        this.props.setOrder(setOrderParameters);
+        //Simple Order
+        if (!this.isScheduleOrder) {
+            let deliveryTime =
+                this.selectedTimeSlot.tempBookedDate + " " + this.selectedTimeSlot.title.split(" - ")[0] + ":00";
+            setOrderParameters["deliveryTime"] = deliveryTime;
+            this.props.setOrder(setOrderParameters);
+        }
 
+        //Order is schedule
+        if (this.isScheduleOrder) {
+            setOrderParameters["title"] = "Default Title";
+            setOrderParameters["email"] = global.currentUser.email;
+            this.props.setScheduleOrder(setOrderParameters);
+        }
 
         constant.debugLog("set order Obj :===> ", this.props.objSetOrder);
+
+        // if (this.props.objSetOrder || this.props.objSetScheduleOrder) {
+        //     let strMsg = this.state.paymentByCard
+        //         ? "Thank you for your order, our employee will deliver your grocery and charge your credit card upon arrival"
+        //         : "Thank you for your order, our employee will deliver your grocery on time.";
+        //     setTimeout(() => {
+        //         Alert.alert(baseLocal.t("Megathy"), baseLocal.t(strMsg), [
+        //             { text: baseLocal.t("OK"), onPress: this._onPressAlertOkBtn.bind(this), style: "cancel" },
+        //         ]);
+        //     }, 500);
+        // }
+
+        // setTimeout(() => {
+        //     let strMsg = this.state.paymentByCard
+        //         ? "Thank you for your order, our employee will deliver your grocery and charge your credit card upon arrival"
+        //         : "Thank you for your order, our employee will deliver your grocery on time.";
+        //     Alert.alert(baseLocal.t("Megathy"), baseLocal.t(strMsg), [
+        //         { text: baseLocal.t("OK"), onPress: this._onPressAlertOkBtn.bind(this), style: "cancel" },
+        //         // { text: buttonTitleNo, onPress: () => reject(""), style: "cancel" },
+        //     ]);
+        // }, 500);
     };
 
     // _updateRedeemPoint = (points) => {
     //     constant.debugLog("Update redeem points :===> " + points);
     //     this.updateRedeemPoint = points
     // };
+
+    _onPressAlertOkBtn = () => {
+        this.props.parentScreen.setState({
+            isOrderMasterVisible: false,
+        });
+        this.props.parentScreen.props.navigation.navigate(constant.kCategoryScreen);
+        // this.props.navigation.resetTo(constant.kCategoryScreen);
+    };
 
     _onPressSelectActionForInAvailableItem = item => {
         // constant.debugLog("modal item :==> " + item);
@@ -316,7 +356,7 @@ class OrderMasterScreen extends Component {
     _renderModalForNotAvailableItem = () => {
         const actionView = arrAction.map(item => {
             return (
-                <TouchableOpacity  key={item} onPress={this._onPressSelectActionForInAvailableItem.bind(this, item)}>
+                <TouchableOpacity key={item} onPress={this._onPressSelectActionForInAvailableItem.bind(this, item)}>
                     <View style={{ flexDirection: "row", alignItems: "center", margin: 16 }}>
                         {constant.radioImage(item === selectedAction)}
                         <Text style={{ fontFamily: constant.themeFont, fontSize: 12, marginLeft: 16 }}>
@@ -397,6 +437,13 @@ class OrderMasterScreen extends Component {
                         flex: 1,
                     }}
                 >
+                    {/* <Spinner
+                    visible={this.props.isLoading}
+                    // cancelable={true}
+                    // textContent={"Please wait..."}
+                    // textStyle={{ color: "#FFF" }}
+                /> */}
+
                     {this._renderCustomNavigationView()}
                     <View style={styles.orderActionView}>
                         <View style={{ marginTop: 8 }}>
@@ -544,6 +591,7 @@ function mapStateToProps(state, props) {
         storeDate: state.general.storeDate,
         error: state.general.error,
         objSetOrder: state.orderSummary.objSetOrder,
+        objSetScheduleOrder: state.orderSummary.objSetScheduleOrder,
         objCoupenCode: state.orderSummary.objCoupenCode,
     };
 }
@@ -571,6 +619,14 @@ function mapDispatchToProps(dispatch) {
                 type: constant.actions.setOrderRequest,
                 payload: {
                     endPoint: constant.APISetOrder,
+                    parameters: parameters,
+                },
+            }),
+        setScheduleOrder: parameters =>
+            dispatch({
+                type: constant.actions.setScheduleOrderRequest,
+                payload: {
+                    endPoint: constant.APISetScheduleOrder,
                     parameters: parameters,
                 },
             }),

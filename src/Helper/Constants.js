@@ -18,7 +18,7 @@ module.exports = {
     setStoreListener: "setStoreListener",
     languageEnglish: "en",
     languageArabic: "ar",
-    reloadOrderMasterListener: "reloadOrderMasterListener",
+    reloadOrderSummaryListener: "reloadOrderSummaryListener",
     DeviceInfo: require("react-native-device-info"),
 
     // Useful Images
@@ -98,6 +98,7 @@ module.exports = {
     APIEditAddress: "address",
     APIDeleteAddress: "address",
     APISetOrder: "setOrder",
+    APISetScheduleOrder: "setScheduleOrder",
     APIGetOrderTimeSession: "getOrderTimeSession",
     APISetOrderTimeSession: "setOrderTimeSession",
     APIUnsetOrderTimeSession: "unsetOrderTimeSession",
@@ -275,6 +276,10 @@ module.exports = {
         setOrderRequest: "setOrderRequest",
         setOrderSuccess: "setOrderSuccess",
         setOrderFailure: "setOrderFailure",
+        
+        setScheduleOrderRequest: "setScheduleOrderRequest",
+        setScheduleOrderSuccess: "setScheduleOrderSuccess",
+        setScheduleOrderFailure: "setScheduleOrderFailure",
     },
 
     /*

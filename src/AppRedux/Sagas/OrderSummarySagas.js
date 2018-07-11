@@ -21,6 +21,14 @@ export function* OrderSummaryScreenCalls(action) {
             constant.debugLog("Error: " + JSON.stringify(error));
             yield put({ type: constant.actions.setOrderFailure, error });
         }
+    } else if (action.payload.endPoint === constant.APISetScheduleOrder) {
+        try {
+            const response = yield call(setScheduleOrderCall, action.payload);
+            yield put({ type: constant.actions.setScheduleOrderSuccess, response });
+        } catch (error) {
+            constant.debugLog("Error: " + JSON.stringify(error));
+            yield put({ type: constant.actions.setScheduleOrderFailure, error });
+        }
     }
 }
 
@@ -49,15 +57,41 @@ checkCoupenCodeCall = payload => {
 };
 
 setOrderCall = payload => {
-    return networkUtility.putRequest(payload.endPoint, payload.parameters).then(
+    return networkUtility.postRequest(payload.endPoint, payload.parameters).then(
         result => {
             constant.debugLog("Coupen Code Response: " + JSON.stringify(result.data.data));
-            return result.data.data;
+            global.arrCartItems = [];
+            return result.data.data.order;
         },
         error => {
             constant.debugLog("Status Code: " + error.status);
-            constant.debugLog("Error Message: " + error.message);
             if (error.status != 500) {
+                constant.debugLog("Error Message: " + error.data["message"]);
+                if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
+                    CommonUtilities.showAlert(error.data["messageAr"], false);
+                } else {
+                    CommonUtilities.showAlert(error.data["message"], false);
+                }
+            } else {
+                constant.debugLog("Internal Server Error: " + error.data);
+                CommonUtilities.showAlert("Opps! something went wrong");
+            }
+            return error;
+        }
+    );
+};
+
+setScheduleOrderCall = payload => {
+    return networkUtility.postRequest(payload.endPoint, payload.parameters).then(
+        result => {
+            constant.debugLog("Coupen Code Response: " + JSON.stringify(result.data.data));
+            global.arrCartItems = [];
+            return result.data.data.order;
+        },
+        error => {
+            constant.debugLog("Status Code: " + error.status);
+            if (error.status != 500) {
+                constant.debugLog("Error Message: " + error.data["message"]);
                 if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
                     CommonUtilities.showAlert(error.data["messageAr"], false);
                 } else {

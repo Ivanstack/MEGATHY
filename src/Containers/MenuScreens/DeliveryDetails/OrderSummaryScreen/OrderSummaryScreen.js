@@ -68,10 +68,9 @@ class OrderSummaryScreen extends Component {
         };
         this.isAvailableVAT = false;
         this.isCoupenCodeAvailable = false;
+
         this.objCartDescription = {};
-        this.objCartDescription["basicOrderAmount"] =
-            fnCart.getTotalPriceCartItems() +
-            parseFloat(this._getDeliveryChargesFromOrderAmount(fnCart.getTotalPriceCartItems()));
+        this.selectedDaysCount = 1;
 
         this.onPressShowHideRedeemView = this.onPressShowHideRedeemView.bind(this);
         this._renderCartDescriptionView = this._renderCartDescriptionView.bind(this);
@@ -117,14 +116,16 @@ class OrderSummaryScreen extends Component {
             duration: 1.5,
         }).start();
 
-        this._prepareCartDescription();
-        constant.emitter.addListener(constant.reloadOrderMasterListener, () => {
+        setTimeout(() => {
+            this._prepareCartDescription();
+        }, 300);
+        constant.emitter.addListener(constant.reloadOrderSummaryListener, () => {
             this._prepareCartDescription();
         });
     }
 
     componentWillReceiveProps(newProps) {
-        if (newProps.isCheckCoupenSuccess && newProps.error != null) {
+        if (newProps.isCheckCoupenSuccess && newProps.error == null) {
             this._prepareCartDescription();
         }
     }
@@ -139,6 +140,87 @@ class OrderSummaryScreen extends Component {
 
     // Create Cart Description Object
     _prepareCartDescription = () => {
+        if (this.props.parentScreen.isScheduleOrder) {
+            this._prepareCartDescriptionForSchedualOrder();
+        } else {
+            this._prepareCartDescriptionForOrderNow();
+        }
+
+        // this.objCartDescription["deliveryCharges"] = this._getDeliveryChargesFromOrderAmount(
+        //     this.objCartDescription.basicOrderAmount
+        // );
+        // this.totalRewardPoint = global.currentUser["total_reward"];
+        // if (global.currentSettings["vat-percentage"] > 0) {
+        //     this.isAvailableVAT = true;
+        //     this.objCartDescription["vatAmount"] = (
+        //         (this.objCartDescription.basicOrderAmount * global.currentSettings["vat-percentage"]) /
+        //         100
+        //     ).toFixed(2);
+        //     this.objCartDescription["finalOrderAmount"] = this._getOrderAmountIncludingVAT();
+        // } else {
+        //     this.objCartDescription["finalOrderAmount"] = this.objCartDescription.basicOrderAmount;
+        // }
+
+        // if (this.props.objCoupenCode) {
+        //     this.isCoupenCodeAvailable = true;
+        //     if (this.props.objCoupenCode.type === constant.kCoupenCodeDiscountTypePercentage) {
+        //         this.objCartDescription["coupenDiscount"] =
+        //             (this.props.objCoupenCode.discount * this.objCartDescription.basicOrderAmount) / 100;
+        //     } else {
+        //         this.objCartDescription["coupenDiscount"] = this.props.objCoupenCode.discount;
+        //     }
+        // }
+        // this.props.parentScreen.objCartDetail = this.objCartDescription;
+        // this.setState({ txtRedeemPoint: this.totalRewardPoint });
+        // constant.debugLog("cart description :===> " + JSON.stringify(this.objCartDescription));
+    };
+
+    _prepareCartDescriptionForSchedualOrder = () => {
+        this.totalRewardPoint = global.currentUser["total_reward"];
+        constant.debugLog("Select Date Arr :===> " + this.props.parentScreen.selectedDates);
+        this.selectedDaysCount =
+            this.props.parentScreen.selectedDates != undefined && this.props.parentScreen.selectedDates.length != 0
+                ? this.props.parentScreen.selectedDates.length
+                : 1;
+
+        this.objCartDescription["basicOrderAmount"] =
+            (fnCart.getTotalPriceCartItems() +
+                parseFloat(this._getDeliveryChargesFromOrderAmount(fnCart.getTotalPriceCartItems()))) *
+            this.selectedDaysCount;
+        this.objCartDescription["deliveryCharges"] = this._getDeliveryChargesFromOrderAmount(
+            this.objCartDescription.basicOrderAmount
+        );
+
+        if (global.currentSettings["vat-percentage"] > 0) {
+            this.isAvailableVAT = true;
+            this.objCartDescription["vatAmount"] = (
+                (this.objCartDescription.basicOrderAmount * global.currentSettings["vat-percentage"]) /
+                100
+            ).toFixed(2);
+            this.objCartDescription["finalOrderAmount"] = this._getOrderAmountIncludingVAT();
+        } else {
+            this.objCartDescription["finalOrderAmount"] = this.objCartDescription.basicOrderAmount;
+        }
+
+        if (this.props.objCoupenCode) {
+            this.isCoupenCodeAvailable = true;
+            if (this.props.objCoupenCode.type === constant.kCoupenCodeDiscountTypePercentage) {
+                this.objCartDescription["coupenDiscount"] =
+                    ((this.props.objCoupenCode.discount * this.objCartDescription.basicOrderAmount) / 100) *
+                    this.selectedDaysCount;
+            } else {
+                this.objCartDescription["coupenDiscount"] = this.props.objCoupenCode.discount * this.selectedDaysCount;
+            }
+        }
+        this.props.parentScreen.objCartDetail = this.objCartDescription;
+        this.setState({ txtRedeemPoint: this.totalRewardPoint });
+        // constant.debugLog("cart description :===> " + JSON.stringify(this.objCartDescription));
+    };
+
+    _prepareCartDescriptionForOrderNow = () => {
+        this.objCartDescription["basicOrderAmount"] =
+            fnCart.getTotalPriceCartItems() +
+            parseFloat(this._getDeliveryChargesFromOrderAmount(fnCart.getTotalPriceCartItems()));
         this.objCartDescription["deliveryCharges"] = this._getDeliveryChargesFromOrderAmount(
             this.objCartDescription.basicOrderAmount
         );
@@ -163,9 +245,7 @@ class OrderSummaryScreen extends Component {
                 this.objCartDescription["coupenDiscount"] = this.props.objCoupenCode.discount;
             }
         }
-        // this.objCartDescription["usedRedeemPoint"] = this.totalRewardPoint;
         this.props.parentScreen.objCartDetail = this.objCartDescription;
-        this.props.parentScreen.usedRedeemPoints = this.totalRewardPoint
         this.setState({ txtRedeemPoint: this.totalRewardPoint });
         // constant.debugLog("cart description :===> " + JSON.stringify(this.objCartDescription));
     };
@@ -174,11 +254,11 @@ class OrderSummaryScreen extends Component {
     _remainingRedeemPoint = strRedeemPoint => {
         if (this._isValidRedeemPoint(strRedeemPoint)) {
             // this.objCartDescription["usedRedeemPoint"] = strRedeemPoint;
-            this.props.parentScreen.usedRedeemPoints = strRedeemPoint
+            this.props.parentScreen.usedRedeemPoints = strRedeemPoint;
             this.setState({ txtRedeemPoint: strRedeemPoint });
         } else {
             // this.objCartDescription["usedRedeemPoint"] = this.totalRewardPoint;
-            this.props.parentScreen.usedRedeemPoints = this.totalRewardPoint
+            this.props.parentScreen.usedRedeemPoints = this.totalRewardPoint;
             this.setState({ txtRedeemPoint: this.totalRewardPoint });
             // CommonUtilities.showAlert("total points is smaller then used point", false);
         }
@@ -211,7 +291,7 @@ class OrderSummaryScreen extends Component {
                 Math.round(pointAmount) != this.state.txtRedeemPoint &&
                 Math.round(pointAmount) < this.totalRewardPoint
             ) {
-                this.props.parentScreen.usedRedeemPoints = pointAmount.toFixed(0)
+                this.props.parentScreen.usedRedeemPoints = pointAmount.toFixed(0);
                 this.setState({ txtRedeemPoint: pointAmount.toFixed(0) });
             }
         }
@@ -279,9 +359,20 @@ class OrderSummaryScreen extends Component {
         // this.setState({
         //     paymentByCard: !this.state.paymentByCard,
         // });
+
+        if (
+            this.props.parentScreen.isScheduleOrder &&
+            (this.props.parentScreen.selectedDates === undefined || this.props.parentScreen.selectedDates.length <= 0)
+        ) {
+            this.props.parentScreen._swiper.scrollBy(-1, true);
+        }
+
         if (this.props.parentScreen.selectedAddress === (null || undefined)) {
             this.props.parentScreen._swiper.scrollBy(-2, true);
-        } else if (this.props.parentScreen.selectedTimeSlot === (null || undefined)) {
+        } else if (
+            this.props.parentScreen.selectedTimeSlot === (null || undefined) &&
+            !this.props.parentScreen.isScheduleOrder
+        ) {
             this.props.parentScreen._swiper.scrollBy(-1, true);
         } else {
             this.props.parentScreen.setState({ isItemAvailableModalVisible: true });
@@ -294,7 +385,7 @@ class OrderSummaryScreen extends Component {
     };
 
     onPressShowHideRedeemView = () => {
-        constant.debugLog("orderNow Called ...");
+        // constant.debugLog("orderNow Called ...");
         if (this.totalRewardPoint) {
             if (!this.state.isOpenRedeemPointView) {
                 this.setState(
@@ -313,6 +404,7 @@ class OrderSummaryScreen extends Component {
                     }
                 );
             } else {
+                this.props.parentScreen.usedRedeemPoints = 0;
                 this.setState(
                     {
                         isOpenRedeemPointView: false,
@@ -354,8 +446,8 @@ class OrderSummaryScreen extends Component {
             <View style={{ flex: 1 }}>
                 <Text style={[PaymentStyle.normalTitleText, { marginLeft: 16 }]}>
                     Delivery Address:{" "}
-                    {global.selectedAddress != null && global.selectedAddress.address
-                        ? global.selectedAddress.address
+                    {this.props.parentScreen.selectedAddress != null //&& this.props.parentScreen.selectedAddress.address
+                        ? this.props.parentScreen.selectedAddress.address
                         : ""}
                 </Text>
                 {this._renderCartValueView(baseLocal.t("Description"), "Amount(SAR)")}
@@ -364,7 +456,7 @@ class OrderSummaryScreen extends Component {
                     baseLocal.t("Delivery Charges"),
                     "+" + parseFloat(this._getDeliveryChargesFromOrderAmount(fnCart.getTotalPriceCartItems()))
                 )}
-                {this._renderCartValueView("Order Amount", this.objCartDescription.basicOrderAmount)}
+                {this._renderCartValueView(baseLocal.t("Order Amount"), this.objCartDescription.basicOrderAmount)}
 
                 {this.isAvailableVAT
                     ? this._renderExtraChargeView(
@@ -381,11 +473,18 @@ class OrderSummaryScreen extends Component {
                     : null}
 
                 {this.isCoupenCodeAvailable
-                    ? this._renderExtraChargeView("Coupen Discount", "-" + this.objCartDescription.coupenDiscount)
+                    ? this._renderExtraChargeView(
+                          baseLocal.t("Coupen Discount") + this.props.parentScreen.isScheduleOrder
+                              ? `(${(this.objCartDescription.coupenDiscount / this.selectedDaysCount).toFixed(2)} * ${
+                                    this.selectedDaysCount
+                                })`
+                              : "",
+                          "-" + this.objCartDescription.coupenDiscount
+                      )
                     : null}
 
                 {this.state.isOpenRedeemPointView || this.isAvailableVAT || this.isCoupenCodeAvailable
-                    ? this._renderCartValueView("Payable Amount", this._getFinalOrderAmount())
+                    ? this._renderCartValueView(baseLocal.t("Payable Amount"), this._getFinalOrderAmount())
                     : null}
             </View>
         );
