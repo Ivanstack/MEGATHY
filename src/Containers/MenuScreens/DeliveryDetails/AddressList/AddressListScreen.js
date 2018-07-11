@@ -49,15 +49,6 @@ class AddressListScreen extends Component {
             reloadPage: false,
         };
         baseLocal.locale = global.currentAppLanguage;
-        this._onRefresh = this._onRefresh.bind(this);
-        this._callLoadMore = this._callLoadMore.bind(this);
-        this._getAddressList = this._getAddressList.bind(this);
-        this._onDeleteAddress = this._onDeleteAddress.bind(this);
-        this._onPressItem = this._onPressItem.bind(this);
-        this._onPressAddAddress = this._onPressAddAddress.bind(this);
-        this._onPressEditItem = this._onPressEditItem.bind(this);
-        this._onPressDeleteItem = this._onPressDeleteItem.bind(this);
-        this._onPressDeliverItem = this._onPressDeliverItem.bind(this);
     }
 
     static navigationOptions = CommonUtilities.navigationView("Address List");
@@ -80,28 +71,28 @@ class AddressListScreen extends Component {
         }
     }
 
-    _callLoadMore() {
+    _callLoadMore = () => {
         if (this.props.currentPage < this.props.lastPage) {
             this._getAddressList(false, true);
         }
-    }
+    };
 
-    _onRefresh() {
+    _onRefresh = () => {
         this.props.currentPage = 1;
         this._getAddressList(true);
-    }
+    };
 
-    _getAddressList(isRefresh = false, isLoadMore = false) {
+    _getAddressList = (isRefresh = false, isLoadMore = false) => {
         let addressPage = this.props.currentPage;
         if (!isRefresh && isLoadMore && this.props.currentPage < this.lastPage) {
             addressPage = addressPage + 1;
         }
         this.props.dispatchGetAddress({ page: addressPage });
-    }
+    };
 
-    _onPressAddAddress() {
+    _onPressAddAddress = () => {
         this.props.navigation.navigate("AddAddressScreen");
-    }
+    };
 
     _renderAddressItem = ({ item }) => (
         <AddressListItem
@@ -114,7 +105,7 @@ class AddressListScreen extends Component {
         />
     );
 
-    _onPressItem(address) {
+    _onPressItem = address => {
         let arrAddressTemp = this.props.arrAddress;
         this.props.arrAddress.map((addressTemp, index, arrObjects) => {
             if (addressTemp.id === address.id) {
@@ -129,12 +120,12 @@ class AddressListScreen extends Component {
         }
         this.setState({ reloadPage: !this.state.reloadPage });
 
-        constant.emitter.emit(constant.reloadOrderMasterListener);
-    }
+        constant.emitter.emit(constant.reloadOrderSummaryListener);
+    };
 
-    _onPressEditItem(address) {}
+    _onPressEditItem = address => {};
 
-    _onPressDeleteItem(address) {
+    _onPressDeleteItem = address => {
         CommonUtilities.showAlertYesNo("Are you sure you want to delete this address?").then(
             pressedYes => {
                 constant.debugLog("User pressed Yes");
@@ -144,15 +135,21 @@ class AddressListScreen extends Component {
                 constant.debugLog("User pressed No");
             }
         );
-    }
+    };
 
-    _onPressDeliverItem(address) {}
+    _onPressDeliverItem = address => {
+        this._onPressItem(address)
+        if (this.props.parentScreen != undefined) {
+            this.props.parentScreen._onPressNextBtn();
+        }
+    };
 
-    _onDeleteAddress(address) {
+    _onDeleteAddress = address => {
         this.props.dispatchDeleteAddress(address.id);
-    }
+    };
 
     render() {
+        constant.debugLog("isRefreshing: " + this.props.isRefreshing);
         return (
             // Main View (Container)
             <View style={{ flex: 1 }}>

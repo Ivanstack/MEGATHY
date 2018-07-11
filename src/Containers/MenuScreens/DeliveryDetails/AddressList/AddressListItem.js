@@ -21,7 +21,7 @@ export default class AddressListItem extends Component {
 
     componentDidMount() {
         if (this.props.address.selected != undefined) {
-            global.selectedAddress = this.props.address
+            global.selectedAddress = this.props.address;
         }
     }
 
@@ -41,22 +41,41 @@ export default class AddressListItem extends Component {
         this.props.onPressDeliverItem(this.props.address);
     };
 
+    _renderEditAndDeleteButtons = () => {
+        return (
+            // {/* // Deliver to this address, Edit and Delete Buttons View */}
+            <View style={{ flexDirection: "row", width: "100%", justifyContent: "space-between" }}>
+                {/* // Edit Button */}
+                <TouchableOpacity style={styles.signUpButtonStyle} onPress={this._onPressEdit}>
+                    <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                        {baseLocal.t("Edit")}
+                    </Text>
+                </TouchableOpacity>
+
+                {/* // Delete Button */}
+                <TouchableOpacity style={styles.signUpButtonStyle} onPress={this._onPressDelete}>
+                    <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                        {baseLocal.t("Delete")}
+                    </Text>
+                </TouchableOpacity>
+            </View>
+        );
+    };
+
     render() {
         return (
             // Main View (Container)
-            <TouchableWithoutFeedback style={{ flex: 1 }} onPress={this._onPress.bind(this)}>
+            <TouchableWithoutFeedback style={{ flex: 1 }} onPress={this._onPress}>
                 <View style={styles.container}>
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
                         {this.props.parentEntryPoint != undefined ? (
                             // {/* // Radio Button */}
                             <View style={{ width: "10%" }}>
-                                {this.props.address.selected === undefined ? (
-                                    // {/* // Radio Button Selected */}
-                                    constant.radioImage(false)
-                                ) : (
-                                    // {/* // Radio Button unselected */}
-                                    constant.radioImage(true)
-                                )}
+                                {this.props.address.selected === undefined
+                                    ? // {/* // Radio Button unselected */}
+                                      constant.radioImage(false)
+                                    : // {/* // Radio Button Selected */}
+                                      constant.radioImage(true)}
                             </View>
                         ) : null}
                         {/* // Details View */}
@@ -75,44 +94,35 @@ export default class AddressListItem extends Component {
                             </Text>
                         </View>
                     </View>
-                    {this.props.address.selected != undefined ? (
+
+                    {this.props.parentEntryPoint === undefined ? (
+                        // From Side Menu
+                        this._renderEditAndDeleteButtons()
+                    ) : (
+                        // From Order Master
                         // {/* // Deliver to this address, Edit and Delete Buttons View */}
-                        <View
-                            style={{
-                                width: "100%",
-                                flexDirection: "column",
-                                marginTop: 10,
-                            }}
-                        >
-                            {this.props.parentEntryPoint != undefined ? (
-                                // {/* // Deliver to this address Button */}
-                                <TouchableOpacity
-                                    style={[styles.signUpButtonStyle, { width: "100%" }]}
-                                    onPress={this._onPressDeliver}
+                        <View style={{ width: "100%" }}>
+                            {this.props.address.selected != undefined ? (
+                                <View
+                                    style={{
+                                        width: "100%",
+                                        marginTop: 10,
+                                    }}
                                 >
-                                    <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
-                                        {baseLocal.t("Deliver to this address")}
-                                    </Text>
-                                </TouchableOpacity>
+                                    {/* // Deliver to this address Button */}
+                                    <TouchableOpacity
+                                        style={[styles.signUpButtonStyle, { width: "100%" }]}
+                                        onPress={this._onPressDeliver}
+                                    >
+                                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                                            {baseLocal.t("Deliver to this address")}
+                                        </Text>
+                                    </TouchableOpacity>
+                                    {this._renderEditAndDeleteButtons()}
+                                </View>
                             ) : null}
-
-                            <View style={{ flexDirection: "row", width: "100%", justifyContent: "space-between" }}>
-                                {/* // Back Button */}
-                                <TouchableOpacity style={styles.signUpButtonStyle} onPress={this._onPressEdit}>
-                                    <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
-                                        {baseLocal.t("Edit")}
-                                    </Text>
-                                </TouchableOpacity>
-
-                                {/* // Sign Up Button */}
-                                <TouchableOpacity style={styles.signUpButtonStyle} onPress={this._onPressDelete}>
-                                    <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
-                                        {baseLocal.t("Delete")}
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
                         </View>
-                    ) : null}
+                    )}
                 </View>
             </TouchableWithoutFeedback>
         );

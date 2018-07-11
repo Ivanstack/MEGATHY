@@ -6,7 +6,7 @@
 
 import React, { Component } from "react";
 import { Platform, StyleSheet, AsyncStorage, Dimensions } from "react-native";
-import { Text, View, Image, TouchableOpacity, ScrollView, Modal, FlatList } from "react-native";
+import { Text, View, Image, TouchableOpacity, Modal, FlatList } from "react-native";
 
 import { connect } from "react-redux"; // Redux
 import * as constant from "../../../../Helper/Constants"; // Constants
@@ -49,6 +49,8 @@ class CalendarScreen extends Component {
                 },
                 () => {
                     this.props.parentScreen.selectedDates = newProps.arrUserBookedSessions;
+                    constant.emitter.emit(constant.reloadOrderSummaryListener);
+                    
                     var updatedDates = {};
                     newProps.arrUserBookedSessions.map((value, index) => {
                         let key = value.date;
@@ -152,8 +154,8 @@ class CalendarScreen extends Component {
                     current={new Date()}
                     minDate={new Date()}
                     maxDate={CommonUtilities.dateAddingDays(30)}
-                    pastScrollRange={24}
-                    futureScrollRange={24}
+                    pastScrollRange={0}
+                    futureScrollRange={1}
                     horizontal
                     pagingEnabled
                     hideArrows
@@ -173,26 +175,28 @@ class CalendarScreen extends Component {
 
     _renderBookedTimeSlotItem = item => {
         return (
-            <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 8 }}>
+            // <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 8 }}>
+            <TouchableOpacity
+                style={{ flexDirection: "row", justifyContent: "space-between", padding: 8 }}
+                onPress={() => this._onRemoveBookedTimeSlot(item.item)}
+            >
                 <Text style={{ fontFamily: constant.themeFont, fontSize: 18, marginLeft: 5 }}>
                     {moment(item.item.date, "YYYY-MM-DD").format("DD-MM-YYYY") +
                         " | " +
                         moment(item.item.time, "HH:mm:ss").format("hh:mm A")}
                 </Text>
-                <TouchableOpacity style={{ marginRight: 5 }} onPress={() => this._onRemoveBookedTimeSlot(item.item)}>
-                    <Image
-                        style={{ height: 20, width: 20 }}
-                        source={require("../../../../Resources/Images/CartScr/BtnRemoveFromCart.png")}
-                    />
-                </TouchableOpacity>
-            </View>
+                <Image
+                    style={{ height: 20, width: 20, marginRight: 5 }}
+                    source={require("../../../../Resources/Images/CartScr/BtnRemoveFromCart.png")}
+                />
+                {/* </View> */}
+            </TouchableOpacity>
         );
     };
 
     _renderHeaderComponent = () => {
         return (
             <View style={{ width: "100%" }}>
-                {this._renderInfoViewTimeRemaining()}
                 {this._renderCalendarComponent()}
                 {this._renderInfoViewSelectedTimeSlot()}
             </View>
@@ -219,11 +223,9 @@ class CalendarScreen extends Component {
             // Main View (Container)
             <View style={styles.container}>
                 {this._renderSelectTimeScreenWithModal()}
-                {/* <Spinner visible={this.props.isLoading} cancelable={true} textStyle={{ color: "#FFF" }} /> */}
-                {/* // Main Scroll View */}
+                {this._renderInfoViewTimeRemaining()}
                 <FlatList
                     style={{
-                        marginTop: 8,
                         width: "100%",
                         height: "89%",
                     }}
@@ -238,14 +240,6 @@ class CalendarScreen extends Component {
                     removeClippedSubviews={false}
                     directionalLockEnabled
                 />
-
-                {/* <ScrollView style={{ width: "100%" }} contentContainerStyle={styles.scrollView}> */}
-                {/* // Info View Time Remaining */}
-                {/* {this._renderInfoViewTimeRemaining()} */}
-
-                {/* // Calendar View */}
-                {/* {this._renderCalendarComponent()} */}
-                {/* </ScrollView> */}
             </View>
         );
     }
@@ -295,16 +289,9 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    scrollView: {
-        flexGrow: 1,
-        justifyContent: "flex-start",
-        alignItems: "center",
-        height: Dimensions.get("window").height,
-    },
     infoView: {
         backgroundColor: constant.darkGrayBGColor,
-        padding: 10,
-        paddingTop: 20,
+        padding: 8,
         width: "100%",
     },
     subInfoView: {

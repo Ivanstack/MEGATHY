@@ -26,8 +26,8 @@ export default class componentName extends Component {
                                     ? "arrow-left"
                                     : "navicon"
                             }
-                            style={{ marginLeft: 10 }}
-                            size={35}
+                            style={{ marginLeft: 10, marginTop: 5, }}
+                            size={25}
                             color="white"
                         />
                     </TouchableOpacity>

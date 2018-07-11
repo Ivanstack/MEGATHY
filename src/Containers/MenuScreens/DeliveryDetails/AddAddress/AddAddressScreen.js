@@ -13,6 +13,7 @@ import {
     Image,
     Button,
     TouchableOpacity,
+    TouchableWithoutFeedback,
     Alert,
     ScrollView,
     Dimensions,
@@ -49,20 +50,10 @@ class AddAddressScreen extends Component {
         KeyboardManager.setShouldResignOnTouchOutside(true);
         KeyboardManager.setToolbarPreviousNextButtonEnable(false);
 
-        this._onPressBack = this._onPressBack.bind(this);
-        this._onPressSave = this._onPressSave.bind(this);
-        this._onFocus = this._onFocus.bind(this);
-        this._onChangeText = this._onChangeText.bind(this);
-
-        this._onSubmitFullName = this._onSubmitFullName.bind(this);
-        this._onSubmitPhone = this._onSubmitPhone.bind(this);
-        this._onSubmitNotes = this._onSubmitNotes.bind(this);
-        this._onFocusAddress = this._onFocusAddress.bind(this);
-
-        this.fullNameRef = this._updateRef.bind(this, "fullName");
-        this.phoneRef = this._updateRef.bind(this, "phone");
-        this.addressRef = this._updateRef.bind(this, "address");
-        this.notesRef = this._updateRef.bind(this, "notes");
+        this.fullNameRef = this._updateRef("fullName");
+        this.phoneRef = this._updateRef("phone");
+        this.addressRef = this._updateRef("address");
+        this.notesRef = this._updateRef("notes");
 
         this.state = {
             secureTextEntry: true,
@@ -88,7 +79,7 @@ class AddAddressScreen extends Component {
         }
     }
 
-    _onPressSave() {
+    _onPressSave = () => {
         return;
         if (this.state.fullName.trim() === "") {
             CommonUtilities.showAlert("Full Name cannot be blank");
@@ -104,17 +95,6 @@ class AddAddressScreen extends Component {
             CommonUtilities.showAlert("Password cannot be blank");
             return;
         }
-
-        // var registerParameters = {
-        //     userName: this.state.fullName,
-        //     email: this.state.email,
-        //     phone: this.state.email,
-        //     deviceType: Platform.OS === "ios" ? constant.deviceTypeiPhone : constant.deviceTypeAndroid,
-        //     notifyId: constant.notifyId,
-        //     timeZone: constant.timeZone,
-        //     vendorId: constant.DeviceInfo.getUniqueID(),
-        //     appVersion: constant.DeviceInfo.getVersion() === undefined ? "0.0" : constant.DeviceInfo.getVersion(),
-        // };
 
         // Show Loading View
         this.setState({ visible: true });
@@ -142,13 +122,13 @@ class AddAddressScreen extends Component {
                 }
             }
         );
-    }
+    };
 
-    _onPressBack() {
+    _onPressBack = () => {
         this.props.navigation.goBack();
-    }
+    };
 
-    _onFocus() {
+    _onFocus = () => {
         let { errors = {} } = this.state;
         for (let name in errors) {
             let ref = this[name];
@@ -157,37 +137,32 @@ class AddAddressScreen extends Component {
             }
         }
         this.setState({ errors });
-    }
+    };
 
-    _onFocusAddress() {
-        Keyboard.dismiss()
-        constant.debugLog("Addres Pressed")
-    }
+    _onFocusAddress = () => {
+        Keyboard.dismiss();
+        constant.debugLog("Addres Pressed");
+    };
 
-    _onChangeText(text) {
+    _onChangeText = text => {
         ["fullName", "phone", "address", "notes"].map(name => ({ name, ref: this[name] })).forEach(({ name, ref }) => {
             if (ref.isFocused()) {
                 this.setState({ [name]: text });
             }
         });
-    }
+    };
 
-    _onSubmitFullName() {
-        // this.phone.focus();
-    }
+    _onSubmitFullName = () => {};
 
-    _onSubmitPhone() {
-        // this.password.focus();
-    }
+    _onSubmitPhone = () => {};
 
-    _onSubmitNotes() {
-        // this.confirmPassword.blur();
-        // this.onPressSignUp();
-    }
+    _onSubmitAddress = () => {};
 
-    _updateRef(name, ref) {
+    _onSubmitNotes = () => {};
+
+    _updateRef = (name, ref) => {
         this[name] = ref;
-    }
+    };
 
     render() {
         let { errors = {}, secureTextEntry, fullName, email, password } = this.state;
@@ -218,35 +193,42 @@ class AddAddressScreen extends Component {
                         />
 
                         {/* // Phone No Text Field */}
-                        <AppTextField
-                            reference={this.phoneRef}
-                            label={baseLocal.t("Phone No")}
-                            value={this.state.phone}
-                            textColor={constant.themeColor}
-                            baseColor={constant.themeColor}
-                            tintColor={constant.themeColor}
-                            returnKeyType="next"
-                            keyboardType="numeric"
-                            onSubmitEditing={this._onSubmitPhone}
-                            onChangeText={this._onChangeText}
-                            onFocus={this._onFocus}
-                        />
+                        <TouchableWithoutFeedback onPress={this._onSubmitPhone}>
+                            <AppTextField
+                                reference={this.phoneRef}
+                                label={baseLocal.t("Phone No")}
+                                value={this.state.phone}
+                                textColor={constant.themeColor}
+                                baseColor={constant.themeColor}
+                                tintColor={constant.themeColor}
+                                editable={false}
+                                selectTextOnFocus={false}
+                                // returnKeyType="next"
+                                // keyboardType="numeric"
+                                // onSubmitEditing={this._onSubmitPhone}
+                                // onChangeText={this._onChangeText}
+                                // onFocus={this._onFocus}
+                            />
+                        </TouchableWithoutFeedback>
 
-                        {/* // Password Text Field */}
-                        <AppTextField
-                            reference={this.addressRef}
-                            label={baseLocal.t("Press here to locate your address")}
-                            value={this.state.address}
-                            textColor={constant.themeColor}
-                            baseColor={constant.themeColor}
-                            tintColor={constant.themeColor}
-                            returnKeyType="next"
-                            // editable={false}
-                            // onSubmitEditing={this._onSubmitAddress}
-                            // onChangeText={this._onChangeText}
-                            onFocus={this._onFocusAddress}
-                            // onPress={this._onPressAddress}
-                        />
+                        <TouchableWithoutFeedback onPress={this._onSubmitAddress}>
+                            {/* // Password Text Field */}
+                            <AppTextField
+                                reference={this.addressRef}
+                                label={baseLocal.t("Press here to locate your address")}
+                                value={this.state.address}
+                                textColor={constant.themeColor}
+                                baseColor={constant.themeColor}
+                                tintColor={constant.themeColor}
+                                editable={false}
+                                selectTextOnFocus={false}
+                                // returnKeyType="next"
+                                // onSubmitEditing={this._onSubmitAddress}
+                                // onChangeText={this._onChangeText}
+                                // onFocus={this._onFocusAddress}
+                                // onPress={this._onPressAddress}
+                            />
+                        </TouchableWithoutFeedback>
 
                         {/* // Confirm Password Text Field */}
                         <AppTextField
