@@ -30,7 +30,7 @@ export const reducer = (state = initialState, action) => {
                 ...state,
                 isSuccess: false,
                 isLoading: false,
-                error: action.error,
+                error: action.error === undefined ? null : action.error,
             };
         default:
             return state;

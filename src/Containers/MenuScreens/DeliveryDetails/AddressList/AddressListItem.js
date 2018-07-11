@@ -14,9 +14,6 @@ import * as constant from "../../../../Helper/Constants";
 // Localization
 import baseLocal from "../../../../Resources/Localization/baseLocalization";
 
-// const imageRadioSelected = "../../../../Resources/Images/DeliveryDetails/RadioButtonSelectedRed";
-// const imageRadio = "../../../../Resources/Images/DeliveryDetails/RadioButton";
-
 export default class AddressListItem extends Component {
     constructor(props) {
         super(props);
@@ -45,8 +42,6 @@ export default class AddressListItem extends Component {
     };
 
     render() {
-        let imageRadioSelected = "../../../../Resources/Images/DeliveryDetails/RadioButtonSelectedRed.png";
-        let imageRadio = "../../../../Resources/Images/DeliveryDetails/RadioButton.png";
         return (
             // Main View (Container)
             <TouchableWithoutFeedback style={{ flex: 1 }} onPress={this._onPress.bind(this)}>
@@ -57,10 +52,10 @@ export default class AddressListItem extends Component {
                             <View style={{ width: "10%" }}>
                                 {this.props.address.selected === undefined ? (
                                     // {/* // Radio Button Selected */}
-                                    <Image style={{ width: 20, height: 20 }} source={require(imageRadio)} />
+                                    constant.radioImage(false)
                                 ) : (
                                     // {/* // Radio Button unselected */}
-                                    <Image style={{ width: 20, height: 20 }} source={require(imageRadioSelected)} />
+                                    constant.radioImage(true)
                                 )}
                             </View>
                         ) : null}

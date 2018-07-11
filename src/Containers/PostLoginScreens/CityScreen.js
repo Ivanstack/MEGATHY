@@ -40,7 +40,7 @@ class CityScreen extends Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount(){
         this.props.getCities();
     }
 

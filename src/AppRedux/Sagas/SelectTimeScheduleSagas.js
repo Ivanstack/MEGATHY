@@ -13,6 +13,8 @@ export function* SelectTimeScheduleScreenCalls(action) {
             constant.debugLog("Error: " + JSON.stringify(error));
             yield put({ type: constant.actions.setOrderTimeSessionFailure, error });
         }
+    } else {
+        yield put({ type: constant.actions.setOrderTimeSessionFailure });
     }
 }
 

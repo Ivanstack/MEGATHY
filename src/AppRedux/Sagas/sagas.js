@@ -59,9 +59,11 @@ export function* watcherSaga(action) {
     // Menu Screens Flow
     // SelectTime Screen
     yield takeEvery(constant.actions.getOrderTimeSessionRequest, SelectTimeScreenCalls);
+    yield takeEvery(constant.actions.getOrderTimeSessionChangeSuccessFlagRequest, SelectTimeScreenCalls);
 
     // SelectTimeSchedule Screen
     yield takeEvery(constant.actions.setOrderTimeSessionRequest, SelectTimeScheduleScreenCalls);
+    yield takeEvery(constant.actions.setOrderTimeSessionChangeSuccessFlagRequest, SelectTimeScheduleScreenCalls);
 
     // Calendar Screen
     yield takeEvery(constant.actions.getUserBookedSessionRequest, CalendarScreenCalls);
@@ -87,4 +89,5 @@ export function* watcherSaga(action) {
     
     // Order Summary Screen
     yield takeEvery(constant.actions.checkCoupenCodeRequest, OrderSummaryScreenCalls);
+    yield takeEvery(constant.actions.setOrderRequest, OrderSummaryScreenCalls);
 }

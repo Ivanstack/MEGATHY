@@ -69,8 +69,10 @@ class AddressListScreen extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-        if(newProps.isGetSuccess === true && newProps.arrAddress.length){
-            this.props.parentScreen.selectedAddress = newProps.arrAddress[0]
+        if (newProps.isGetSuccess === true && newProps.arrAddress.length) {
+            if (this.props.parentScreen != undefined) {
+                this.props.parentScreen.selectedAddress = newProps.arrAddress[0];
+            }
         }
 
         if (newProps.isDeleteSuccess === true) {
@@ -122,10 +124,12 @@ class AddressListScreen extends Component {
             }
         });
 
-        this.props.parentScreen.selectedAddress = address;
+        if (this.props.parentScreen != undefined) {
+            this.props.parentScreen.selectedAddress = address;
+        }
         this.setState({ reloadPage: !this.state.reloadPage });
-        
-        constant.emitter.emit(constant.reloadOrderMasterListener)
+
+        constant.emitter.emit(constant.reloadOrderMasterListener);
     }
 
     _onPressEditItem(address) {}

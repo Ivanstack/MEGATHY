@@ -12,6 +12,8 @@ export function* SelectTimeScreenCalls(action) {
             constant.debugLog("Error: " + JSON.stringify(error));
             yield put({ type: constant.actions.getOrderTimeSessionFailure, error });
         }
+    } else {
+        yield put({ type: constant.actions.getOrderTimeSessionFailure });
     }
 }
 

@@ -23,11 +23,15 @@ module.exports = {
 
     // Useful Images
     radioImage: isSelected => {
-        var imageName = require("../Resources/Images/DeliveryDetails/RadioButtonSelectedRed.png")
-        if(isSelected === false){
-            imageName = require("../Resources/Images/DeliveryDetails/RadioButton.png")
+        var imageName = require("../Resources/Images/DeliveryDetails/RadioButtonSelectedRed.png");
+        if (isSelected === false) {
+            imageName = require("../Resources/Images/DeliveryDetails/RadioButton.png");
         }
-        return <Image style={{ width: 20, height: 20 }}  source={imageName}/>;
+        return <Image style={{ width: 20, height: 20 }} source={imageName} />;
+    },
+
+    logoImage: () => {
+        return <Image style={{ width: 189, height: 59 }} source={require("../Resources/Images/LogoTitleImage.png")} />;
     },
 
     /// Common Functions
@@ -93,6 +97,7 @@ module.exports = {
     APIAddAddress: "address",
     APIEditAddress: "address",
     APIDeleteAddress: "address",
+    APISetOrder: "setOrder",
     APIGetOrderTimeSession: "getOrderTimeSession",
     APISetOrderTimeSession: "setOrderTimeSession",
     APIUnsetOrderTimeSession: "unsetOrderTimeSession",
@@ -126,6 +131,10 @@ module.exports = {
     kProductDiscountInactive: "Inactive",
     kProductDiscountType: "fixed",
     kProductDiscountPercentage: "percentage",
+
+    //Payment Mode Key
+    kPaymentModeCash: "Cash",
+    kPaymentModeCard: "Debit/Cradit Card",
 
     //Coupen Code Key
     kCoupenCodeDiscountActive: "Active",
@@ -201,10 +210,14 @@ module.exports = {
         getOrderTimeSessionSuccess: "getOrderTimeSessionSuccess",
         getOrderTimeSessionFailure: "getOrderTimeSessionFailure",
 
+        getOrderTimeSessionChangeSuccessFlagRequest: "getOrderTimeSessionChangeSuccessFlagRequest",
+
         // SelectTimeSchedule Screen
         setOrderTimeSessionRequest: "setOrderTimeSessionRequest",
         setOrderTimeSessionSuccess: "setOrderTimeSessionSuccess",
         setOrderTimeSessionFailure: "setOrderTimeSessionFailure",
+
+        setOrderTimeSessionChangeSuccessFlagRequest: "setOrderTimeSessionChangeSuccessFlagRequest",
 
         // Calendar Screen
         getUserBookedSessionRequest: "getUserBookedSessionRequest",
@@ -258,6 +271,10 @@ module.exports = {
         checkCoupenCodeRequest: "checkCoupenCodeRequest",
         checkCoupenCodeSuccess: "checkCoupenCodeSuccess",
         checkCoupenCodeFailure: "checkCoupenCodeFailure",
+
+        setOrderRequest: "setOrderRequest",
+        setOrderSuccess: "setOrderSuccess",
+        setOrderFailure: "setOrderFailure",
     },
 
     /*

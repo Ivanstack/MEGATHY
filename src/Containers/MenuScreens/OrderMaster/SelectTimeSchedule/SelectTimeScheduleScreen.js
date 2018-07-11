@@ -48,7 +48,6 @@ class SelectTimeScheduleScreen extends Component {
         super(props);
 
         baseLocal.locale = global.currentAppLanguage;
-        // this._onPressCalendarDate = this._onPressCalendarDate.bind(this)
         this.state = {
             arrSetTimeSlote: [],
             arrOrderBookedTimeSlote: [],
@@ -101,6 +100,7 @@ class SelectTimeScheduleScreen extends Component {
 
     componentWillReceiveProps(newProps) {
         if (newProps.isSuccess === true && newProps.objOrderBookedTimeSlote != null) {
+            this.props.getOrderTimeSessionChangeFlag();
             let storeDate = new Date(newProps.objOrderBookedTimeSlote.storeTime);
             this.setState(
                 {
@@ -114,9 +114,9 @@ class SelectTimeScheduleScreen extends Component {
                 }
             );
         } else if (newProps.isSetTimeSuccess === true) {
-            this.props.parentScreen.setState(
-                { selectTimeScreenVisible: false },
-                () => this.props.parentScreen.props.getUserBookedSession()
+            this.props.setOrderTimeSessionChangeFlag();
+            this.props.parentScreen.setState({ selectTimeScreenVisible: false }, () =>
+                this.props.parentScreen.props.getUserBookedSession()
             );
         }
     }
@@ -250,7 +250,8 @@ class SelectTimeScheduleScreen extends Component {
 
     // Get Remaining Hours and Make Time Slot for order
     _getRemainingHours() {
-        let today = new Date(this.state.crntStoreTime);
+        let deliveryDuration = Number(global.currentSettings["schedule-order-delivery-duration-min"]) * 60000;
+        let today = new Date(new Date(this.state.crntStoreTime).getTime() + deliveryDuration);
         var todayHour = today.getHours();
         var remainigHours = 0;
         var nextDay = new Date(today);
@@ -282,7 +283,6 @@ class SelectTimeScheduleScreen extends Component {
             newTimeSloteData["isOpen"] = false;
             arrRemainig.push(newTimeSloteData);
         }
-        // console.log("TimeSlot In Json :===> ", arrRemainig);
         this.setState({ arrSetTimeSlote: arrRemainig });
     }
 
@@ -320,14 +320,37 @@ class SelectTimeScheduleScreen extends Component {
         this.props.setOrderTimeSession(setOrderTimeSessionParameters);
     }
 
+    _checkSelectedTimeSlot = item => {
+        if (!item.isBooked) {
+            // deliveryDuration in miliSeconds
+            let deliveryDuration = Number(global.currentSettings["schedule-order-delivery-duration-min"]) * 60000;
+            let selectedTimeStamp = new Date(
+                this.props.parentScreen.selectedDay.dateString + " " + item.title.split(" - ")[0]
+            ).getTime();
+
+            if (this.state.storeTime + deliveryDuration < selectedTimeStamp) {
+                this.setState({
+                    selectedTimeSlot: item,
+                });
+            } else {
+                if (global.currentAppLanguage === constant.languageEnglish) {
+                    CommonUtilities.showAlert(global.currentSettings["schedule-order-time-slot-book-limit-msg"], false);
+                } else {
+                    CommonUtilities.showAlert(
+                        global.currentSettings["schedule-order-time-slot-book-limit-msg-arb"],
+                        false
+                    );
+                }
+            }
+        }
+    };
+
     // Render Methods
     _renderTagItem = ({ item, index }) => {
         return (
             <TouchableWithoutFeedback
                 onPress={() => {
-                    this.setState({
-                        selectedTimeSlot: item,
-                    });
+                    this._checkSelectedTimeSlot(item);
                 }}
             >
                 <View
@@ -486,10 +509,9 @@ class SelectTimeScheduleScreen extends Component {
                     <TouchableOpacity
                         onPress={() => {
                             this._onPressSave();
-                            // this._onPressCalendarDate();
                         }}
                     >
-                        <Text style={[styles.navigationButtonText, {marginRight:10}]}> Save </Text>
+                        <Text style={[styles.navigationButtonText, { marginRight: 10 }]}> Save </Text>
                     </TouchableOpacity>
                 </View>
                 {this._renderDateTimeView()}
@@ -560,7 +582,7 @@ class SelectTimeScheduleScreen extends Component {
 function mapStateToProps(state, props) {
     return {
         isLoading: state.selectTime.isLoading,
-        isSuccess: state.selectTimeSchedule.isSetTimeSuccess === true ? false : state.selectTime.isSuccess,
+        isSuccess: state.selectTime.isSuccess,
         isSetTimeSuccess: state.selectTimeSchedule.isSetTimeSuccess,
         objOrderBookedTimeSlote: state.selectTime.objOrderBookedTimeSlote,
         error: state.selectTime.error,
@@ -577,12 +599,28 @@ function mapDispatchToProps(dispatch) {
                     parameters: parameters,
                 },
             }),
+        getOrderTimeSessionChangeFlag: () =>
+            dispatch({
+                type: constant.actions.getOrderTimeSessionChangeSuccessFlagRequest,
+                payload: {
+                    endPoint: "",
+                    parameters: "",
+                },
+            }),
         setOrderTimeSession: parameters =>
             dispatch({
                 type: constant.actions.setOrderTimeSessionRequest,
                 payload: {
                     endPoint: constant.APISetOrderTimeSession,
                     parameters: parameters,
+                },
+            }),
+        setOrderTimeSessionChangeFlag: () =>
+            dispatch({
+                type: constant.actions.setOrderTimeSessionChangeSuccessFlagRequest,
+                payload: {
+                    endPoint: "",
+                    parameters: "",
                 },
             }),
     };

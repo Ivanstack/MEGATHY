@@ -24,10 +24,8 @@ class CalendarScreen extends Component {
         super(props);
 
         baseLocal.locale = global.currentAppLanguage;
-        this._onPressCalendarDate = this._onPressCalendarDate.bind(this);
         this.state = {
             selectedCalendarDates: {},
-            selectedDates: [],
             selectTimeScreenVisible: false,
         };
     }
@@ -41,25 +39,25 @@ class CalendarScreen extends Component {
             this.setState({
                 selectedCalendarDates:{}
             })
+
+            this.props.parentScreen.selectedDates = newProps.arrUserBookedSessions
             newProps.arrUserBookedSessions.map((value, index) => {
                 let key = value.date;
                 let selected = true;
                 if (!this.state.selectedCalendarDates.hasOwnProperty(key)) {
                     const updatedDates = {
-                        ...this.props.parentScreen.state.selectedCalendarDates,
+                        ...this.state.selectedCalendarDates,
                         ...{ [key]: { selected } },
                     };
                     this.setState({
                         selectedCalendarDates: updatedDates,
                     });
                 }
-            });
+            })
         } else if (newProps.isUnsetSuccess === true) {
             this.props.getUserBookedSession();
         }
     }
-
-    _onPressCalendarDate() {}
 
     _onPressCalendarDate = day => {
         this.selectedDay = day;
@@ -106,7 +104,7 @@ class CalendarScreen extends Component {
             /* // Info View Selected Time Slots */
             <View style={styles.infoView}>
                 <Text>{baseLocal.t("Selected time slots")}</Text>
-                <Text>{"*" + baseLocal.t("Tap on a time slot to remove")}</Text>
+                <Text>{baseLocal.t("*Tap on a time slot to remove")}</Text>
             </View>
         );
     };

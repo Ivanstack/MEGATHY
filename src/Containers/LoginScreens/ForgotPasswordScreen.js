@@ -46,14 +46,6 @@ class ForgotPasswordScreen extends Component {
         baseLocal.locale = global.currentAppLanguage;
         KeyboardManager.setShouldResignOnTouchOutside(true);
         KeyboardManager.setToolbarPreviousNextButtonEnable(false);
-
-        this.onPressBack = this.onPressBack.bind(this);
-        this.onPressReset = this.onPressReset.bind(this);
-        this.onFocus = this.onFocus.bind(this);
-        this.onChangeText = this.onChangeText.bind(this);
-        this.onSubmitEmail = this.onSubmitEmail.bind(this);
-        this.emailRef = this.updateRef.bind(this, "email");
-
         this.state = {
             email: "",
         };
@@ -69,7 +61,7 @@ class ForgotPasswordScreen extends Component {
         }
     }
 
-    onPressReset() {
+    _onPressReset = () => {
         if (!CommonUtilities.validateEmail(this.state.email)) {
             CommonUtilities.showAlert("Invalid email id");
             return;
@@ -79,14 +71,14 @@ class ForgotPasswordScreen extends Component {
             vendorId: constant.DeviceInfo.getUniqueID(),
         };
 
-        this.props.onForgotPassword(forgotPasswordParameters)
-    }
+        this.props.onForgotPassword(forgotPasswordParameters);
+    };
 
-    onPressBack() {
+    _onPressBack = () => {
         this.props.navigation.goBack();
-    }
+    };
 
-    onFocus() {
+    _onFocus = () => {
         let { errors = {} } = this.state;
         for (let name in errors) {
             let ref = this[name];
@@ -95,28 +87,22 @@ class ForgotPasswordScreen extends Component {
             }
         }
         this.setState({ errors });
-    }
+    };
 
-    onChangeText(text) {
+    _onChangeText = text => {
         ["email"].map(name => ({ name, ref: this[name] })).forEach(({ name, ref }) => {
             if (ref.isFocused()) {
                 this.setState({ [name]: text });
             }
         });
-    }
+    };
 
-    onSubmitEmail() {
+    _onSubmitEmail = () => {
         this.email.blur();
-        this.onPressReset();
-    }
-
-    updateRef(name, ref) {
-        this[name] = ref;
+        this._onPressReset();
     }
 
     render() {
-        let { errors = {}, secureTextEntry, email, password } = this.state;
-
         return (
             // Main View (Container)
             <View style={styles.container}>
@@ -128,10 +114,7 @@ class ForgotPasswordScreen extends Component {
                 />
                 <ScrollView style={{ width: "100%" }} contentContainerStyle={styles.scrollView}>
                     {/* // Top Image */}
-                    <Image
-                        style={{ width: 189, height: 59 }}
-                        source={require("../../Resources/Images/LogoTitleImage.png")}
-                    />
+                    {constant.logoImage()}
 
                     {/* // Sign Up Text */}
                     <Text
@@ -149,14 +132,14 @@ class ForgotPasswordScreen extends Component {
                     <View style={{ width: "80%" }}>
                         {/* // Email Text Field */}
                         <AppTextField
-                            reference={this.emailRef}
+                            reference={"email"}
                             label={baseLocal.t("Email Id")}
                             value={this.state.email}
                             returnKeyType="next"
                             keyboardType="email-address"
-                            onSubmitEditing={this.onSubmitEmail}
-                            onChangeText={this.onChangeText}
-                            onFocus={this.onFocus}
+                            onSubmitEditing={this._onSubmitEmail}
+                            onChangeText={this._onChangeText}
+                            onFocus={this._onFocus}
                         />
                     </View>
 
@@ -165,14 +148,14 @@ class ForgotPasswordScreen extends Component {
                         style={{ width: "80%", flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}
                     >
                         {/* // Back Button */}
-                        <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressBack}>
+                        <TouchableOpacity style={styles.signUpButtonStyle} onPress={this._onPressBack}>
                             <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
                                 {baseLocal.t("Back")}
                             </Text>
                         </TouchableOpacity>
 
                         {/* // Reset Button */}
-                        <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressReset}>
+                        <TouchableOpacity style={styles.signUpButtonStyle} onPress={this._onPressReset}>
                             <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
                                 {baseLocal.t("Reset")}
                             </Text>
@@ -196,7 +179,10 @@ function mapStateToProps(state, props) {
 function mapDispatchToProps(dispatch) {
     return {
         onForgotPassword: parameters =>
-            dispatch({ type: constant.actions.forgotPasswordRequest, payload: { endPoint: constant.APIForgotPassword, parameters: parameters } }),
+            dispatch({
+                type: constant.actions.forgotPasswordRequest,
+                payload: { endPoint: constant.APIForgotPassword, parameters: parameters },
+            }),
     };
 }
 

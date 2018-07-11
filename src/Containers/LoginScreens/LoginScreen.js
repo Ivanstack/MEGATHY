@@ -171,10 +171,7 @@ class LoginScreen extends Component {
                 />
                 <ScrollView style={{ width: "100%" }} contentContainerStyle={styles.scrollView}>
                     {/* // Top Image */}
-                    <Image
-                        style={{ width: 189, height: 59 }}
-                        source={require("../../Resources/Images/LogoTitleImage.png")}
-                    />
+                    {constant.logoImage()}
 
                     {/* // FB Button */}
                     <TouchableOpacity
