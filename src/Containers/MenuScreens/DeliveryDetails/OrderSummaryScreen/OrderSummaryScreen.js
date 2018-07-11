@@ -9,6 +9,7 @@ import {
     Text,
     View,
     Image,
+    Modal,
     Animated,
     TextInput,
     ScrollView,
@@ -46,6 +47,11 @@ import AppTextField from "../../../../Components/AppTextField";
 
 // Variable
 const redeemPointViewViewHeight = (6 * Dimensions.get("window").height) / 100;
+let arrAction = [
+    { title: "Call you", isSelected: true },
+    { title: "Replace it with similar", isSelected: false },
+    { title: "Delete it", isSelected: false },
+];
 
 class OrderSummaryScreen extends Component {
     constructor(props) {
@@ -58,6 +64,7 @@ class OrderSummaryScreen extends Component {
             txtRedeemPoint: "",
             paymentByCard: true,
             isOpenRedeemPointView: false,
+            isItemAvailableModalVisible: true,
         };
         this.isAvailableVAT = false;
         this.isCoupenCodeAvailable = false;
@@ -156,7 +163,9 @@ class OrderSummaryScreen extends Component {
                 this.objCartDescription["coupenDiscount"] = this.props.objCoupenCode.discount;
             }
         }
-
+        // this.objCartDescription["usedRedeemPoint"] = this.totalRewardPoint;
+        this.props.parentScreen.objCartDetail = this.objCartDescription;
+        this.props.parentScreen.usedRedeemPoints = this.totalRewardPoint
         this.setState({ txtRedeemPoint: this.totalRewardPoint });
         // constant.debugLog("cart description :===> " + JSON.stringify(this.objCartDescription));
     };
@@ -164,8 +173,12 @@ class OrderSummaryScreen extends Component {
     // Get Remaining Reward Point From Total Reward Point
     _remainingRedeemPoint = strRedeemPoint => {
         if (this._isValidRedeemPoint(strRedeemPoint)) {
+            // this.objCartDescription["usedRedeemPoint"] = strRedeemPoint;
+            this.props.parentScreen.usedRedeemPoints = strRedeemPoint
             this.setState({ txtRedeemPoint: strRedeemPoint });
         } else {
+            // this.objCartDescription["usedRedeemPoint"] = this.totalRewardPoint;
+            this.props.parentScreen.usedRedeemPoints = this.totalRewardPoint
             this.setState({ txtRedeemPoint: this.totalRewardPoint });
             // CommonUtilities.showAlert("total points is smaller then used point", false);
         }
@@ -192,9 +205,13 @@ class OrderSummaryScreen extends Component {
             grossAmount = grossAmount - this.objCartDescription.coupenDiscount;
         }
         let pointAmount = (this.state.txtRedeemPoint * global.currentSettings["reward-sr"]) / 100;
-        if (pointAmount.toFixed(2) > grossAmount.toFixed(2)) {
+        if (Number(pointAmount.toFixed(2)) > Number(grossAmount.toFixed(2))) {
             pointAmount = (grossAmount * this.state.txtRedeemPoint) / pointAmount;
-            if (Math.round(pointAmount) != this.state.txtRedeemPoint) {
+            if (
+                Math.round(pointAmount) != this.state.txtRedeemPoint &&
+                Math.round(pointAmount) < this.totalRewardPoint
+            ) {
+                this.props.parentScreen.usedRedeemPoints = pointAmount.toFixed(0)
                 this.setState({ txtRedeemPoint: pointAmount.toFixed(0) });
             }
         }
@@ -250,26 +267,28 @@ class OrderSummaryScreen extends Component {
         var coupenCodeParameters = {
             city_id: orderCityIds, // Change According To Selected Address
             couponCode: this.state.txtCoupenCode,
-            // loginKey: global.currentUser.loginKey,
             userId: global.currentUser.id,
         };
 
         this.props.checkCoupenCode(coupenCodeParameters);
 
-        constant.debugLog("Coupen Obj :===> ", this.props.objCoupenCode);
+        constant.debugLog("Coupen Obj :===> " + this.props.objCoupenCode);
     };
 
     onPressSend = () => {
         // this.setState({
         //     paymentByCard: !this.state.paymentByCard,
         // });
-        if (global.selectedAddress === null) {
+        if (this.props.parentScreen.selectedAddress === (null || undefined)) {
             this.props.parentScreen._swiper.scrollBy(-2, true);
-        } else if (global.selectedTimeSlot === null) {
+        } else if (this.props.parentScreen.selectedTimeSlot === (null || undefined)) {
             this.props.parentScreen._swiper.scrollBy(-1, true);
+        } else {
+            this.props.parentScreen.setState({ isItemAvailableModalVisible: true });
         }
-        // constant.debugLog("Selected Time :===> " + JSON.stringify(global.selectedTimeSlot));
-        // constant.debugLog("Selected Address :===> " + JSON.stringify(global.selectedAddress));
+
+        // constant.debugLog("Selected Time :===> " + JSON.stringify(this.props.parentScreen.selectedTimeSlot));
+        // constant.debugLog("Selected Address :===> " + JSON.stringify(this.props.parentScreen.selectedAddress));
         // constant.debugLog("totalRewardPoint :===> " + this.props.totalRewardPoint);
         // constant.debugLog("totalRewardPoint_SR :===> " + this.props.totalRewardPoint_SR);
     };
@@ -316,7 +335,7 @@ class OrderSummaryScreen extends Component {
         return (
             <View style={{ justifyContent: "space-between", flexDirection: "row", flex: 1 }}>
                 <Text style={[PaymentStyle.boldTitleText, { margin: 6, marginLeft: 8 }]}>{leftTitle}</Text>
-                <Text style={[PaymentStyle.boldTitleText, { margin: 6, marginRight: 8 }]}>{rightTitle}</Text>
+                <Text style={[PaymentStyle.boldTitleText, { margin: 6, marginRight: 16 }]}>{rightTitle}</Text>
             </View>
         );
     };
@@ -504,7 +523,7 @@ class OrderSummaryScreen extends Component {
         return (
             // Main View (Container)
             <View style={{ flex: 1 }}>
-                <SafeAreaView style={{ flex: 1, flexDirection: "column" }}>
+                <SafeAreaView style={{ flex: 1 }}>
                     <ScrollView
                         contentContainerStyle={{ flexGrow: 1 }}
                         // style={{ flex: 1}}
@@ -559,9 +578,6 @@ function mapStateToProps(state, props) {
         isCheckCoupenSuccess: state.orderSummary.isCheckCoupenSuccess,
         objCoupenCode: state.orderSummary.objCoupenCode,
         error: state.orderSummary.error,
-        // isSuccess: state.selectTime.isSuccess,
-        // objOrderBookedTimeSlote: state.selectTime.objOrderBookedTimeSlote,
-        // error: state.selectTime.error,
     };
 }
 

@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from "react";
-import { Platform, Text, View, Image, TouchableOpacity, SafeAreaView, Keyboard } from "react-native";
+import { Platform, Text, View, Image, TouchableOpacity, SafeAreaView, Keyboard, Modal } from "react-native";
 
 // Redux
 import { connect } from "react-redux";
@@ -34,12 +34,19 @@ import OrderSummaryScreen from "../DeliveryDetails/OrderSummaryScreen/OrderSumma
 
 // Localization
 import baseLocal from "../../../Resources/Localization/baseLocalization";
+import OrderMasterStyles from "./OrderMasterStyles";
 
 // Variable
 const activeIndicatorViewHeight = 20;
 const inactiveIndicatorViewHeight = 15;
 const labels = ["Select Address", "Select Time", "Payment"];
 const classContext = null;
+let arrAction = ["Call you", "Replace it with similar", "Delete it"];
+// let arrAction = [
+//     { title: "Call you", isSelected: true },
+//     { title: "Replace it with similar", isSelected: false },
+//     { title: "Delete it", isSelected: false },
+// ];
 const customStyles = {
     stepIndicatorSize: inactiveIndicatorViewHeight,
     currentStepIndicatorSize: activeIndicatorViewHeight,
@@ -66,6 +73,10 @@ var isScheduleOrder = false;
 var selectedAddress = null;
 var selectedTimeSlot = null;
 var selectedDates = [];
+var selectedAction = arrAction[0];
+
+var objCartDetail = null;
+var usedRedeemPoints = 0;
 
 class OrderMasterScreen extends Component {
     constructor(props) {
@@ -75,7 +86,8 @@ class OrderMasterScreen extends Component {
             currentPosition: 0,
             visible: false,
             storeTime: new Date().getTime(),
-            isReload: false
+            isReload: false,
+            isItemAvailableModalVisible: false,
         };
         classContext = this;
     }
@@ -139,6 +151,93 @@ class OrderMasterScreen extends Component {
         });
     };
 
+    // Set Order
+    _setOrderForDelivery = () => {
+        //     addressId = 4508;
+        // "city_id" = 3;
+        // customerNote = "\n\nDelete it";
+        // deliveryCharg = "0.00";
+        // deliveryTime = "2018-07-10 16:10:00";
+        // "item[0]" =     {
+        //     itemId = 713;
+        //     quentity = 3;
+        // };
+        // loginKey = 468ba539fd31b01bb13eee7056f3cec3;
+        // paymentMode = Cash;
+        // storeId = 23;
+        // userId = 86;
+        // vendorId = "C06F1D07-1F57-4265-8D0A-CD36BB1636A4";
+
+        constant.debugLog(
+            "Set Order selectedTimeSlot :===> " +
+                JSON.stringify(this.selectedTimeSlot) +
+                "\n\nAddress:==> " +
+                JSON.stringify(this.selectedAddress) +
+                "\n\nAction:==> " +
+                selectedAction
+        );
+
+        let deliveryTime =
+            this.selectedTimeSlot.tempBookedDate + " " + this.selectedTimeSlot.title.split(" - ")[0] + ":00";
+
+        var setOrderParameters = {
+            city_id: this.selectedAddress.cityId,
+            addressId: this.selectedAddress.id, //
+            customerNote: selectedAction,
+            deliveryCharg: this.objCartDetail.deliveryCharges,
+            deliveryTime: deliveryTime,
+            paymentMode: this.state.paymentByCard ? constant.kPaymentModeCard : constant.kPaymentModeCash,
+            userId: global.currentUser.id,
+            vendorId: constant.DeviceInfo.getUniqueID(),
+        };
+
+        // Add Cart Item
+        for (let index = 0; index < global.arrCartItems.length; index++) {
+            const cartItem = global.arrCartItems[index];
+            let objItem = {};
+            objItem["itemId"] = cartItem.PkId;
+            objItem["quentity"] = cartItem.totalAddedProduct;
+
+            setOrderParameters[`item[${index}]`] = objItem;
+        }
+
+        // Coupen Code Detail
+        if (this.props.objCoupenCode != (null || undefined)) {
+            setOrderParameters["couponCode"] = this.props.objCoupenCode.code;
+            setOrderParameters["discount"] = this.props.objCoupenCode.discount;
+        }
+
+        //Redeem Point
+        if (this.usedRedeemPoints != 0) {
+            setOrderParameters["redeem_reward_points"] = this.usedRedeemPoints
+        }
+
+        constant.debugLog("Set Order Parameters :===> " + JSON.stringify(setOrderParameters));
+
+        this.props.setOrder(setOrderParameters);
+
+
+        constant.debugLog("set order Obj :===> ", this.props.objSetOrder);
+    };
+
+    // _updateRedeemPoint = (points) => {
+    //     constant.debugLog("Update redeem points :===> " + points);
+    //     this.updateRedeemPoint = points
+    // };
+
+    _onPressSelectActionForInAvailableItem = item => {
+        // constant.debugLog("modal item :==> " + item);
+        // arrAction.map(action => {
+        //     if (!action.isSelected && action.title === item.title) {
+        //         action.isSelected = true;
+        //     } else {
+        //         action.isSelected = false;
+        //     }
+        // });
+
+        selectedAction = item;
+    };
+
     _onPageChange(position) {
         // constant.debugLog("Change Index _onPageChange :==> " + position);
         Keyboard.dismiss();
@@ -175,6 +274,11 @@ class OrderMasterScreen extends Component {
         }
     };
 
+    _onPressOkForAction = () => {
+        this._setOrderForDelivery();
+        this.setState({ isItemAvailableModalVisible: false });
+    };
+
     _renderCustomNavigationView() {
         return (
             <View style={styles.navigationView}>
@@ -208,6 +312,77 @@ class OrderMasterScreen extends Component {
             </View>
         );
     }
+
+    _renderModalForNotAvailableItem = () => {
+        const actionView = arrAction.map(item => {
+            return (
+                <TouchableOpacity  key={item} onPress={this._onPressSelectActionForInAvailableItem.bind(this, item)}>
+                    <View style={{ flexDirection: "row", alignItems: "center", margin: 16 }}>
+                        {constant.radioImage(item === selectedAction)}
+                        <Text style={{ fontFamily: constant.themeFont, fontSize: 12, marginLeft: 16 }}>
+                            {/* {item.title} */} {item}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+            );
+        });
+        return (
+            <Modal
+                visible={this.state.isItemAvailableModalVisible}
+                animationType={"fade"}
+                transparent={true}
+                onRequestClose={() => this.setState({ isItemAvailableModalVisible: false })}
+            >
+                <View
+                    style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
+                    <View style={OrderMasterStyles.overlayViewStyle} />
+
+                    <View style={OrderMasterStyles.modalViewStyle}>
+                        <TouchableOpacity onPress={() => this.setState({ isItemAvailableModalVisible: false })}>
+                            <Image
+                                style={{ height: 25, width: 25, right: 8, top: 8, alignSelf: "flex-end" }}
+                                source={require("../../../Resources/Images/CartScr/CloseIcon.png")}
+                            />
+                        </TouchableOpacity>
+                        <Text style={{ fontFamily: constant.themeFont, fontSize: 13, margin: 16, marginTop: 32 }}>
+                            If we don't find items, shall we:
+                        </Text>
+
+                        {actionView}
+                        <View
+                            style={{
+                                flex: 1,
+                                backgroundColor: "transparent",
+                                justifyContent: "center",
+                                // alignItems: "center",
+                            }}
+                        >
+                            <TouchableOpacity onPress={this._onPressOkForAction.bind(this)}>
+                                <View style={OrderMasterStyles.okBtnViewStyle}>
+                                    <Text
+                                        style={{
+                                            fontFamily: constant.themeFont,
+                                            fontSize: 17,
+                                            color: "white",
+                                            fontWeight: "bold",
+                                        }}
+                                    >
+                                        OK
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+            // </View>
+        );
+    };
 
     render() {
         return (
@@ -315,7 +490,10 @@ class OrderMasterScreen extends Component {
 
                             {/* ----- OrderSummaryScreen ----- */}
                             <View style={styles.paymentContainerStyle}>
-                                <OrderSummaryScreen parentScreen={this} />
+                                <OrderSummaryScreen
+                                    parentScreen={this}
+                                    // updateRedeemPoint={points => this._updateRedeemPoint(points)}
+                                />
                             </View>
                         </Swiper>
                     </View>
@@ -349,6 +527,7 @@ class OrderMasterScreen extends Component {
                             <View style={styles.nextViewStyle} />
                         )}
                     </View>
+                    {this._renderModalForNotAvailableItem()}
                 </SafeAreaView>
             </View>
             // </KeyboardAvoidingView>
@@ -364,6 +543,8 @@ function mapStateToProps(state, props) {
         isStoreTimeSuccess: state.general.isStoreTimeSuccess,
         storeDate: state.general.storeDate,
         error: state.general.error,
+        objSetOrder: state.orderSummary.objSetOrder,
+        objCoupenCode: state.orderSummary.objCoupenCode,
     };
 }
 
@@ -383,6 +564,14 @@ function mapDispatchToProps(dispatch) {
                 payload: {
                     endPoint: constant.APIGetStoreTimeZone,
                     parameters: "",
+                },
+            }),
+        setOrder: parameters =>
+            dispatch({
+                type: constant.actions.setOrderRequest,
+                payload: {
+                    endPoint: constant.APISetOrder,
+                    parameters: parameters,
                 },
             }),
     };

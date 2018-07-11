@@ -51,7 +51,7 @@ class SelectTimeScreen extends Component {
         this.state = {
             arrSetTimeSlote: [],
             arrOrderBookedTimeSlote: [],
-            arrForBookedSlote: [],
+            selectedTimeSlot: null,
             crntSelectedSegment: 0,
             crntStoreTime: "",
             isTimeSlotOpen: false,
@@ -240,7 +240,9 @@ class SelectTimeScreen extends Component {
 
     // Get Remaining Hours and Make Time Slot for order
     _getRemainingHours() {
-        let today = new Date(this.state.crntStoreTime);
+        let deliveryDuration = Number(global.currentSettings["schedule-order-delivery-duration-min"]) * 60000;
+        let today = new Date(new Date(this.state.crntStoreTime).getTime() + deliveryDuration);
+        // let today = new Date(this.state.crntStoreTime);
         var todayHour = today.getHours();
 
         var nextDay = new Date(today);
@@ -304,14 +306,34 @@ class SelectTimeScreen extends Component {
     _checkedSlotBookedByCrntUser = slot => {
         let slotBookedDate = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date;
         if (
-            this.state.arrForBookedSlote[0] != undefined &&
-            this.state.arrForBookedSlote[0].tempBookedDate === slotBookedDate &&
-            this.state.arrForBookedSlote[0].title === slot.title
+            this.state.selectedTimeSlot != undefined &&
+            this.state.selectedTimeSlot.tempBookedDate === slotBookedDate &&
+            this.state.selectedTimeSlot.title === slot.title
         ) {
             return true;
         }
 
         return false;
+    };
+
+    _checkSelectedTimeSlot = item => {
+        // deliveryDuration in miliSeconds
+        let deliveryDuration = Number(global.currentSettings["schedule-order-delivery-duration-min"]) * 60000;
+        let selectedTimeStamp = new Date(
+            this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date + " " + item.title.split(" - ")[0]
+        ).getTime();
+
+        if (this.props.parentScreen.state.storeTime + deliveryDuration < selectedTimeStamp) {
+            item.tempBookedDate = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date;
+            this.props.parentScreen.selectedTimeSlot = item;
+            this.setState({ selectedTimeSlot: item });
+        } else {
+            if (global.currentAppLanguage === constant.languageEnglish) {
+                CommonUtilities.showAlert(global.currentSettings["schedule-order-time-slot-book-limit-msg"], false);
+            } else {
+                CommonUtilities.showAlert(global.currentSettings["schedule-order-time-slot-book-limit-msg-arb"], false);
+            }
+        }
     };
 
     // OnPress Methods
@@ -326,19 +348,25 @@ class SelectTimeScreen extends Component {
     };
 
     _onPressSelectTimeSlot = item => {
-        // let arrTimeSlote = new Array(this.state.arrForBookedSlote);
         if (!item.isBooked) {
-            let arrTimeSlote = this.state.arrForBookedSlote;
-
-            if (arrTimeSlote.length != 0) {
-                arrTimeSlote = [];
+            if (this.state.crntSelectedSegment === 0) {
+                this._checkSelectedTimeSlot(item);
+            } else {
+                item.tempBookedDate = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date;
+                this.props.parentScreen.selectedTimeSlot = item;
+                this.setState({ selectedTimeSlot: item });
             }
-            item.tempBookedDate = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date;
-            global.selectedTimeSlot = item;
-            arrTimeSlote.push(item);
-            this.setState({ arrForBookedSlote: arrTimeSlote });
         }
     };
+
+    _onPressCalendarDate() {
+        let key = this.props.day.dateString;
+        let selected = true;
+        if (!this.props.parentScreen.state.selectedDates.hasOwnProperty(key)) {
+            const updatedDates = { ...this.props.parentScreen.state.selectedDates, ...{ [key]: { selected } } };
+            this.props.parentScreen.setState({ selectedDates: updatedDates, selectTimeScreenVisible: false });
+        }
+    }
 
     // Render Methods
     _renderTagItem = ({ item, index }) => {
@@ -499,7 +527,7 @@ class SelectTimeScreen extends Component {
                 <TouchableOpacity
                     onPress={() => {
                         this.props.parentScreen != undefined
-                            ? this.props.parentScreen.setState({ selectTimeScreenVisible: false })
+                            ? this._onPressCalendarDate()
                             : constant.debugLog("Parent is not calendar");
                     }}
                 >
