@@ -26,9 +26,9 @@ import AddAddressScreen from "../Containers/MenuScreens/DeliveryDetails/AddAddre
 import SelectTimeScreen from "../Containers/MenuScreens/OrderMaster/SelectTime/SelectTimeScreen";
 import SecondScreen from "../Containers/MenuScreens/SecondScreen";
 import OrderSummaryScreen from "../Containers/MenuScreens/OrderMaster/OrderSummaryScreen/OrderSummaryScreen";
-import CalendarScreen from "../Containers/MenuScreens/OrderMaster/Calendar/CalendarScreen"
-import OrderHistoryScreen from "../Containers/MenuScreens/OrderHistory/OrderHistory/OrderHistoryScreen"
-import OrderDetailScreen from "../Containers/MenuScreens/OrderHistory/OrderDetail/OrderDetailScreen"
+import CalendarScreen from "../Containers/MenuScreens/OrderMaster/Calendar/CalendarScreen";
+import OrderHistoryScreen from "../Containers/MenuScreens/OrderHistory/OrderHistory/OrderHistoryScreen";
+import OrderDetailScreen from "../Containers/MenuScreens/OrderHistory/OrderDetail/OrderDetailScreen";
 import VerifyPhoneScreen from "../Containers/MenuScreens/DeliveryDetails/VerifyPhone/VerifyPhoneScreen";
 import ContactUsScreen from "../Containers/MenuScreens/ContactUs/ContactUsScreen";
 import TermsOfServicesScreen from "../Containers/MenuScreens/TermsOfServices/TermsOfServicesScreen";
@@ -39,15 +39,15 @@ import * as constant from "../Helper/Constants";
 import * as commonUtilities from "../Helper/CommonUtilities";
 
 // Modal Screen
-const OrderMasterScreenNav = StackNavigator(
-    {
-        OrderMasterScreen: { screen: OrderMasterScreen },
-    },
-    {
-        headerMode: "none",
-        mode: "modal",
-    }
-);
+// const OrderMasterScreenNav = StackNavigator(
+//     {
+//         OrderMasterScreen: { screen: OrderMasterScreen },
+//     },
+//     {
+//         headerMode: "none",
+//         mode: "modal",
+//     }
+// );
 
 // Home Screen With Child Element
 const CategoryScreenNav = StackNavigator(
@@ -56,14 +56,14 @@ const CategoryScreenNav = StackNavigator(
         SubCategoryScreen: { screen: SubCategoryScreen },
         ProductScreen: { screen: ProductScreen },
         CartScreen: { screen: CartScreen },
-        OrderMasterScreen: { screen: OrderMasterScreenNav },
+        // OrderMasterScreen: { screen: OrderMasterScreen },
     },
     {
         headerMode: "screen",
     }
 );
 
-// First Screen With Child Element
+// Delivery Detail Screen With Child Element
 const DeliveryDetailsNav = StackNavigator(
     {
         AddressListScreen: { screen: AddressListScreen },
@@ -71,13 +71,13 @@ const DeliveryDetailsNav = StackNavigator(
         VerifyPhoneScreen: { screen: VerifyPhoneScreen },
         SelectTimeScreen: { screen: SelectTimeScreen },
         OrderSummaryScreen: { screen: OrderSummaryScreen },
-        },
+    },
     {
         headerMode: "screen",
     }
 );
 
-// OrderHistoryScreen
+// Order History Screen With Child Element
 const OrderHistoryScreenNav = StackNavigator(
     {
         OrderHistoryScreen: { screen: OrderHistoryScreen },
@@ -88,10 +88,41 @@ const OrderHistoryScreenNav = StackNavigator(
     }
 );
 
-// Second Screen With Child Element
-const SecondScreenNav = StackNavigator(
+// Suggest Product Screen With Child Element
+const SuggestProductScreenNav = StackNavigator(
     {
-        SecondScreen: { screen: SecondScreen },
+        SuggestProductScreen: { screen: SuggestProductScreen },
+    },
+    {
+        headerMode: "screen",
+    }
+);
+
+// Terms Of Services Screen With Child Element
+const TermsOfServicesScreenNav = StackNavigator(
+    {
+        TermsOfServicesScreen: { screen: TermsOfServicesScreen },
+    },
+    {
+        headerMode: "screen",
+    }
+);
+
+// Contact Us Screen With Child Element
+const ContactUsScreenNav = StackNavigator(
+    {
+        ContactUsScreen: { screen: ContactUsScreen },
+        OrderDetailScreen: { screen: OrderDetailScreen },
+    },
+    {
+        headerMode: "screen",
+    }
+);
+
+// Second Screen With Child Element
+const TempScreenNav = StackNavigator(
+    {
+        "Temp Screen": { screen: SuggestProductScreen },
     },
     {
         headerMode: "screen",
@@ -105,9 +136,10 @@ const AppDrawer = DrawerNavigator(
         "Delivery Details": { screen: DeliveryDetailsNav },
         "Order History": { screen: OrderHistoryScreenNav },
         "Change Store": { screen: StoreScreen },
-
-        SecondScreen: { screen: CalendarScreen },
-
+        "Suggest a Product": { screen: SuggestProductScreenNav },
+        "Terms of Services": { screen: TermsOfServicesScreenNav },
+        "Contact us": { screen: ContactUsScreenNav },
+        "Temp Screen": { screen: TempScreenNav },
     },
     {
         drawerWidth: 300,
@@ -152,7 +184,7 @@ const AppDrawer = DrawerNavigator(
                                 } else if (route.key === "SecondScreen") {
                                     // props.getSecondScreenTap()
                                     // props.getSecondScreenTap()
-                                }   
+                                }
                             }}
                             getLabel={scene => (
                                 <View style={styles.rowView}>
@@ -212,9 +244,7 @@ function mapStateToProps(state, props) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return {
-
-    }
+    return {};
 }
 
 export default connect(
