@@ -17,14 +17,22 @@ import SubCategoryScreen from "../Containers/MenuScreens/Category/SubCategoryScr
 import ProductScreen from "../Containers/MenuScreens/Category/ProductScreen/ProductScreen";
 import CartScreen from "../Containers/MenuScreens/Category/CartScreen/CartScreen";
 
+import StoreScreen from "../Containers/PostLoginScreens/StoreScreen";
+
 import OrderMasterScreen from "../Containers/MenuScreens/OrderMaster/OrderMasterScreen";
 
 import AddressListScreen from "../Containers/MenuScreens/DeliveryDetails/AddressList/AddressListScreen";
 import AddAddressScreen from "../Containers/MenuScreens/DeliveryDetails/AddAddress/AddAddressScreen";
 import SelectTimeScreen from "../Containers/MenuScreens/OrderMaster/SelectTime/SelectTimeScreen";
 import SecondScreen from "../Containers/MenuScreens/SecondScreen";
-import OrderSummaryScreen from "../Containers/MenuScreens/DeliveryDetails/OrderSummaryScreen/OrderSummaryScreen";
+import OrderSummaryScreen from "../Containers/MenuScreens/OrderMaster/OrderSummaryScreen/OrderSummaryScreen";
 import CalendarScreen from "../Containers/MenuScreens/OrderMaster/Calendar/CalendarScreen"
+import OrderHistoryScreen from "../Containers/MenuScreens/OrderHistory/OrderHistory/OrderHistoryScreen"
+import OrderDetailScreen from "../Containers/MenuScreens/OrderHistory/OrderDetail/OrderDetailScreen"
+import VerifyPhoneScreen from "../Containers/MenuScreens/DeliveryDetails/VerifyPhone/VerifyPhoneScreen";
+import ContactUsScreen from "../Containers/MenuScreens/ContactUs/ContactUsScreen";
+import TermsOfServicesScreen from "../Containers/MenuScreens/TermsOfServices/TermsOfServicesScreen";
+import SuggestProductScreen from "../Containers/MenuScreens/SuggestProduct/SuggestProductScreen";
 
 // Constant
 import * as constant from "../Helper/Constants";
@@ -60,9 +68,21 @@ const DeliveryDetailsNav = StackNavigator(
     {
         AddressListScreen: { screen: AddressListScreen },
         AddAddressScreen: { screen: AddAddressScreen },
+        VerifyPhoneScreen: { screen: VerifyPhoneScreen },
         SelectTimeScreen: { screen: SelectTimeScreen },
         OrderSummaryScreen: { screen: OrderSummaryScreen },
         },
+    {
+        headerMode: "screen",
+    }
+);
+
+// OrderHistoryScreen
+const OrderHistoryScreenNav = StackNavigator(
+    {
+        OrderHistoryScreen: { screen: OrderHistoryScreen },
+        OrderDetailScreen: { screen: OrderDetailScreen },
+    },
     {
         headerMode: "screen",
     }
@@ -83,7 +103,11 @@ const AppDrawer = DrawerNavigator(
     {
         Categories: { screen: CategoryScreenNav },
         "Delivery Details": { screen: DeliveryDetailsNav },
+        "Order History": { screen: OrderHistoryScreenNav },
+        "Change Store": { screen: StoreScreen },
+
         SecondScreen: { screen: CalendarScreen },
+
     },
     {
         drawerWidth: 300,

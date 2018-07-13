@@ -38,6 +38,7 @@ import * as CommonUtilities from "../../Helper/CommonUtilities";
 
 var selectedCity = null;
 var selectedArea = null;
+var isChangeStoreScr = false;
 class StoreScreen extends Component {
     constructor(props) {
         super(props);
@@ -55,8 +56,25 @@ class StoreScreen extends Component {
     }
 
     componentWillMount() {
-        selectedCity = this.props.navigation.getParam("selectedCity", "");
-        selectedArea = this.props.navigation.getParam("selectedArea", "");
+        if (this.props.navigation.getParam("selectedCity") === (null || undefined)) {
+            isChangeStoreScr = true;
+            AsyncStorage.getItem(constant.keyCurrentCity).then(city => {
+                if (city != undefined) {
+                    selectedCity = city;
+                }
+            });
+            AsyncStorage.getItem(constant.keyCurrentArea).then(area => {
+                if (area != undefined) {
+                    selectedArea = area;
+                }
+            });
+        } else {
+            selectedCity = this.props.navigation.getParam("selectedCity", "");
+            selectedArea = this.props.navigation.getParam("selectedArea", "");
+        }
+
+        // selectedCity = this.props.navigation.getParam("selectedCity", "");
+        // selectedArea = this.props.navigation.getParam("selectedArea", "");
         var storeParameters = {
             cityId: selectedCity.PkId,
             areaId: selectedArea.PkId,
@@ -126,22 +144,18 @@ class StoreScreen extends Component {
                 selectedStoreIndex: 0,
             });
         } else if (newProps.isSetStoreSuccess === true && newProps.arrStores.length > 0) {
-            AsyncStorage.setItem(
-                constant.keyCurrentStore,
-                JSON.stringify(this.props.arrStores[this.state.selectedStoreIndex])
-            ).then(() => {
-                AsyncStorage.getItem(constant.keyCurrentStore).then(val => {
-                    global.currentStore = JSON.parse(val);
-                    constant.emitter.emit(constant.setStoreListener);
+            AsyncStorage.setItem(constant.keyCurrentCity, JSON.stringify(selectedCity)).then(() => {
+                AsyncStorage.setItem(constant.keyCurrentArea, JSON.stringify(selectedArea)).then(() => {
+                    AsyncStorage.setItem(
+                        constant.keyCurrentStore,
+                        JSON.stringify(this.props.arrStores[this.state.selectedStoreIndex])
+                    ).then(() => {
+                        AsyncStorage.getItem(constant.keyCurrentStore).then(val => {
+                            global.currentStore = JSON.parse(val);
+                            constant.emitter.emit(constant.setStoreListener);
+                        });
+                    });
                 });
-                AsyncStorage.setItem(
-                    constant.keyCurrentCity,
-                    JSON.stringify(selectedCity)
-                )            
-                AsyncStorage.setItem(
-                    constant.keyCurrentArea,
-                    JSON.stringify(selectedArea)
-                )
             });
         }
     }

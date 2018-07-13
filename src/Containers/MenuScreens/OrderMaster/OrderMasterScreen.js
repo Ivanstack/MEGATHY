@@ -30,7 +30,7 @@ import styles from "./OrderMasterStyles";
 import AddressListScreen from "../DeliveryDetails/AddressList/AddressListScreen";
 import CalendarScreen from "./Calendar/CalendarScreen";
 import SelectTimeScreen from "./SelectTime/SelectTimeScreen";
-import OrderSummaryScreen from "../DeliveryDetails/OrderSummaryScreen/OrderSummaryScreen";
+import OrderSummaryScreen from "../OrderMaster/OrderSummaryScreen/OrderSummaryScreen";
 // import AddressListScreen from "../Category/CartScreen/CartScreen";
 
 // Localization
@@ -258,10 +258,10 @@ class OrderMasterScreen extends Component {
     // };
 
     _onPressAlertOkBtn = () => {
+        this.props.parentScreen.props.navigation.navigate(constant.kCategoryScreen);
         this.props.parentScreen.setState({
             isOrderMasterVisible: false,
         });
-        this.props.parentScreen.props.navigation.navigate(constant.kCategoryScreen);
         // this.props.navigation.resetTo(constant.kCategoryScreen);
     };
 
