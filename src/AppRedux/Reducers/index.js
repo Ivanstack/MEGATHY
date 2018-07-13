@@ -30,6 +30,9 @@ const rootReducer = combineReducers({
     addAddress: require("./AddAddressReducer").reducer,
     productList: require("./ProductReducer").reducer,
     orderSummary: require("./OrderSummaryReducer").reducer,
+    orderHistory: require("./OrderHistoryReducer").reducer,
+    suggestProduct: require("./SuggestProductReducer").reducer,
+    contactUs: require("./ContactUsReducer").reducer,
 });
 
 export let sagaMiddleware = saga();

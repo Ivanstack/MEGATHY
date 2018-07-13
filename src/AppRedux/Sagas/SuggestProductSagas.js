@@ -1,25 +1,25 @@
-import { AsyncStorage } from "react-native";
 import { takeLatest, takeEvery, call, put } from "redux-saga/effects";
 import * as constant from "../../Helper/Constants";
 import * as networkUtility from "../../Helper/NetworkUtility";
 import * as CommonUtilities from "../../Helper/CommonUtilities";
 
-export function* CityScreenCalls(action) {
-    if (action.payload.endPoint === constant.APIGetCity) {
+export function* SuggestProductScreenCalls(action) {
+    if (action.payload.endPoint === constant.APISuggestProduct) {
         try {
-            const response = yield call(getCityCall, action.payload);
-            yield put({ type: constant.actions.getCitySuccess, response });
+            const response = yield call(suggestProductCall, action.payload);
+            yield put({ type: constant.actions.suggestProductSuccess, response });
         } catch (error) {
             constant.debugLog("Error: " + JSON.stringify(error));
-            yield put({ type: constant.actions.getCityFailure, error });
+            yield put({ type: constant.actions.suggestProductFailure, error });
         }
     }
 }
 
-getCityCall = payload => {
-    return networkUtility.getRequest(payload.endPoint, payload.parameters).then(
+suggestProductCall = payload => {
+    return networkUtility.postRequest(payload.endPoint, payload.parameters).then(
         result => {
-            return result.data.data;
+            CommonUtilities.showAlert(result.data.message, false)
+            return result;
         },
         error => {
             constant.debugLog("Status Code: " + error.status);

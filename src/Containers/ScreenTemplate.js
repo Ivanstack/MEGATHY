@@ -9,11 +9,11 @@ import { Platform, StyleSheet, AsyncStorage, Dimensions } from "react-native";
 import { Text, View, TouchableOpacity, ScrollView } from "react-native";
 
 import { connect } from "react-redux"; // Redux
-import * as constant from "../../Helper/Constants"; // Constants
-import * as CommonUtilities from "../../Helper/CommonUtilities"; // Common Utilities
-import * as networkUtility from "../../Helper/NetworkUtility"; // Network Utility
+import * as constant from "../../../../Helper/Constants"; // Constants
+import * as CommonUtilities from "../../../../Helper/CommonUtilities"; // Common Utilities
+import * as networkUtility from "../../../../Helper/NetworkUtility"; // Network Utility
 import Spinner from "react-native-loading-spinner-overlay"; // Loading View
-import baseLocal from "../../Resources/Localization/baseLocalization"; // Localization
+import baseLocal from "../../../../Resources/Localization/baseLocalization"; // Localization
 
 class CalendarScreen extends Component {
     constructor(props) {
@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#CF2526",
     },
     scrollView: {
         flexGrow: 1,

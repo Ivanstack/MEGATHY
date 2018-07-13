@@ -18,6 +18,9 @@ import { SubCategoryScreenCalls } from "./SubCategorySagas";
 import { ProductScreenCalls } from "./ProductSagas";
 import { GeneralAPICallSagas } from "./GeneralAPICallSagas";
 import { OrderSummaryScreenCalls } from "./OrderSummarySagas";
+import { OrderHistoryScreenCalls } from "./OrderHistorySagas";
+import { SuggestProductScreenCalls } from "./SuggestProductSagas";
+import { ContactUsScreenCalls } from "./ContactUsSagas";
 
 // watcher saga: watches for actions dispatched to the store, starts worker saga
 export function* watcherSaga(action) {
@@ -91,4 +94,13 @@ export function* watcherSaga(action) {
     yield takeEvery(constant.actions.checkCoupenCodeRequest, OrderSummaryScreenCalls);
     yield takeEvery(constant.actions.setOrderRequest, OrderSummaryScreenCalls);
     yield takeEvery(constant.actions.setScheduleOrderRequest, OrderSummaryScreenCalls);
+    
+    // Order History Screen
+    yield takeEvery(constant.actions.getOrderHistoryRequest, OrderHistoryScreenCalls);
+
+    // SuggestProduct Screen
+    yield takeEvery(constant.actions.suggestProductRequest, SuggestProductScreenCalls);
+
+    // ContactUs Screen
+    yield takeEvery(constant.actions.contactUsRequest, ContactUsScreenCalls);
 }

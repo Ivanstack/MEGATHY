@@ -34,7 +34,6 @@ import * as networkUtility from "../../../../Helper/NetworkUtility";
 
 // Loading View
 import Spinner from "react-native-loading-spinner-overlay";
-import Icon from "react-native-vector-icons/EvilIcons";
 
 // IQKeyboard Manager
 import KeyboardManager from "react-native-keyboard-manager";
@@ -154,7 +153,10 @@ class AddAddressScreen extends Component {
 
     _onSubmitFullName = () => {};
 
-    _onSubmitPhone = () => {};
+    _onSubmitPhone = () => {
+        constant.debugLog("onSubmitPhone");
+        this.props.navigation.navigate("VerifyPhoneScreen");
+    };
 
     _onSubmitAddress = () => {};
 
@@ -193,7 +195,7 @@ class AddAddressScreen extends Component {
                         />
 
                         {/* // Phone No Text Field */}
-                        <TouchableWithoutFeedback onPress={this._onSubmitPhone}>
+                        <TouchableOpacity onPress={this._onSubmitPhone}>
                             <AppTextField
                                 reference={this.phoneRef}
                                 label={baseLocal.t("Phone No")}
@@ -203,15 +205,10 @@ class AddAddressScreen extends Component {
                                 tintColor={constant.themeColor}
                                 editable={false}
                                 selectTextOnFocus={false}
-                                // returnKeyType="next"
-                                // keyboardType="numeric"
-                                // onSubmitEditing={this._onSubmitPhone}
-                                // onChangeText={this._onChangeText}
-                                // onFocus={this._onFocus}
                             />
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
 
-                        <TouchableWithoutFeedback onPress={this._onSubmitAddress}>
+                        <TouchableOpacity onPress={this._onSubmitAddress}>
                             {/* // Password Text Field */}
                             <AppTextField
                                 reference={this.addressRef}
@@ -222,13 +219,8 @@ class AddAddressScreen extends Component {
                                 tintColor={constant.themeColor}
                                 editable={false}
                                 selectTextOnFocus={false}
-                                // returnKeyType="next"
-                                // onSubmitEditing={this._onSubmitAddress}
-                                // onChangeText={this._onChangeText}
-                                // onFocus={this._onFocusAddress}
-                                // onPress={this._onPressAddress}
                             />
-                        </TouchableWithoutFeedback>
+                        </TouchableOpacity>
 
                         {/* // Confirm Password Text Field */}
                         <AppTextField

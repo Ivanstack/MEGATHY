@@ -132,7 +132,7 @@ class CartScreen extends Component {
     };
 
     _onPressRemoveCartItemFromList = item => {
-        CommonUtilities.showAlertYesNo("Are you sure want to remove this item from the cart?", "Megathy").then(
+        CommonUtilities.showAlertYesNo("Are you sure want to remove this item from the cart?").then(
             pressedYes => {
                 // User pressed Yes
                 constant.debugLog("User pressed Yes");

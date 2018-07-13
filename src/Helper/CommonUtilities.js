@@ -125,9 +125,11 @@ export function logout(isNormalLogout = true) {
     constant.emitter.emit(constant.logoutListener);
 }
 
-export function navigationView(title, isGoBack = false) {
+export function navigationView(title, isGoBack = false, rightButton = null) {
     return ({ navigation }) => ({
-        headerLeft: <NavigationView navigation={navigation} title={title} isGoBack={isGoBack} />,
+        headerLeft: (
+            <NavigationView navigation={navigation} title={title} isGoBack={isGoBack} rightButton={rightButton} />
+        ),
         headerStyle: {
             backgroundColor: constant.themeColor,
         },
@@ -158,6 +160,14 @@ export function dateInDDMMYYYYFormat(oldDateString) {
         mm = "0" + mm;
     }
     return dd + "/" + mm + "/" + yyyy;
+}
+
+export function safeImageURL(imgURL) {
+    if (imgURL === (null || undefined || "")) {
+        return require("../Resources/Images/DefaultProductImage.png");
+    } else {
+        return { uri: imgURL };
+    }
 }
 
 // Way to implement showAlertYesNo function

@@ -21,6 +21,22 @@ module.exports = {
     reloadOrderSummaryListener: "reloadOrderSummaryListener",
     DeviceInfo: require("react-native-device-info"),
 
+    countyDetails: {
+        IN: {
+            name: "India",
+            code: "IN",
+            dialCode: "+91",
+            mask: "99999 99999",
+            image: this.flagImageIN,
+        },
+        SA: {
+            code: "SA",
+            dialCode: "+966",
+            mask: "99 999 9999",
+            image: this.flagImageSA,
+        },
+    },
+
     // Useful Images
     radioImage: isSelected => {
         var imageName = require("../Resources/Images/DeliveryDetails/RadioButtonSelectedRed.png");
@@ -32,6 +48,18 @@ module.exports = {
 
     logoImage: () => {
         return <Image style={{ width: 189, height: 59 }} source={require("../Resources/Images/LogoTitleImage.png")} />;
+    },
+
+    flagImageIN: () => {
+        return (
+            <Image style={{ width: 30, height: 20 }} source={require("../Resources/Images/DeliveryDetails/IN.png")} />
+        );
+    },
+
+    flagImageSA: () => {
+        return (
+            <Image style={{ width: 30, height: 20 }} source={require("../Resources/Images/DeliveryDetails/SA.png")} />
+        );
     },
 
     /// Common Functions
@@ -49,6 +77,7 @@ module.exports = {
     keyCurrentCartItems: "cartItems",
     keyScheduleOrderParent: "parent",
     keyCurrentCity: "currentCity",
+    keyCurrentArea: "currentArea",
 
     //Screen Name Keys
     kCategoryScreen: "CategoryScreen",
@@ -104,6 +133,9 @@ module.exports = {
     APIUnsetOrderTimeSession: "unsetOrderTimeSession",
     APIGetUserBookedSession: "getUserBookedSession",
     APICheckCoupenCode: "checkCoupon",
+    APISuggestProduct: "suggestProduct",
+    APIContactUs: "contactUs",
+    APIGetOrderHistory: "orderHistory",
 
     // General API
     APIGetAppSettingsAndRewards: "getAppSettingsAndRewards",
@@ -117,6 +149,7 @@ module.exports = {
     themeGreenColor: "#3B7F38",
     themeYellowColor: "#FAC818",
     themeLightGreenColor: "#53B326",
+    grayShadeColor55:"#555555",
 
     /// Font Family
     themeFont: "Ebrima",
@@ -142,6 +175,15 @@ module.exports = {
     kCoupenCodeDiscountInactive: "Inactive",
     kCoupenCodeDiscountTypeFixed: "fixed",
     kCoupenCodeDiscountTypePercentage: "percentage",
+
+    //Order History Key
+    kOrderStatusInProcess: "IN PROCESS",
+    kOrderStatusDeliveredStat: "DELIVERED",
+    kOrderStatusCancel: "CANCEL",
+    kOrderStatusPlaced: "Order Placed",
+    kOrderStatusConfirmed: "Items Confirmed",
+    kOrderStatusDispatched: "Items Dispatched",
+    kOrderStatusDelivered: "Items Delivered",
 
     actions: {
         /*
@@ -276,10 +318,25 @@ module.exports = {
         setOrderRequest: "setOrderRequest",
         setOrderSuccess: "setOrderSuccess",
         setOrderFailure: "setOrderFailure",
-        
+
         setScheduleOrderRequest: "setScheduleOrderRequest",
         setScheduleOrderSuccess: "setScheduleOrderSuccess",
         setScheduleOrderFailure: "setScheduleOrderFailure",
+
+        // OrderHistory Screen
+        getOrderHistoryRequest: "getOrderHistoryRequest",
+        getOrderHistorySuccess: "getOrderHistorySuccess",
+        getOrderHistoryFailure: "getOrderHistoryFailure",
+        
+        // SuggestProduct Screen
+        suggestProductRequest: "suggestProductRequest",
+        suggestProductSuccess: "suggestProductSuccess",
+        suggestProductFailure: "suggestProductFailure",
+
+        // Contact Us
+        contactUsRequest: "contactUsRequest",
+        contactUsSuccess: "contactUsSuccess",
+        contactUsFailure: "contactUsFailure",
     },
 
     /*

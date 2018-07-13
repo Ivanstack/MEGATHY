@@ -16,12 +16,13 @@ export default class AppTextField extends Component {
                     ref={this.props.reference === undefined ? "" : this.props.reference}
                     label={this.props.label === undefined ? "" : this.props.label}
                     value={this.props.value === undefined ? "" : this.props.value}
+                    maxLength={this.props.maxLength === undefined ? 255 : this.props.maxLength}
                     editable={this.props.editable === undefined ? true : this.props.editable}
                     selectTextOnFocus={this.props.selectTextOnFocus === undefined ? true : this.props.selectTextOnFocus}
                     textColor={this.props.textColor === undefined ? "white" : this.props.textColor}
                     baseColor={this.props.baseColor === undefined ? "white" : this.props.baseColor}
                     tintColor={this.props.tintColor === undefined ? "white" : this.props.tintColor}
-                    returnKeyType={this.props.returnKeyType === undefined ? "" : this.props.returnKeyType}
+                    returnKeyType={this.props.returnKeyType === undefined ? "next" : this.props.returnKeyType}
                     keyboardType={this.props.keyboardType === undefined ? "default" : this.props.keyboardType}
                     autoFocus={this.props.autoFocus === undefined ? false : this.props.autoFocus}
                     autoCapitalize={this.props.autoCapitalize === undefined ? "none" : this.props.autoCapitalize}
@@ -36,6 +37,7 @@ export default class AppTextField extends Component {
                     }
                     onChangeText={this.props.onChangeText}
                     onFocus={this.props.onFocus}
+                    onBlur={this.props.onBlur}
                     onPress={this.props.onPress}
                     onSubmitEditing={this.props.onSubmitEditing}
                 />
