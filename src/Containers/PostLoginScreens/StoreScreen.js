@@ -134,6 +134,14 @@ class StoreScreen extends Component {
                     global.currentStore = JSON.parse(val);
                     constant.emitter.emit(constant.setStoreListener);
                 });
+                AsyncStorage.setItem(
+                    constant.keyCurrentCity,
+                    JSON.stringify(selectedCity)
+                )            
+                AsyncStorage.setItem(
+                    constant.keyCurrentArea,
+                    JSON.stringify(selectedArea)
+                )
             });
         }
     }
