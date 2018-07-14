@@ -8,19 +8,19 @@ export const initialState = {
 
 export const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case constant.actions.contactUsRequest:
+        case constant.actions.suggestProductRequest:
             return {
                 ...state,
                 isSuccess: false,
                 isLoading: true,
             };
-        case constant.actions.contactUsSuccess:
+        case constant.actions.suggestProductSuccess:
             return {
                 ...state,
                 isSuccess: true,
                 isLoading: false,
             };
-        case constant.actions.contactUsFailure:
+        case constant.actions.suggestProductFailure:
             return {
                 ...state,
                 isSuccess: false,

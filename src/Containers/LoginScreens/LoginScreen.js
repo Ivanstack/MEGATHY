@@ -214,8 +214,7 @@ class LoginScreen extends Component {
                             }}
                         >
                             <Text style={{ color: "#CF2526", fontFamily: "Ebrima", fontSize: 10 }}>
-                                {" "}
-                                {baseLocal.t("OR")}{" "}
+                                {baseLocal.t("OR")}
                             </Text>
                         </View>
                         <View style={{ width: "40%", height: 1, backgroundColor: "#EAEAEA", marginTop: 10 }}> </View>

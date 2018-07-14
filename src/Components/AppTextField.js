@@ -9,6 +9,7 @@ import { View } from "react-native";
 import { TextField } from "react-native-material-textfield";
 
 export default class AppTextField extends Component {
+
     render() {
         return (
             <View>
