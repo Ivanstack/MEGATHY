@@ -21,10 +21,10 @@ import { OrderSummaryScreenCalls } from "./OrderSummarySagas";
 import { OrderHistoryScreenCalls } from "./OrderHistorySagas";
 import { SuggestProductScreenCalls } from "./SuggestProductSagas";
 import { ContactUsScreenCalls } from "./ContactUsSagas";
+import { ChatScreenCalls } from "./ChatSagas";
 
 // watcher saga: watches for actions dispatched to the store, starts worker saga
 export function* watcherSaga(action) {
-
     // General API Call
     yield takeEvery(constant.actions.getAppSettingAndRewardPointRequest, GeneralAPICallSagas);
     yield takeEvery(constant.actions.getStoreTimezoneRequest, GeneralAPICallSagas);
@@ -39,7 +39,6 @@ export function* watcherSaga(action) {
 
     // Forgot Password Screen
     yield takeEvery(constant.actions.forgotPasswordRequest, ForgotPasswordScreenCalls);
-    
 
     // Verify Code Screen
     yield takeEvery(constant.actions.verifyCodeRequest, VerifyCodeScreenCalls);
@@ -78,23 +77,23 @@ export function* watcherSaga(action) {
 
     // SubCategory Screen
     yield takeEvery(constant.actions.getSubCategoryRequest, SubCategoryScreenCalls);
-    
+
     // Product Screen
     yield takeEvery(constant.actions.getProductRequest, ProductScreenCalls);
-    
+
     // Address List Screen
     yield takeEvery(constant.actions.getAddressRequest, AddressListScreenCalls);
     yield takeEvery(constant.actions.deleteAddressRequest, AddressListScreenCalls);
-    
+
     // Add Address Screen
     yield takeEvery(constant.actions.addAddressRequest, AddAddressScreenCalls);
     yield takeEvery(constant.actions.editAddressRequest, AddAddressScreenCalls);
-    
+
     // Order Summary Screen
     yield takeEvery(constant.actions.checkCoupenCodeRequest, OrderSummaryScreenCalls);
     yield takeEvery(constant.actions.setOrderRequest, OrderSummaryScreenCalls);
     yield takeEvery(constant.actions.setScheduleOrderRequest, OrderSummaryScreenCalls);
-    
+
     // Order History Screen
     yield takeEvery(constant.actions.getOrderHistoryRequest, OrderHistoryScreenCalls);
 
@@ -103,4 +102,8 @@ export function* watcherSaga(action) {
 
     // ContactUs Screen
     yield takeEvery(constant.actions.contactUsRequest, ContactUsScreenCalls);
+
+    // Chat Screen
+    yield takeEvery(constant.actions.getChatRequest, ChatScreenCalls);
+    yield takeEvery(constant.actions.sendMessageRequest, ChatScreenCalls);
 }

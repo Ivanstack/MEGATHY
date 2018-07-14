@@ -55,31 +55,14 @@ class StoreScreen extends Component {
         };
     }
 
-    componentWillMount() {
-        if (this.props.navigation.getParam("selectedCity") === (null || undefined)) {
-            isChangeStoreScr = true;
-            AsyncStorage.getItem(constant.keyCurrentCity).then(city => {
-                if (city != undefined) {
-                    selectedCity = city;
-                }
-            });
-            AsyncStorage.getItem(constant.keyCurrentArea).then(area => {
-                if (area != undefined) {
-                    selectedArea = area;
-                }
-            });
-        } else {
-            selectedCity = this.props.navigation.getParam("selectedCity", "");
-            selectedArea = this.props.navigation.getParam("selectedArea", "");
-        }
+    static navigationOptions = CommonUtilities.navigationView(baseLocal.t("Change Store"), false);
+    // static navigationOptions =
+    //     isChangeStoreScr === true ? CommonUtilities.navigationView(baseLocal.t("Change Store"), false) : null;
 
-        // selectedCity = this.props.navigation.getParam("selectedCity", "");
-        // selectedArea = this.props.navigation.getParam("selectedArea", "");
-        var storeParameters = {
-            cityId: selectedCity.PkId,
-            areaId: selectedArea.PkId,
-        };
-        this.props.getStores(storeParameters);
+    componentDidMount() {
+        // setTimeout(() => {
+        this._prepareStoreData();
+        // }, 300);
 
         /*
         let selectedCityTemp = this.props.navigation.getParam("selectedCity", "noCity");
@@ -144,20 +127,53 @@ class StoreScreen extends Component {
                 selectedStoreIndex: 0,
             });
         } else if (newProps.isSetStoreSuccess === true && newProps.arrStores.length > 0) {
-            AsyncStorage.setItem(constant.keyCurrentCity, JSON.stringify(selectedCity)).then(() => {
-                AsyncStorage.setItem(constant.keyCurrentArea, JSON.stringify(selectedArea)).then(() => {
-                    AsyncStorage.setItem(
-                        constant.keyCurrentStore,
-                        JSON.stringify(this.props.arrStores[this.state.selectedStoreIndex])
-                    ).then(() => {
-                        AsyncStorage.getItem(constant.keyCurrentStore).then(val => {
-                            global.currentStore = JSON.parse(val);
-                            constant.emitter.emit(constant.setStoreListener);
-                        });
-                    });
+            AsyncStorage.setItem(constant.keyCurrentCity, JSON.stringify(selectedCity));
+            AsyncStorage.setItem(constant.keyCurrentArea, JSON.stringify(selectedArea));
+            AsyncStorage.setItem(
+                constant.keyCurrentStore,
+                JSON.stringify(this.props.arrStores[this.state.selectedStoreIndex])
+            ).then(() => {
+                AsyncStorage.getItem(constant.keyCurrentStore).then(val => {
+                    global.currentStore = JSON.parse(val);
+                    constant.emitter.emit(constant.setStoreListener);
                 });
             });
         }
+    }
+
+    async _prepareStoreData() {
+        if (this.props.navigation.getParam("selectedCity") === (null || undefined)) {
+            isChangeStoreScr = true;
+
+            await AsyncStorage.getItem(constant.keyCurrentCity).then(city => {
+                if (city != undefined) {
+                    // selectedCity = JSON.parse(JSON.parse(city));
+                    selectedCity = JSON.parse(city);
+                }
+            });
+
+            await AsyncStorage.getItem(constant.keyCurrentArea).then(area => {
+                if (area != undefined) {
+                    // selectedArea = JSON.parse(JSON.parse(area));
+                    selectedArea = JSON.parse(area);
+                }
+            });
+        } else {
+            isChangeStoreScr = false;
+            selectedCity = this.props.navigation.getParam("selectedCity", "");
+            selectedArea = this.props.navigation.getParam("selectedArea", "");
+        }
+
+        // selectedCity = this.props.navigation.getParam("selectedCity", "");
+        // selectedArea = this.props.navigation.getParam("selectedArea", "");
+
+        constant.debugLog("Parameters :==> " + selectedCity + " area :==> " + selectedArea);
+
+        var storeParameters = {
+            cityId: selectedCity.PkId,
+            areaId: selectedArea.PkId,
+        };
+        this.props.getStores(storeParameters);
     }
 
     onPressBack() {
@@ -230,7 +246,12 @@ class StoreScreen extends Component {
 
         return (
             // Main View (Container)
-            <View style={styles.container}>
+            <View
+                style={[
+                    styles.container,
+                    { backgroundColor: isChangeStoreScr === true ? "white" : constant.themeColor },
+                ]}
+            >
                 <Spinner
                     visible={this.props.isLoading}
                     cancelable={true}
@@ -242,8 +263,8 @@ class StoreScreen extends Component {
                     style={{
                         fontFamily: "Ebrima",
                         fontSize: 37,
-                        color: "white",
-                        marginTop: 10,
+                        color: isChangeStoreScr === true ? constant.themeColor : "white",
+                        marginTop: isChangeStoreScr === true ? -10 : 10,
                     }}
                 >
                     {selectedArea != null
@@ -257,33 +278,73 @@ class StoreScreen extends Component {
                     style={{
                         fontFamily: "Ebrima",
                         fontSize: 20,
-                        color: "white",
+                        color: isChangeStoreScr === true ? "black" : "white",
                         marginTop: 10,
                     }}
                 >
                     {baseLocal.t("SELECT STORE")}
                 </Text>
 
-                <Picker
-                    selectedValue={this.state.selectedStoreName === undefined ? "" : this.state.selectedStoreName}
-                    style={{ height: 100, width: 200 }}
-                    onValueChange={this.onChangeStore}
-                    itemStyle={{ color: "white", fontFamily: "Ebrima", fontSize: 20 }}
-                >
-                    {storeItems}
-                </Picker>
+                <View>
+                    <Picker
+                        selectedValue={this.state.selectedStoreName === undefined ? "" : this.state.selectedStoreName}
+                        style={{ height: 100, width: 200 }}
+                        onValueChange={this.onChangeStore}
+                        itemStyle={{
+                            color: isChangeStoreScr === true ? "black" : "white",
+                            fontFamily: "Ebrima",
+                            fontSize: 20,
+                        }}
+                    >
+                        {storeItems}
+                    </Picker>
+                    {/* <View
+                        style={{
+                            position: "absolute",
+                            // marginHorizontal: 40,
+                            marginTop: (13 * Dimensions.get("window").height) / 100,
+                            backgroundColor: "black",
+                            height: 1,
+                            width: "60%",
+                        }}
+                    />
+                    <View
+                        style={{
+                            position: "absolute",
+                            // marginHorizontal: 40,
+                            marginTop: (19.5 * Dimensions.get("window").height) / 100,
+                            backgroundColor: "black",
+                            height: 1,
+                            width: "60%",
+                        }}
+                    /> */}
+                </View>
                 {/* // Back and Reset Buttons View */}
                 <View style={{ width: "80%", flexDirection: "row", justifyContent: "space-around", marginTop: 100 }}>
                     {/* // Back Button */}
-                    <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressBack}>
-                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
-                            {baseLocal.t("Back")}
-                        </Text>
-                    </TouchableOpacity>
+                    {isChangeStoreScr === false ? (
+                        <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressBack}>
+                            <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                                {baseLocal.t("Back")}
+                            </Text>
+                        </TouchableOpacity>
+                    ) : null}
 
                     {/* // Sign Up Button */}
-                    <TouchableOpacity style={styles.signUpButtonStyle} onPress={this.onPressOK}>
-                        <Text style={{ color: "white", fontFamily: "Ebrima", fontWeight: "bold" }}>
+                    <TouchableOpacity
+                        style={[
+                            styles.signUpButtonStyle,
+                            { borderColor: isChangeStoreScr === true ? constant.themeColor : "white" },
+                        ]}
+                        onPress={this.onPressOK}
+                    >
+                        <Text
+                            style={{
+                                color: isChangeStoreScr === true ? constant.themeColor : "white",
+                                fontFamily: "Ebrima",
+                                fontWeight: "bold",
+                            }}
+                        >
                             {baseLocal.t("OK")}
                         </Text>
                     </TouchableOpacity>

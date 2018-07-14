@@ -264,7 +264,7 @@ class OrderDetailScreen extends Component {
 
     _renderOrderProductView = ({ item }) => {
         let productItem = item.product;
-        constant.debugLog("Product Item :===> " + JSON.stringify(productItem));
+        // constant.debugLog("Product Item :===> " + JSON.stringify(productItem));
         let imgHeight = (Dimensions.get("window").width * 21) / 100;
         if (productItem != (null || undefined)) {
             return (
@@ -307,7 +307,9 @@ class OrderDetailScreen extends Component {
                                         fontWeight: "bold",
                                     }}
                                 >
-                                    {productItem.productName}
+                                    {global.currentAppLanguage === "en"
+                                        ? productItem.productName
+                                        : productItem.productNameAr}
                                 </Text>
                             </View>
                             <View style={{ backgroundColor: "transparent", marginRight: 8 }}>
@@ -333,7 +335,9 @@ class OrderDetailScreen extends Component {
                                     color: constant.themeColor,
                                 }}
                             >
-                                {productItem.categoryName}
+                                {global.currentAppLanguage === "en"
+                                    ? productItem.categoryName
+                                    : productItem.categoryNameAr}
                             </Text>
                         </View>
 
@@ -355,7 +359,10 @@ class OrderDetailScreen extends Component {
                                         color: constant.grayShadeColor55,
                                     }}
                                 >
-                                    {productItem.productQuntity} {productItem.productUnit}
+                                    {productItem.productQuntity}{" "}
+                                    {global.currentAppLanguage === "en"
+                                        ? productItem.productUnit
+                                        : productItem.productUnitAr}
                                 </Text>
                             </View>
                             <View style={{ backgroundColor: "transparent", marginRight: 8 }}>

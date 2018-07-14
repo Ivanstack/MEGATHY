@@ -33,6 +33,7 @@ const rootReducer = combineReducers({
     orderHistory: require("./OrderHistoryReducer").reducer,
     suggestProduct: require("./SuggestProductReducer").reducer,
     contactUs: require("./ContactUsReducer").reducer,
+    chat: require("./ChatReducer").reducer,
 });
 
 export let sagaMiddleware = saga();

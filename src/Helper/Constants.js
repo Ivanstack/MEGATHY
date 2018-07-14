@@ -136,6 +136,8 @@ module.exports = {
     APISuggestProduct: "suggestProduct",
     APIContactUs: "contactUs",
     APIGetOrderHistory: "orderHistory",
+    APIGetChat: "getChat",
+    APISendMessage: "chatRequest",
 
     // General API
     APIGetAppSettingsAndRewards: "getAppSettingsAndRewards",
@@ -149,7 +151,8 @@ module.exports = {
     themeGreenColor: "#3B7F38",
     themeYellowColor: "#FAC818",
     themeLightGreenColor: "#53B326",
-    grayShadeColor55:"#555555",
+    grayShadeColor55: "#555555",
+    senderBGColor: "#DCF8C6",
 
     /// Font Family
     themeFont: "Ebrima",
@@ -184,6 +187,10 @@ module.exports = {
     kOrderStatusConfirmed: "Items Confirmed",
     kOrderStatusDispatched: "Items Dispatched",
     kOrderStatusDelivered: "Items Delivered",
+
+    // Chat Key
+    kMessageTypeRequest:"Request",
+    kMessageTypeReplay:"Replay",
 
     actions: {
         /*
@@ -327,7 +334,7 @@ module.exports = {
         getOrderHistoryRequest: "getOrderHistoryRequest",
         getOrderHistorySuccess: "getOrderHistorySuccess",
         getOrderHistoryFailure: "getOrderHistoryFailure",
-        
+
         // SuggestProduct Screen
         suggestProductRequest: "suggestProductRequest",
         suggestProductSuccess: "suggestProductSuccess",
@@ -337,6 +344,14 @@ module.exports = {
         contactUsRequest: "contactUsRequest",
         contactUsSuccess: "contactUsSuccess",
         contactUsFailure: "contactUsFailure",
+
+        // Chat With Us
+        getChatRequest: "getChatRequest",
+        getChatSuccess: "getChatSuccess",
+        getChatFailure: "getChatFailure",
+        sendMessageRequest: "sendMessageRequest",
+        sendMessageSuccess: "sendMessageSuccess",
+        sendMessageFailure: "sendMessageFailure",
     },
 
     /*

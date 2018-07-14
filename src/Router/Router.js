@@ -33,6 +33,7 @@ import VerifyPhoneScreen from "../Containers/MenuScreens/DeliveryDetails/VerifyP
 import ContactUsScreen from "../Containers/MenuScreens/ContactUs/ContactUsScreen";
 import TermsOfServicesScreen from "../Containers/MenuScreens/TermsOfServices/TermsOfServicesScreen";
 import SuggestProductScreen from "../Containers/MenuScreens/SuggestProduct/SuggestProductScreen";
+import ChatScreen from "../Containers/MenuScreens/ChatScreen/ChatScreen";
 
 // Constant
 import * as constant from "../Helper/Constants";
@@ -89,12 +90,22 @@ const OrderHistoryScreenNav = StackNavigator(
 );
 
 // Suggest Product Screen With Child Element
+const StoreScreenNav = StackNavigator(
+    {
+        StoreScreen: { screen: StoreScreen },
+    },
+    {
+        headerMode: "screen",
+    }
+);
+
+// Suggest Product Screen With Child Element
 const SuggestProductScreenNav = StackNavigator(
     {
         SuggestProductScreen: { screen: SuggestProductScreen },
     },
     {
-        headerMode: "screen",
+        headerMode: "none",
     }
 );
 
@@ -119,6 +130,16 @@ const ContactUsScreenNav = StackNavigator(
     }
 );
 
+// Chat With Us Screen
+const ChatScreenNav = StackNavigator(
+    {
+        ChatScreen: { screen: ChatScreen },
+    },
+    {
+        headerMode: "screen",
+    }
+);
+
 // Second Screen With Child Element
 const TempScreenNav = StackNavigator(
     {
@@ -135,11 +156,12 @@ const AppDrawer = DrawerNavigator(
         Categories: { screen: CategoryScreenNav },
         "Delivery Details": { screen: DeliveryDetailsNav },
         "Order History": { screen: OrderHistoryScreenNav },
-        "Change Store": { screen: StoreScreen },
+        "Change Store": { screen: StoreScreenNav },
         "Suggest a Product": { screen: SuggestProductScreenNav },
         "Terms of Services": { screen: TermsOfServicesScreenNav },
         "Contact us": { screen: ContactUsScreenNav },
         "Temp Screen": { screen: TempScreenNav },
+        "Chat with us": { screen: ChatScreenNav },
     },
     {
         drawerWidth: 300,
