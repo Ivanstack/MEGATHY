@@ -17,16 +17,19 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isProductSuccess: false,
-                // isRefreshing: true,
-                isLoading: true,
+                isRefreshing: true,
+                isLoading: action.payload.parameters.page > 1 ? false : true,
                 error: null,
             };
         case constant.actions.getProductSuccess:
             return {
                 ...state,
-                arrProduct: action.response.current_page === 1 ? action.response.data: [...state.arrProduct, ...action.response.data].filter(
-                    (val, id, array) => array.indexOf(val) === id
-                ),
+                arrProduct:
+                    action.response.current_page === 1
+                        ? action.response.data
+                        : [...state.arrProduct, ...action.response.data].filter(
+                              (val, id, array) => array.indexOf(val) === id
+                          ),
                 currentPage: action.response.current_page,
                 lastPage: action.response.last_page,
                 isProductSuccess: true,

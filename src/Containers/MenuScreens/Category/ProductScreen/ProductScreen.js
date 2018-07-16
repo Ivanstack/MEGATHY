@@ -42,6 +42,8 @@ import ProductStyles from "./ProductScrStyle";
 // Localization
 import baseLocal from "../../../../Resources/Localization/baseLocalization";
 
+// Class Variable
+
 class ProductScreen extends Component {
     constructor(props) {
         super(props);
@@ -53,7 +55,8 @@ class ProductScreen extends Component {
                 productQuentity: 0,
                 cartItems: 0,
                 isReload: true,
-                visible: true,
+                visible: false,
+                isRefreshing: false,
             });
     }
 
@@ -91,7 +94,7 @@ class ProductScreen extends Component {
     async componentDidMount() {
         console.log("App State: ", AppState.currentState);
         console.log("Get Category :===> ", this.props.navigation.state.params.category);
-        this.getProductList(true);
+        this.getProductList();
         this._callLoadMore = this._callLoadMore.bind(this);
     }
 
@@ -106,6 +109,7 @@ class ProductScreen extends Component {
 
     componentWillReceiveProps(newProps) {
         if (newProps.arrProduct.length != 0) {
+            this.setState({ visible: false, isRefreshing: false });
             this.GetOrSaveCartItem(false);
         }
     }
@@ -117,14 +121,6 @@ class ProductScreen extends Component {
         this.forceUpdate();
     };
 
-    async getSubCategoryData() {
-        let subCategoryApi = constant.APIGetSubCategory + this.props.navigation.state.params.category.PkId;
-        console.log("subCategoryApi :==> ", subCategoryApi);
-
-        let subCategoryData = await networkUtility.getRequest(subCategoryApi);
-        console.log("Sub Category Data :===> ", subCategoryData.data.data);
-    }
-
     async GetOrSaveCartItem(isSaveCartItem) {
         try {
             if (isSaveCartItem) {
@@ -134,20 +130,20 @@ class ProductScreen extends Component {
                 if (oldArrCartItems !== null) {
                     // We have data!!
                     global.arrCartItems = JSON.parse(oldArrCartItems);
-                    if (global.arrCartItems.length > 0) {
-                        global.arrCartItems.map(cartItem => {
-                            this.props.arrProduct.map(item => {
+                    this.props.arrProduct.map(item => {
+                        if (global.arrCartItems.length > 0) {
+                            global.arrCartItems.map(cartItem => {
                                 if (cartItem.PkId === item.PkId) {
                                     item.totalAddedProduct = cartItem.totalAddedProduct;
                                 }
                                 // else {
-                                //   item.totalAddedProduct = 0;
+                                //     item.totalAddedProduct = 0;
                                 // }
                             });
-                        });
-                    } else {
-                        item.totalAddedProduct = 0;
-                    }
+                        } else {
+                            item.totalAddedProduct = 0;
+                        }
+                    });
                     // });
                     this.forceUpdate();
                 }
@@ -169,6 +165,10 @@ class ProductScreen extends Component {
 
     getProductList(isRefresh = false, isLoadMore = false) {
         let productPage = 1;
+
+        // if (isRefresh || isLoadMore) {
+        this.setState({ visible: isRefresh || isLoadMore ? false : true, isRefreshing: isRefresh });
+        // }
 
         if (!isRefresh && isLoadMore && this.props.currentPage < this.props.lastPage) {
             productPage = this.props.currentPage + 1;
@@ -193,7 +193,6 @@ class ProductScreen extends Component {
 
     _onPressAddProduct = item => {
         item.totalAddedProduct = item.totalAddedProduct ? item.totalAddedProduct + 1 : 1;
-        this.setState({ productQuentity: this.state.productQuentity + 1 });
 
         let oldCartItem = cartFunc.findCartItem(item.PkId);
 
@@ -211,6 +210,7 @@ class ProductScreen extends Component {
             console.log("Item is not available in arr");
             global.arrCartItems.push(item);
         }
+        this.setState({ productQuentity: this.state.productQuentity + 1 });
     };
 
     _onPressRemoveProduct = item => {
@@ -409,8 +409,8 @@ class ProductScreen extends Component {
                     flex: 1,
                 }}
             >
-                {this.props.isLoading ? (
-                    <Spinner visible={this.props.isLoading} cancelable={true} textStyle={{ color: "#FFF" }} />
+                {this.state.visible ? (
+                    <Spinner visible={this.state.visible} cancelable={true} textStyle={{ color: "#FFF" }} />
                 ) : (
                     <View
                         style={{
@@ -432,7 +432,7 @@ class ProductScreen extends Component {
                                     }}
                                     refreshControl={
                                         <RefreshControl
-                                            refreshing={this.props.isRefreshing}
+                                            refreshing={this.state.isRefreshing}
                                             onRefresh={this._onRefresh.bind(this)}
                                         />
                                     }
@@ -440,10 +440,10 @@ class ProductScreen extends Component {
                                         this.productList = flatList;
                                     }}
                                     data={this.props.arrProduct}
-                                    keyExtractor={(item, index) => item.PkId}
+                                    extraData={this.props.arrProduct}
+                                    keyExtractor={item => item.PkId}
                                     renderItem={this._renderCategoryItem.bind(this)}
                                     showsHorizontalScrollIndicator={false}
-                                    removeClippedSubviews={false}
                                     directionalLockEnabled
                                     numColumns={2}
                                     onEndReached={this._callLoadMore}

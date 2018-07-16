@@ -19,6 +19,7 @@ import Icon from "react-native-vector-icons/EvilIcons";
 import Swiper from "react-native-swiper";
 import StepIndicator from "react-native-step-indicator";
 import Spinner from "react-native-loading-spinner-overlay";
+import moment from "moment";
 
 // Network Utility
 import * as networkUtility from "../../../Helper/NetworkUtility";
@@ -145,7 +146,8 @@ class OrderMasterScreen extends Component {
 
     // Mics Methods
     _displayStoreTime() {
-        return new Date(this.state.storeTime).toLocaleTimeString("en-us");
+        return moment(this.state.storeTime).format("hh:mm:ss A");
+        // return new Date(this.state.storeTime).toLocaleTimeString("en-us");
 
         // let storeDateTemp = new Date(this.state.storeTime)
         // let hh = storeDateTemp.getHours()
@@ -483,7 +485,7 @@ class OrderMasterScreen extends Component {
                                 }}
                             />
                         </View>
-                        <View style={{ flex: 1, marginRight: 3, marginTop: 7 }}>
+                        <View style={{ flex: 1, marginRight: 3, marginHorizontal: 7 }}>
                             <Text
                                 style={{
                                     fontSize: 13,

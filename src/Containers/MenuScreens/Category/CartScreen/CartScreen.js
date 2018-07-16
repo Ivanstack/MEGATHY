@@ -18,6 +18,7 @@ import * as cartFunc from "../../../../Helper/Functions/Cart";
 
 // Lib
 import ImageLoad from "react-native-image-placeholder";
+import Icon from "react-native-vector-icons/EvilIcons";
 
 // Components Style
 import CartStyle from "./CartScreenStyle";
@@ -45,11 +46,14 @@ class CartScreen extends Component {
         };
     }
 
-    static navigationOptions = CommonUtilities.navigationView("Shopping Cart", true);
+    static navigationOptions = ({ navigation }) => ({
+        header: null,
+        headerMode: "none",
+    });
 
     // App Life Cycle Methods
     componentDidMount() {
-        this.GetOrSaveCartItem(false);
+        this.GetOrSaveCartItem();
 
         Animated.spring(this.y_translate, {
             toValue: orderNowViewHeight,
@@ -66,10 +70,11 @@ class CartScreen extends Component {
     }
 
     // Mics Methods
-    async GetOrSaveCartItem(isSaveCartItem) {
+    async GetOrSaveCartItem(isSaveCartItem = false) {
         try {
             if (isSaveCartItem) {
                 await AsyncStorage.setItem("cartItems", JSON.stringify(global.arrCartItems));
+                this.forceUpdate();
             } else {
                 var oldArrCartItems = await AsyncStorage.getItem("cartItems");
                 if (oldArrCartItems !== null) {
@@ -91,6 +96,22 @@ class CartScreen extends Component {
                 : console.log("Error in get Data :===> ", error);
         }
     }
+
+    // OnPress Methods
+
+    _onPressRemoveAllProduct = () => {
+        CommonUtilities.showAlertYesNo("Are you sure want to remove all items from the cart?").then(
+            pressedYes => {
+                // User pressed Yes
+                global.arrCartItems = [];
+                this.GetOrSaveCartItem(true);
+            },
+            pressedNo => {
+                // User pressed No
+                constant.debugLog("User pressed No");
+            }
+        );
+    };
 
     _onPressAddProduct = item => {
         item.totalAddedProduct = item.totalAddedProduct ? item.totalAddedProduct + 1 : 1;
@@ -177,6 +198,29 @@ class CartScreen extends Component {
         }
     };
 
+    // Render Methods
+    _renderCustomNavigationView = () => {
+        return (
+            // Platform.OS === "ios"
+            <View style={CartStyle.navigationView}>
+                <View style={{ flexDirection: "row" }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.props.navigation.state.params.onNavigateBack();
+                            this.props.navigation.goBack();
+                        }}
+                    >
+                        <Icon name={"arrow-left"} style={{ marginLeft: 10, marginTop: 10 }} size={25} color="white" />
+                    </TouchableOpacity>
+                    <Text style={CartStyle.navigationButtonText}> {baseLocal.t("Shopping Cart")} </Text>
+                </View>
+                <TouchableOpacity style={{ height: 40, marginRight: 8 }} onPress={this._onPressRemoveAllProduct}>
+                    <Text style={[CartStyle.navigationButtonText, { fontSize: 17 }]}>{baseLocal.t("Remove All")} </Text>
+                </TouchableOpacity>
+            </View>
+        );
+    };
+
     _renderPriceCutView = item => {
         return (
             <View>
@@ -227,8 +271,8 @@ class CartScreen extends Component {
                                 this._onPressShowHideScheduleOrderNowBtns();
                                 // this.props.navigation.navigate(constant.kOrderMasterScreen);
                                 this.setState({
-                                    isOrderMasterVisible: true
-                                })
+                                    isOrderMasterVisible: true,
+                                });
                             }}
                         >
                             <Text
@@ -249,8 +293,8 @@ class CartScreen extends Component {
                                 // this.props.navigation.navigate(constant.kOrderMasterScreen);
                                 this._onPressShowHideScheduleOrderNowBtns();
                                 this.setState({
-                                    isOrderMasterVisible: true
-                                })
+                                    isOrderMasterVisible: true,
+                                });
                             }}
                         >
                             <Text
@@ -376,7 +420,7 @@ class CartScreen extends Component {
 
     _renderOrderMasterScreenWithModal = () => {
         return (
-            <Modal
+           <Modal 
                 animationType="slide"
                 transparent={false}
                 visible={this.state.isOrderMasterVisible}
@@ -402,6 +446,7 @@ class CartScreen extends Component {
                         flex: 1,
                     }}
                 >
+                    {this._renderCustomNavigationView()}
                     {this._renderOrderMasterScreenWithModal()}
                     {global.arrCartItems.length > 0 ? (
                         <FlatList

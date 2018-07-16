@@ -25,6 +25,7 @@ import { connect } from "react-redux";
 // Libs
 import CollapsibleList from "react-native-collapsible-list";
 import SegmentedControlTab from "react-native-segmented-control-tab";
+import moment from "moment";
 
 // Common Utilities
 import * as CommonUtilities from "../../../../Helper/CommonUtilities";
@@ -250,7 +251,8 @@ class SelectTimeScreen extends Component {
         nextDay.setDate(today.getDate() + 1);
 
         let dateForSegment = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date;
-        let crntDateForCompare = new Date().toISOString().substring(0, 10);
+        moment(new Date()).format("YYYY-MM-DD");
+        let crntDateForCompare = moment(new Date()).format("YYYY-MM-DD"); // new Date().toISOString().substring(0, 10);
         // console.log("Todays Hours : ==> ", crntDateForCompare);
         // console.log("Compare Date Hours : ==> ", dateForSegment);
 
