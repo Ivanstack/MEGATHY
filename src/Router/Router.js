@@ -10,30 +10,51 @@ import { connect } from "react-redux";
 
 // Screens
 import LoginScreen from "../Containers/LoginScreens/LoginScreen";
-import SideMenu from "../Containers/MenuScreens/SideMenu";
+import SideMenuScreen from "../Containers/MenuScreens/SideMenu/SideMenuScreen";
 
+// CategoryScreenNav
 import CategoryScreen from "../Containers/MenuScreens/Category/CategoryScreen/CategoryScreen";
 import SubCategoryScreen from "../Containers/MenuScreens/Category/SubCategoryScreen/SubCategoryScreen";
 import ProductScreen from "../Containers/MenuScreens/Category/ProductScreen/ProductScreen";
 import CartScreen from "../Containers/MenuScreens/Category/CartScreen/CartScreen";
+import CalendarScreen from "../Containers/MenuScreens/OrderMaster/Calendar/CalendarScreen";
+import SelectTimeScreen from "../Containers/MenuScreens/OrderMaster/SelectTime/SelectTimeScreen";
+import OrderSummaryScreen from "../Containers/MenuScreens/OrderMaster/OrderSummaryScreen/OrderSummaryScreen";
 
-import StoreScreen from "../Containers/PostLoginScreens/StoreScreen";
-
-import OrderMasterScreen from "../Containers/MenuScreens/OrderMaster/OrderMasterScreen";
-
+// DeliveryDetailsNav
 import AddressListScreen from "../Containers/MenuScreens/DeliveryDetails/AddressList/AddressListScreen";
 import AddAddressScreen from "../Containers/MenuScreens/DeliveryDetails/AddAddress/AddAddressScreen";
-import SelectTimeScreen from "../Containers/MenuScreens/OrderMaster/SelectTime/SelectTimeScreen";
-import SecondScreen from "../Containers/MenuScreens/SecondScreen";
-import OrderSummaryScreen from "../Containers/MenuScreens/OrderMaster/OrderSummaryScreen/OrderSummaryScreen";
-import CalendarScreen from "../Containers/MenuScreens/OrderMaster/Calendar/CalendarScreen";
+import VerifyPhoneScreen from "../Containers/MenuScreens/DeliveryDetails/VerifyPhone/VerifyPhoneScreen";
+
+// OrderHistoryScreenNav
 import OrderHistoryScreen from "../Containers/MenuScreens/OrderHistory/OrderHistory/OrderHistoryScreen";
 import OrderDetailScreen from "../Containers/MenuScreens/OrderHistory/OrderDetail/OrderDetailScreen";
-import VerifyPhoneScreen from "../Containers/MenuScreens/DeliveryDetails/VerifyPhone/VerifyPhoneScreen";
-import ContactUsScreen from "../Containers/MenuScreens/ContactUs/ContactUsScreen";
-import TermsOfServicesScreen from "../Containers/MenuScreens/TermsOfServices/TermsOfServicesScreen";
+
+// ScheduleOrderHistoryScreenNav
+
+// OrderStatusScreenNav
+
+// UserProfileScreenNav
+
+// MyRewardsWalletScreenNav
+
+// StoreScreenNav
+import StoreScreen from "../Containers/PostLoginScreens/StoreScreen";
+
+// SuggestProductScreenNav
 import SuggestProductScreen from "../Containers/MenuScreens/SuggestProduct/SuggestProductScreen";
+
+// TermsOfServicesScreenNav
+import TermsOfServicesScreen from "../Containers/MenuScreens/TermsOfServices/TermsOfServicesScreen";
+
+// ContactUsScreenNav
+import ContactUsScreen from "../Containers/MenuScreens/ContactUs/ContactUsScreen";
+
+// ChatScreenNav
 import ChatScreen from "../Containers/MenuScreens/ChatScreen/ChatScreen";
+
+import OrderMasterScreen from "../Containers/MenuScreens/OrderMaster/OrderMasterScreen";
+import SecondScreen from "../Containers/MenuScreens/SecondScreen";
 
 // Constant
 import * as constant from "../Helper/Constants";
@@ -57,6 +78,9 @@ const CategoryScreenNav = StackNavigator(
         SubCategoryScreen: { screen: SubCategoryScreen },
         ProductScreen: { screen: ProductScreen },
         CartScreen: { screen: CartScreen },
+        SelectTimeScreen: { screen: SelectTimeScreen },
+        SelectTimeScreen: { screen: SelectTimeScreen },
+        OrderSummaryScreen: { screen: OrderSummaryScreen },
         // OrderMasterScreen: { screen: OrderMasterScreen },
     },
     {
@@ -70,8 +94,6 @@ const DeliveryDetailsNav = StackNavigator(
         AddressListScreen: { screen: AddressListScreen },
         AddAddressScreen: { screen: AddAddressScreen },
         VerifyPhoneScreen: { screen: VerifyPhoneScreen },
-        SelectTimeScreen: { screen: SelectTimeScreen },
-        OrderSummaryScreen: { screen: OrderSummaryScreen },
     },
     {
         headerMode: "screen",
@@ -80,6 +102,50 @@ const DeliveryDetailsNav = StackNavigator(
 
 // Order History Screen With Child Element
 const OrderHistoryScreenNav = StackNavigator(
+    {
+        OrderHistoryScreen: { screen: OrderHistoryScreen },
+        OrderDetailScreen: { screen: OrderDetailScreen },
+    },
+    {
+        headerMode: "screen",
+    }
+);
+
+// Order History Screen With Child Element
+const ScheduleOrderHistoryScreenNav = StackNavigator(
+    {
+        OrderHistoryScreen: { screen: OrderHistoryScreen },
+        OrderDetailScreen: { screen: OrderDetailScreen },
+    },
+    {
+        headerMode: "screen",
+    }
+);
+
+// Schedule Order History Screen With Child Element
+const OrderStatusScreenNav = StackNavigator(
+    {
+        OrderHistoryScreen: { screen: OrderHistoryScreen },
+        OrderDetailScreen: { screen: OrderDetailScreen },
+    },
+    {
+        headerMode: "screen",
+    }
+);
+
+// User Profile Screen With Child Element
+const UserProfileScreenNav = StackNavigator(
+    {
+        OrderHistoryScreen: { screen: OrderHistoryScreen },
+        OrderDetailScreen: { screen: OrderDetailScreen },
+    },
+    {
+        headerMode: "screen",
+    }
+);
+
+// My Rewards Wallet Screen With Child Element
+const MyRewardsWalletScreenNav = StackNavigator(
     {
         OrderHistoryScreen: { screen: OrderHistoryScreen },
         OrderDetailScreen: { screen: OrderDetailScreen },
@@ -156,12 +222,16 @@ const AppDrawer = DrawerNavigator(
         Categories: { screen: CategoryScreenNav },
         "Delivery Details": { screen: DeliveryDetailsNav },
         "Order History": { screen: OrderHistoryScreenNav },
+        "Schedule Orders": { screen: OrderHistoryScreenNav },
+        "Order Status": { screen: OrderHistoryScreenNav },
+        "User Profile": { screen: OrderHistoryScreenNav },
+        "My Rewards Wallet": { screen: OrderHistoryScreenNav },
         "Change Store": { screen: StoreScreenNav },
         "Suggest a Product": { screen: SuggestProductScreenNav },
         "Terms of Services": { screen: TermsOfServicesScreenNav },
         "Contact us": { screen: ContactUsScreenNav },
-        "Temp Screen": { screen: TempScreenNav },
         "Chat with us": { screen: ChatScreenNav },
+        // "Temp Screen": { screen: TempScreenNav },
     },
     {
         drawerWidth: 300,
@@ -185,50 +255,7 @@ const AppDrawer = DrawerNavigator(
             },
         },
         headerMode: "none",
-        contentComponent: props => (
-            // <View style={{flex:1, backgroundColor:'green'}}>
-            <ScrollView>
-                <View style={styles.maincontainer}>
-                    <View style={styles.headercontainer}>
-                        <Text style={styles.headerTitle}>
-                            {global.currentUser === null ? "Welcome, Guest" : "Welcome, " + global.currentUser.userName}
-                        </Text>
-                    </View>
-
-                    <View style={{ flex: 1, backgroundColor: "black" }}>
-                        <DrawerItems
-                            {...props}
-                            onItemPress={({ route, focused }) => {
-                                props.onItemPress({ route, focused });
-                                constant.debugLog("item pressed " + route.key);
-                                if (route.key === "AddressListScreen") {
-                                    // props.getFirstScreenTap()
-                                } else if (route.key === "SecondScreen") {
-                                    // props.getSecondScreenTap()
-                                    // props.getSecondScreenTap()
-                                }
-                            }}
-                            getLabel={scene => (
-                                <View style={styles.rowView}>
-                                    <Image
-                                        style={styles.menuImage}
-                                        source={require("../Resources/Images/Recurso.png")}
-                                    />
-                                    <Text style={styles.menuTitle}>{props.getLabel(scene)}</Text>
-                                </View>
-                            )}
-                        />
-                    </View>
-                    <TouchableOpacity onPress={onPressLogout}>
-                        <View style={styles.rowView}>
-                            <Image style={styles.menuImage} source={require("../Resources/Images/Recurso.png")} />
-                            <Text style={styles.menuTitle}>Logout</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
-            // </View>
-        ),
+        contentComponent: props => <SideMenuScreen drawerProps={props} onPressLogout={this.onPressLogout} />,
     }
 );
 

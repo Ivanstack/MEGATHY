@@ -1,5 +1,5 @@
 import React from "react";
-import { AsyncStorage, Alert, Dimensions } from "react-native";
+import { AsyncStorage, Alert, Dimensions, Image, StyleSheet } from "react-native";
 import * as constant from "./Constants";
 import baseLocal from "../Resources/Localization/baseLocalization"; // For Localization
 import NavigationView from "../Components/NavigationView";
@@ -170,6 +170,126 @@ export function safeImageURL(imgURL) {
     }
 }
 
+// Menu Item Images
+export function menuImage(menuItem, isSelected) {
+    var imageName = "";
+
+    switch (menuItem) {
+        case constant.menuItemsKeys.category:
+            if (isSelected) {
+                imageName = require("..//Resources/Images/MenuIcons/homeActive.png");
+            } else {
+                imageName = require("../Resources/Images/MenuIcons/home.png");
+            }
+            break;
+
+        case constant.menuItemsKeys.deliveryDetails:
+            if (isSelected) {
+                imageName = require("../Resources/Images/MenuIcons/deliveryDetailsActive.png");
+            } else {
+                imageName = require("../Resources/Images/MenuIcons/deliveryDetails.png");
+            }
+            break;
+
+        case constant.menuItemsKeys.orderHistory:
+            if (isSelected) {
+                imageName = require("../Resources/Images/MenuIcons/orderHistoryActive.png");
+            } else {
+                imageName = require("../Resources/Images/MenuIcons/orderHistory.png");
+            }
+            break;
+
+        case constant.menuItemsKeys.scheduledOrders:
+            if (isSelected) {
+                imageName = require("../Resources/Images/MenuIcons/scheduledOrdersActive.png");
+            } else {
+                imageName = require("../Resources/Images/MenuIcons/scheduledOrders.png");
+            }
+            break;
+
+        case constant.menuItemsKeys.orderStatus:
+            if (isSelected) {
+                imageName = require("../Resources/Images/MenuIcons/orderStatusActive.png");
+            } else {
+                imageName = require("../Resources/Images/MenuIcons/orderStatus.png");
+            }
+            break;
+
+        case constant.menuItemsKeys.profile:
+            if (isSelected) {
+                imageName = require("../Resources/Images/MenuIcons/profileActive.png");
+            } else {
+                imageName = require("../Resources/Images/MenuIcons/profile.png");
+            }
+            break;
+
+        case constant.menuItemsKeys.wallet:
+            if (isSelected) {
+                imageName = require("../Resources/Images/MenuIcons/walletActive.png");
+            } else {
+                imageName = require("../Resources/Images/MenuIcons/wallet.png");
+            }
+            break;
+
+        case constant.menuItemsKeys.changeStore:
+            if (isSelected) {
+                imageName = require("../Resources/Images/MenuIcons/changeStoreActive.png");
+            } else {
+                imageName = require("../Resources/Images/MenuIcons/changeStore.png");
+            }
+            break;
+
+        case constant.menuItemsKeys.suggestProduct:
+            if (isSelected) {
+                imageName = require("../Resources/Images/MenuIcons/suggestProductActive.png");
+            } else {
+                imageName = require("../Resources/Images/MenuIcons/suggestProduct.png");
+            }
+            break;
+
+        case constant.menuItemsKeys.termsOfServices:
+            if (isSelected) {
+                imageName = require("../Resources/Images/MenuIcons/termsOfServicesActive.png");
+            } else {
+                imageName = require("../Resources/Images/MenuIcons/termsOfServices.png");
+            }
+            break;
+
+        case constant.menuItemsKeys.contact:
+            if (isSelected) {
+                imageName = require("../Resources/Images/MenuIcons/contactActive.png");
+            } else {
+                imageName = require("../Resources/Images/MenuIcons/contact.png");
+            }
+            break;
+
+        case constant.menuItemsKeys.feedback:
+            if (isSelected) {
+                imageName = require("../Resources/Images/MenuIcons/feedbackActive.png");
+            } else {
+                imageName = require("../Resources/Images/MenuIcons/feedback.png");
+            }
+            break;
+
+        case constant.menuItemsKeys.logout:
+            if (isSelected) {
+                imageName = require("../Resources/Images/MenuIcons/logoutActive.png");
+            } else {
+                imageName = require("../Resources/Images/MenuIcons/logout.png");
+            }
+            break;
+
+        default:
+            if (isSelected) {
+                imageName = require("../Resources/Images/MenuIcons/logoutActive.png");
+            } else {
+                imageName = require("../Resources/Images/MenuIcons/logout.png");
+            }
+            break;
+    }
+    return <Image style={styles.menuIcon} source={imageName} />;
+}
+
 // Way to implement showAlertYesNo function
 
 // CommonUtilities.showAlertYesNo("Are you sure you want to delete this address?").then(
@@ -182,3 +302,6 @@ export function safeImageURL(imgURL) {
 //         constant.debugLog("User pressed No");
 //     }
 // );
+const styles = StyleSheet.create({
+    menuIcon: {marginLeft: 10,},
+});

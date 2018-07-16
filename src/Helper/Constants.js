@@ -21,6 +21,22 @@ module.exports = {
     reloadOrderSummaryListener: "reloadOrderSummaryListener",
     DeviceInfo: require("react-native-device-info"),
 
+    menuItemsKeys: {
+        category: "category",
+        deliveryDetails: "deliveryDetails",
+        orderHistory: "orderHistory",
+        scheduledOrders: "scheduledOrders",
+        orderStatus: "orderStatus",
+        profile: "profile",
+        wallet: "wallet",
+        changeStore: "changeStore",
+        suggestProduct: "suggestProduct",
+        termsOfServices: "termsOfServices",
+        contact: "contact",
+        feedback: "feedback",
+        logout: "logout",
+    },
+
     countyDetails: {
         IN: {
             name: "India",
@@ -189,8 +205,8 @@ module.exports = {
     kOrderStatusDelivered: "Items Delivered",
 
     // Chat Key
-    kMessageTypeRequest:"Request",
-    kMessageTypeReplay:"Replay",
+    kMessageTypeRequest: "Request",
+    kMessageTypeReplay: "Replay",
 
     actions: {
         /*
@@ -358,45 +374,3 @@ module.exports = {
         Redux Action Keys End
     */
 };
-
-/*
-Network Utility API Call Template
-
-    networkUtility.postRequest(constant.APIForgotPassword, forgotPasswordParameters).then(
-        result => {
-            // Hide Loading View
-            this.setState({ visible: false });
-
-            // HTTP Status Code => {result.status}
-        },
-        error => {
-            // Hide Loading View
-            this.setState({ visible: false });
-
-            constants.debugLog("\nStatus Code: " + error.status);
-            constants.debugLog("\nError Message: " + error.message);
-            if (error.status != 500) {
-                if (global.currentAppLanguage != "en" && error.data["messageAr"] != undefined) {
-                    CommonUtilities.showAlert(error.data["messageAr"], false);
-                } else {
-                    CommonUtilities.showAlert(error.data["message"], false);
-                }
-            } else {
-                constants.debugLog("Internal Server Error: " + error.data);
-                CommonUtilities.showAlert("Opps! something went wrong");
-            }
-        }
-    );
-
-    // Loading View
-    import Spinner from "react-native-loading-spinner-overlay";
-
-    // Show Spinner in render()
-
-    <Spinner
-        visible={this.state.visible}
-        cancelable={true}
-        textStyle={{ color: "#FFF" }}
-    />
-
-*/
