@@ -15,6 +15,7 @@ import {
     Image,
     ScrollView,
     TouchableWithoutFeedback,
+    Dimensions,
 } from "react-native";
 
 import * as constant from "../../../../Helper/Constants";
@@ -26,6 +27,9 @@ import { connect } from "react-redux";
 import CollapsibleList from "react-native-collapsible-list";
 import SegmentedControlTab from "react-native-segmented-control-tab";
 import moment from "moment";
+
+// Custom Component
+import SegmentControl from "../../../../Components/SegmentControl";
 
 // Common Utilities
 import * as CommonUtilities from "../../../../Helper/CommonUtilities";
@@ -53,12 +57,13 @@ class SelectTimeScreen extends Component {
             arrSetTimeSlote: [],
             arrOrderBookedTimeSlote: [],
             selectedTimeSlot: null,
-            crntSelectedSegment: 0,
+            // crntSelectedSegment: 0,
             crntStoreTime: "",
             isTimeSlotOpen: false,
         };
         this.numberOfVisibleItems = 1;
         this.crntOpenTimeSlot = [];
+        this.crntSelectedSegment = 0;
     }
 
     static navigationOptions = ({ navigation }) => ({
@@ -169,7 +174,7 @@ class SelectTimeScreen extends Component {
 
     // Check Time Slot Available
     _getBookedTimeSlot = (checkeTimeSlot, strCheckTime) => {
-        let objSlot = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].otherBookTime;
+        let objSlot = this.state.arrOrderBookedTimeSlote[this.crntSelectedSegment].otherBookTime;
 
         let bookedOrderTimeSlot = objSlot[`slot${checkeTimeSlot}`];
         // constant.debugLog("Booked Time Slot : ===> " + bookedOrderTimeSlot);
@@ -250,26 +255,26 @@ class SelectTimeScreen extends Component {
         var remainigHours = 0;
         nextDay.setDate(today.getDate() + 1);
 
-        let dateForSegment = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date;
+        let dateForSegment = this.state.arrOrderBookedTimeSlote[this.crntSelectedSegment].date;
         moment(new Date()).format("YYYY-MM-DD");
         let crntDateForCompare = moment(new Date()).format("YYYY-MM-DD"); // new Date().toISOString().substring(0, 10);
         // console.log("Todays Hours : ==> ", crntDateForCompare);
         // console.log("Compare Date Hours : ==> ", dateForSegment);
 
-        let strNextDay = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date + " " + "00:00:00";
+        let strNextDay = this.state.arrOrderBookedTimeSlote[this.crntSelectedSegment].date + " " + "00:00:00";
         if (global.currentSettings != null && global.currentSettings != undefined) {
             strNextDay =
-                this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date +
+                this.state.arrOrderBookedTimeSlote[this.crntSelectedSegment].date +
                 " " +
                 global.currentSettings["working-hours"].start;
         }
         if (crntDateForCompare === dateForSegment) {
-            if (this.state.crntSelectedSegment + 1 <= this.state.arrOrderBookedTimeSlote.length) {
-                nextDay = new Date(this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment + 1].date);
+            if (this.crntSelectedSegment + 1 <= this.state.arrOrderBookedTimeSlote.length) {
+                nextDay = new Date(this.state.arrOrderBookedTimeSlote[this.crntSelectedSegment + 1].date);
             }
             if (global.currentSettings != null && global.currentSettings != undefined) {
                 strNextDay =
-                    this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment + 1].date +
+                    this.state.arrOrderBookedTimeSlote[this.crntSelectedSegment + 1].date +
                     " " +
                     global.currentSettings["working-hours"].start;
             }
@@ -302,11 +307,13 @@ class SelectTimeScreen extends Component {
             arrRemainig.push(newTimeSloteData);
         }
         // console.log("TimeSlot In Json :===> ", arrRemainig);
-        this.setState({ arrSetTimeSlote: arrRemainig });
+        setTimeout(() => {
+            this.setState({ arrSetTimeSlote: arrRemainig });
+        }, 250);
     }
 
     _checkedSlotBookedByCrntUser = slot => {
-        let slotBookedDate = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date;
+        let slotBookedDate = this.state.arrOrderBookedTimeSlote[this.crntSelectedSegment].date;
         if (
             this.state.selectedTimeSlot != undefined &&
             this.state.selectedTimeSlot.tempBookedDate === slotBookedDate &&
@@ -322,11 +329,11 @@ class SelectTimeScreen extends Component {
         // deliveryDuration in milliSeconds
         let deliveryDuration = Number(global.currentSettings["schedule-order-delivery-duration-min"]) * 60000;
         let selectedTimeStamp = new Date(
-            this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date + " " + item.title.split(" - ")[0]
+            this.state.arrOrderBookedTimeSlote[this.crntSelectedSegment].date + " " + item.title.split(" - ")[0]
         ).getTime();
 
         if (this.props.parentScreen.state.storeTime + deliveryDuration < selectedTimeStamp) {
-            item.tempBookedDate = this.state.arrOrderBookedTimeSlote[this.state.crntSelectedSegment].date;
+            item.tempBookedDate = this.state.arrOrderBookedTimeSlote[this.crntSelectedSegment].date;
             this.props.parentScreen.selectedTimeSlot = item;
             this.setState({ selectedTimeSlot: item });
         } else {
@@ -340,13 +347,19 @@ class SelectTimeScreen extends Component {
 
     // OnPress Methods
     _onPressSegmentChange = index => {
-        // console.log("Segment Change :===> ", index);
-        this.setState(
-            {
-                crntSelectedSegment: index,
-            },
-            () => this._getRemainingHours()
-        );
+        console.log("Segment Change :===> ", index);
+        this.crntSelectedSegment = index;
+        this._getRemainingHours();
+        // this.setState(
+        //     {
+        //         crntSelectedSegment: index,
+        //     },
+        // () =>
+        // setTimeout(() => {
+        //     this._getRemainingHours();
+        // }, 200)
+        //     () => this._getRemainingHours()
+        // );
     };
 
     _onPressSelectTimeSlot = item => {
@@ -540,6 +553,8 @@ class SelectTimeScreen extends Component {
     };
 
     render() {
+        let arrDate = this._getValueForSegmentDate();
+        constant.debugLog("arr dates :===> " + arrDate.length);
         return (
             // Main View (Container)
             <View style={{ flex: 1 }}>
@@ -552,7 +567,22 @@ class SelectTimeScreen extends Component {
                             pagingEnabled={true}
                             showsHorizontalScrollIndicator={false}
                         >
-                            <SegmentedControlTab
+                            {this._getValueForSegmentDate().length > 0 ? (
+                                <SegmentControl
+                                    style={{
+                                        height: 40,
+                                        width: "100%",
+                                    }}
+                                    values={this._getValueForSegmentDate()}
+                                    borderColor={constant.themeColor}
+                                    viewWidth={Dimensions.get("window").width}
+                                    viewHeight={40}
+                                    // onValueChange={index => this.setState({ crntSelectedSegment: index })}
+                                    onChange={item => this._onPressSegmentChange(item.index)}
+                                />
+                            ) : null}
+
+                            {/* <SegmentedControlTab
                                 tabsContainerStyle={SelectTimeStyle.tabsContainerStyle}
                                 tabStyle={SelectTimeStyle.tabStyle}
                                 tabTextStyle={{ color: constant.themeColor }}
@@ -561,7 +591,7 @@ class SelectTimeScreen extends Component {
                                 values={this._getValueForSegmentDate()}
                                 selectedIndex={this.state.crntSelectedSegment}
                                 onTabPress={this._onPressSegmentChange}
-                            />
+                            /> */}
                         </ScrollView>
                     </View>
 

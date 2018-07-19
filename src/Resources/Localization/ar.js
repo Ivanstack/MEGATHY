@@ -1,5 +1,5 @@
 export default {
-    Megathy: "مقاضي",
+    "Megathy": "مقاضي",
 
     // Menu
 
@@ -310,7 +310,7 @@ export default {
     "Customer Notes": "ملحوظة العميل ",
     "Order Amount": "كمية الطلب ",
     "Select days ": "إختار الأيام ",
-    "Update User profile": "تحديث ملف العميل ",
+    "Update User Profile": "تحديث ملف العميل ",
     "Old Password": "كلمة المرور السابقه ",
     "New Password": "كلمة المرور الجديده ",
     "Confirm Password": "تأكيد كلمة المرور ",

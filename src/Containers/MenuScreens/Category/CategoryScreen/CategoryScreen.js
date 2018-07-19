@@ -12,15 +12,10 @@ import {
     Image,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    Alert,
-    ActionSheetIOS,
     AppState,
     SafeAreaView,
     FlatList,
-    ScrollView,
-    Dimensions,
     RefreshControl,
-    ActivityIndicator,
 } from "react-native";
 
 // Redux
@@ -60,7 +55,8 @@ class CategoryScreen extends Component {
         };
 
         this._callLoadMore = this._callLoadMore.bind(this);
-
+        baseLocal.locale = global.currentAppLanguage;
+        // constant.debugLog("app language :==> " + global.currentAppLanguage);
         // Class Props
         // (this.currentPage = 1), (this.lastPage = 0), (this.subCategoryCurrentPage = 1), (this.subCategoryLastPage = 0);
         // Temp Prop
@@ -93,7 +89,7 @@ class CategoryScreen extends Component {
                             color="white"
                         />
                     </TouchableOpacity>
-                    <Text style={CategoryStyles.headerText}> Meghathy </Text>
+                    <Text style={CategoryStyles.headerText}>{baseLocal.t("Megathy")}</Text>
                 </View>
 
                 {/* <TouchableOpacity onPress={() => navigation.navigate("DrawerToggle")}>
@@ -107,13 +103,13 @@ class CategoryScreen extends Component {
             </View>
         ),
         headerStyle: {
-            backgroundColor: "#CF2526",
+            backgroundColor: constant.themeColor,
         },
     });
 
     // App Life Cycle Methods
 
-    async componentDidMount() {
+    componentDidMount() {
         console.log("App State Home: ", AppState.currentState);
         this.getCategoryAndBannerData(true);
     }
@@ -259,7 +255,7 @@ class CategoryScreen extends Component {
 
     _renderHeader() {
         return (
-            <View style={{marginTop:8,marginBottom:8, backgroundColor: constant.prodCategoryBGColor,}}>
+            <View style={{ marginTop: 8, marginBottom: 8, backgroundColor: constant.prodCategoryBGColor }}>
                 <Swiper
                     style={CategoryStyles.bannerWrapper}
                     showPagination

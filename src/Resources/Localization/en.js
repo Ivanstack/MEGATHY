@@ -304,7 +304,7 @@ export default {
     "Customer Notes": "Customer Notes",
     "Order Amount": "Order Amount",
     "Select days ": "Select days ",
-    "Update User profile": "Update User profile",
+    "Update User Profile": "Update User Profile",
     "Old Password": "Old Password",
     "New Password": "New Password",
     "Confirm Password": "Confirm Password",
