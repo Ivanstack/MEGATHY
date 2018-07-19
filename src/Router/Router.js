@@ -25,6 +25,7 @@ import OrderSummaryScreen from "../Containers/MenuScreens/OrderMaster/OrderSumma
 import AddressListScreen from "../Containers/MenuScreens/DeliveryDetails/AddressList/AddressListScreen";
 import AddAddressScreen from "../Containers/MenuScreens/DeliveryDetails/AddAddress/AddAddressScreen";
 import VerifyPhoneScreen from "../Containers/MenuScreens/DeliveryDetails/VerifyPhone/VerifyPhoneScreen";
+import AddressMapScreen from "../Containers/MenuScreens/DeliveryDetails/AddressMap/AddressMapScreen";
 
 // OrderHistoryScreenNav
 import OrderHistoryScreen from "../Containers/MenuScreens/OrderHistory/OrderHistory/OrderHistoryScreen";
@@ -35,6 +36,9 @@ import OrderDetailScreen from "../Containers/MenuScreens/OrderHistory/OrderDetai
 // OrderStatusScreenNav
 
 // UserProfileScreenNav
+import UserProfileScreen from "../Containers/MenuScreens/UserProfile/UserProfile/UserProfileScreen";
+import EditUserProfileScreen from "../Containers/MenuScreens/UserProfile/EditUserProfile/EditUserProfileScreen";
+import ChangePasswordScreen from "../Containers/MenuScreens/UserProfile/ChangePassword/ChangePasswordScreen";
 
 // MyRewardsWalletScreenNav
 
@@ -91,6 +95,7 @@ const CategoryScreenNav = StackNavigator(
 // Delivery Detail Screen With Child Element
 const DeliveryDetailsNav = StackNavigator(
     {
+        AddressMapScreen: { screen: AddressMapScreen },
         AddressListScreen: { screen: AddressListScreen },
         AddAddressScreen: { screen: AddAddressScreen },
         VerifyPhoneScreen: { screen: VerifyPhoneScreen },
@@ -136,8 +141,9 @@ const OrderStatusScreenNav = StackNavigator(
 // User Profile Screen With Child Element
 const UserProfileScreenNav = StackNavigator(
     {
-        OrderHistoryScreen: { screen: OrderHistoryScreen },
-        OrderDetailScreen: { screen: OrderDetailScreen },
+        "User Profile": { screen: UserProfileScreen },
+        EditUserProfileScreen: { screen: EditUserProfileScreen },
+        ChangePasswordScreen: { screen: ChangePasswordScreen },
     },
     {
         headerMode: "screen",
@@ -224,7 +230,7 @@ const AppDrawer = DrawerNavigator(
         "Order History": { screen: OrderHistoryScreenNav },
         "Schedule Orders": { screen: OrderHistoryScreenNav },
         "Order Status": { screen: OrderHistoryScreenNav },
-        "User Profile": { screen: OrderHistoryScreenNav },
+        "User Profile": { screen: UserProfileScreenNav },
         "My Rewards Wallet": { screen: OrderHistoryScreenNav },
         "Change Store": { screen: StoreScreenNav },
         "Suggest a Product": { screen: SuggestProductScreenNav },

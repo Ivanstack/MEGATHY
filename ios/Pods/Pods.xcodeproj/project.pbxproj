@@ -1,0 +1,968 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		147BDD7594104712D34AB3405E3CB0EA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 572DBE63D5360AB71E5F80F979738FD0 /* Foundation.framework */; };
+		1CC97B65CA85C3B92946281A7B58DC17 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D154F4805B9715F0E6D79B0363CE280 /* Foundation.framework */; };
+		1EC61C5660EAC3687E698AF40C1421AF /* yoga-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 499C732ED235DE5138C4282A11ED7A86 /* yoga-dummy.m */; };
+		28B138A370E59F718CC5E2CF5E8CBC37 /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28DA6B987EE05B41D9EE5DE9967BE9DC /* Utils.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
+		3FCB54FF2588CF97941E0F4C650D40DB /* YGLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 4CAA3E22C2E5C1590854ADE3EA41EA79 /* YGLayout.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		40D46349D6B5E2B975F8B508C33F5D3F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 572DBE63D5360AB71E5F80F979738FD0 /* Foundation.framework */; };
+		44B18D443DC51A2B58B1071A1AA5923E /* YGEnums.h in Headers */ = {isa = PBXBuildFile; fileRef = 90D51770E11643C1C7045A92E708F364 /* YGEnums.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		4F20FBDDD989977C81FE1D903092150B /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D30BA06FC7E2CCF8D1A928B14647366 /* Utils.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		5522A93968B6F07D99B9CB7435FE507D /* Pods-MegathyRNTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 21B22E385BF4E226B419F306D075D39A /* Pods-MegathyRNTests-dummy.m */; };
+		66A1B1094381A430D061DB3CAC131D59 /* YGNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DA126A2BB4238E73E5C22CD82107221D /* YGNode.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
+		66FA983CA36F03196803F005F870363A /* YGStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = A4D6F53F5ED2C2C5EB7DD1649EBD4E73 /* YGStyle.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		72025F284AA37CCC6109EFCBABE891BB /* YGNodePrint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0B0FBF6FF249AA829326CAF6FA265BC /* YGNodePrint.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
+		74CEB9375C2A0193F6152B6798153A32 /* YGEnums.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A593133F4D9E15347747F569297B25AE /* YGEnums.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
+		7CD8F0022095DA60D5AE4D0576CB39F3 /* YGNodePrint.h in Headers */ = {isa = PBXBuildFile; fileRef = EF83D289413744F4ABCEAD91B74F6066 /* YGNodePrint.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		85992A6EDB6B00562318553415E66C4E /* Pods-MegathyRN-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B2916FDF382E968FC407571798EB94CA /* Pods-MegathyRN-dummy.m */; };
+		8FF145B7AD8BFC07D6AC3D3A81F362BE /* YGStyle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CCF85EE06502F19F8F6770F549645D13 /* YGStyle.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
+		90B747DB9F79D36CC64AFFE2E9EE71E7 /* YGNode.h in Headers */ = {isa = PBXBuildFile; fileRef = F0D17F2E3CDA2435D767547AD7807049 /* YGNode.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		9AA3A48B71C536CF413A0A340995626F /* Yoga.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D5477B0730030F65FC05AD501C7DA015 /* Yoga.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
+		A358E42EB86D34DB4E0F1DFC839D915F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D154F4805B9715F0E6D79B0363CE280 /* Foundation.framework */; };
+		B034AB6464BBFF3019521E2368D2EF46 /* Pods-MegathyRN-tvOS-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = FADA178402C1D2AA8E92C78DEDF37EF7 /* Pods-MegathyRN-tvOS-dummy.m */; };
+		B0C85DC2DE9B7FC714243A091602FA93 /* Pods-MegathyRN-tvOSTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0ACCFBD6282A16111E03F1EB9BB21054 /* Pods-MegathyRN-tvOSTests-dummy.m */; };
+		B27F900C6FEDF3C7DE886AA297CBCF18 /* YGMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = DB571BBD0F89B47B7C868DE35C3EE448 /* YGMacros.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		BB6EDBF01A7F1C79B66F0D204E05C5D4 /* Yoga-internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F0F1472AD22BC642AAFC94A02F42299 /* Yoga-internal.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		D9F7432DCB6389CC10D428CD54C444B7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D154F4805B9715F0E6D79B0363CE280 /* Foundation.framework */; };
+		DBC7F167CF2BACE2DA8528D6AE2F55A6 /* Yoga.h in Headers */ = {isa = PBXBuildFile; fileRef = A06AB91A8C6DDDA30F6492E286138A43 /* Yoga.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		EC0FD589BF602129A51371208BC00681 /* YGLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0F3F7D07070DBBB95560C0E19605B4B9 /* YGLayout.cpp */; settings = {COMPILER_FLAGS = "-fno-omit-frame-pointer -fexceptions -Wall -Werror -std=c++1y -fPIC -fno-objc-arc"; }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DBF6CCD58D252E27E65AC9A48BB17B18 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AD7E6E4C64B7ED5D703BBEA17A81C71D;
+			remoteInfo = yoga;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		01410663122DD85D48C46C81D8A0CBF7 /* Pods-MegathyRN-tvOS-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MegathyRN-tvOS-frameworks.sh"; sourceTree = "<group>"; };
+		01AF39E19D40333ADC8C99C7EA961C32 /* libyoga.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = libyoga.a; path = libyoga.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		0389ABA0D8444617BDED3AF35A00518F /* libPods-MegathyRN-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-MegathyRN-tvOS.a"; path = "libPods-MegathyRN-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0559E7CCEC580159A946922CADB81BF7 /* Pods-MegathyRN-tvOSTests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MegathyRN-tvOSTests-resources.sh"; sourceTree = "<group>"; };
+		0ACCFBD6282A16111E03F1EB9BB21054 /* Pods-MegathyRN-tvOSTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MegathyRN-tvOSTests-dummy.m"; sourceTree = "<group>"; };
+		0F3F7D07070DBBB95560C0E19605B4B9 /* YGLayout.cpp */ = {isa = PBXFileReference; includeInIndex = 1; name = YGLayout.cpp; path = yoga/YGLayout.cpp; sourceTree = "<group>"; };
+		11C61F79D8694198F6A2FBBCAB754DBD /* libPods-MegathyRN.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-MegathyRN.a"; path = "libPods-MegathyRN.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		21B22E385BF4E226B419F306D075D39A /* Pods-MegathyRNTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MegathyRNTests-dummy.m"; sourceTree = "<group>"; };
+		2856CECB9001F890BADBDE1410984591 /* Pods-MegathyRN-tvOSTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-MegathyRN-tvOSTests-acknowledgements.markdown"; sourceTree = "<group>"; };
+		28DA6B987EE05B41D9EE5DE9967BE9DC /* Utils.cpp */ = {isa = PBXFileReference; includeInIndex = 1; name = Utils.cpp; path = yoga/Utils.cpp; sourceTree = "<group>"; };
+		2D154F4805B9715F0E6D79B0363CE280 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		2ECB8F3B9293EA566FEFF07D40004DD5 /* Pods-MegathyRNTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MegathyRNTests.release.xcconfig"; sourceTree = "<group>"; };
+		3062B741C4BBE467089970B2E9AD0D66 /* Pods-MegathyRNTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-MegathyRNTests-acknowledgements.markdown"; sourceTree = "<group>"; };
+		36DB83CB4279B90D59054691B89501D1 /* GoogleMapsCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleMapsCore.framework; path = Maps/Frameworks/GoogleMapsCore.framework; sourceTree = "<group>"; };
+		3892BB6CCBCC0E275BE26C88F94D2144 /* Pods-MegathyRNTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MegathyRNTests.debug.xcconfig"; sourceTree = "<group>"; };
+		3B7713FB7CB3423F1B7493FC667834CB /* Pods-MegathyRN-tvOS-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MegathyRN-tvOS-acknowledgements.plist"; sourceTree = "<group>"; };
+		3C10A251C1796D3987175FE40797259B /* Pods-MegathyRNTests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MegathyRNTests-resources.sh"; sourceTree = "<group>"; };
+		499C732ED235DE5138C4282A11ED7A86 /* yoga-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "yoga-dummy.m"; sourceTree = "<group>"; };
+		4A50AC4C74282925C8DC118C3A1A5878 /* yoga-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "yoga-prefix.pch"; sourceTree = "<group>"; };
+		4CAA3E22C2E5C1590854ADE3EA41EA79 /* YGLayout.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = YGLayout.h; path = yoga/YGLayout.h; sourceTree = "<group>"; };
+		572DBE63D5360AB71E5F80F979738FD0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS10.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		672578AFFF3B60B1B5E44DF1B3747BBC /* Pods-MegathyRN-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MegathyRN-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
+		6F0F1472AD22BC642AAFC94A02F42299 /* Yoga-internal.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "Yoga-internal.h"; path = "yoga/Yoga-internal.h"; sourceTree = "<group>"; };
+		831307435677E2DB744C6F2A5EA98C1A /* libPods-MegathyRN-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-MegathyRN-tvOSTests.a"; path = "libPods-MegathyRN-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		90D51770E11643C1C7045A92E708F364 /* YGEnums.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = YGEnums.h; path = yoga/YGEnums.h; sourceTree = "<group>"; };
+		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		96B9BD8E1C52F50EFFEDBFA0824D94EC /* Pods-MegathyRN.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MegathyRN.debug.xcconfig"; sourceTree = "<group>"; };
+		97658A4B7D19426AAB25DEC4D805A5F0 /* Pods-MegathyRN-tvOSTests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MegathyRN-tvOSTests-frameworks.sh"; sourceTree = "<group>"; };
+		98BB7C7E3A5249B28A8F6952E941B265 /* Pods-MegathyRN-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MegathyRN-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		9D30BA06FC7E2CCF8D1A928B14647366 /* Utils.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Utils.h; path = yoga/Utils.h; sourceTree = "<group>"; };
+		A06AB91A8C6DDDA30F6492E286138A43 /* Yoga.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Yoga.h; path = yoga/Yoga.h; sourceTree = "<group>"; };
+		A4D6F53F5ED2C2C5EB7DD1649EBD4E73 /* YGStyle.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = YGStyle.h; path = yoga/YGStyle.h; sourceTree = "<group>"; };
+		A593133F4D9E15347747F569297B25AE /* YGEnums.cpp */ = {isa = PBXFileReference; includeInIndex = 1; name = YGEnums.cpp; path = yoga/YGEnums.cpp; sourceTree = "<group>"; };
+		AD97DE266F3B6B237700B46DBF043202 /* Pods-MegathyRN-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MegathyRN-frameworks.sh"; sourceTree = "<group>"; };
+		AEE9B2AE86AB69E09E6C1A2B2A358718 /* libPods-MegathyRNTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libPods-MegathyRNTests.a"; path = "libPods-MegathyRNTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B27A79E25F2DD3F30A034801574FB5CC /* Pods-MegathyRN-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-MegathyRN-acknowledgements.markdown"; sourceTree = "<group>"; };
+		B2916FDF382E968FC407571798EB94CA /* Pods-MegathyRN-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MegathyRN-dummy.m"; sourceTree = "<group>"; };
+		B7C2F1D649BEF40EAF9CBBA2521C822A /* Pods-MegathyRN-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MegathyRN-acknowledgements.plist"; sourceTree = "<group>"; };
+		BA476C39A4C6659463FD34A308E4FCA0 /* Pods-MegathyRNTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MegathyRNTests-acknowledgements.plist"; sourceTree = "<group>"; };
+		BE887D0024608594C3B440F4DF167E08 /* GoogleMaps.bundle */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "wrapper.plug-in"; name = GoogleMaps.bundle; path = Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle; sourceTree = "<group>"; };
+		C7184B8185767885DEC5BA9B3F5C26EB /* Pods-MegathyRN-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MegathyRN-resources.sh"; sourceTree = "<group>"; };
+		C7C739FB78F69BF001707C9B35569462 /* Pods-MegathyRN-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MegathyRN-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		CB413C51FA7A80E1FF77419C17EF2657 /* Pods-MegathyRN-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MegathyRN-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		CB681B00DD85C19A5998710672484EB0 /* Pods-MegathyRN-tvOS-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-MegathyRN-tvOS-acknowledgements.markdown"; sourceTree = "<group>"; };
+		CCF85EE06502F19F8F6770F549645D13 /* YGStyle.cpp */ = {isa = PBXFileReference; includeInIndex = 1; name = YGStyle.cpp; path = yoga/YGStyle.cpp; sourceTree = "<group>"; };
+		D0B0FBF6FF249AA829326CAF6FA265BC /* YGNodePrint.cpp */ = {isa = PBXFileReference; includeInIndex = 1; name = YGNodePrint.cpp; path = yoga/YGNodePrint.cpp; sourceTree = "<group>"; };
+		D5477B0730030F65FC05AD501C7DA015 /* Yoga.cpp */ = {isa = PBXFileReference; includeInIndex = 1; name = Yoga.cpp; path = yoga/Yoga.cpp; sourceTree = "<group>"; };
+		D9BC4E862EE31926DE6B334067145FA9 /* Pods-MegathyRN-tvOS-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MegathyRN-tvOS-resources.sh"; sourceTree = "<group>"; };
+		DA126A2BB4238E73E5C22CD82107221D /* YGNode.cpp */ = {isa = PBXFileReference; includeInIndex = 1; name = YGNode.cpp; path = yoga/YGNode.cpp; sourceTree = "<group>"; };
+		DB571BBD0F89B47B7C868DE35C3EE448 /* YGMacros.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = YGMacros.h; path = yoga/YGMacros.h; sourceTree = "<group>"; };
+		E004374149D836C1256FFFCB38FECB72 /* GoogleMapsBase.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleMapsBase.framework; path = Base/Frameworks/GoogleMapsBase.framework; sourceTree = "<group>"; };
+		E8FDBFDA7CB33A00A768FC682A2B4BE7 /* Pods-MegathyRN.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MegathyRN.release.xcconfig"; sourceTree = "<group>"; };
+		E99F2F1C38FBB429A2B0BB5BC0AD733D /* yoga.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = yoga.xcconfig; sourceTree = "<group>"; };
+		EF83D289413744F4ABCEAD91B74F6066 /* YGNodePrint.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = YGNodePrint.h; path = yoga/YGNodePrint.h; sourceTree = "<group>"; };
+		F0D17F2E3CDA2435D767547AD7807049 /* YGNode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = YGNode.h; path = yoga/YGNode.h; sourceTree = "<group>"; };
+		F280CC87C68461806DFBADA71434F93D /* yoga.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; path = yoga.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		F94E97B2DB729CE934D713A8744CADFA /* Pods-MegathyRNTests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MegathyRNTests-frameworks.sh"; sourceTree = "<group>"; };
+		F95DB7ACF73CF03040C57A3D42223A51 /* GoogleMaps.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GoogleMaps.framework; path = Maps/Frameworks/GoogleMaps.framework; sourceTree = "<group>"; };
+		FADA178402C1D2AA8E92C78DEDF37EF7 /* Pods-MegathyRN-tvOS-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MegathyRN-tvOS-dummy.m"; sourceTree = "<group>"; };
+		FB0BAA8CA5433277035B1D8C8E5543B5 /* Pods-MegathyRN-tvOSTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MegathyRN-tvOSTests-acknowledgements.plist"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0080D276871122A95DEF236CDB6DEC45 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A358E42EB86D34DB4E0F1DFC839D915F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		48900501A462115A20D450642492AAFB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1CC97B65CA85C3B92946281A7B58DC17 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6C9A7511FFE034805B428E4FC0C8C055 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				147BDD7594104712D34AB3405E3CB0EA /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B7CAA3B4A41CFE6E23976B1BEBF15AA3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D9F7432DCB6389CC10D428CD54C444B7 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EF4FA30C761B6CE636EAE74481C637EE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				40D46349D6B5E2B975F8B508C33F5D3F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1033E29C1F917E322CCF3206F7943E82 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				E99F2F1C38FBB429A2B0BB5BC0AD733D /* yoga.xcconfig */,
+				499C732ED235DE5138C4282A11ED7A86 /* yoga-dummy.m */,
+				4A50AC4C74282925C8DC118C3A1A5878 /* yoga-prefix.pch */,
+			);
+			name = "Support Files";
+			path = "../../../../ios/Pods/Target Support Files/yoga";
+			sourceTree = "<group>";
+		};
+		1418B056D31B27EE2CEBA552B5ADFE56 /* Base */ = {
+			isa = PBXGroup;
+			children = (
+				501562BF592517FC6A65661FF1B35C78 /* Frameworks */,
+			);
+			name = Base;
+			sourceTree = "<group>";
+		};
+		20F731AE46C73F232AF0C168DC383CF9 /* tvOS */ = {
+			isa = PBXGroup;
+			children = (
+				572DBE63D5360AB71E5F80F979738FD0 /* Foundation.framework */,
+			);
+			name = tvOS;
+			sourceTree = "<group>";
+		};
+		243FAC914C81DCF02EFAD12598762AD5 /* GoogleMaps */ = {
+			isa = PBXGroup;
+			children = (
+				1418B056D31B27EE2CEBA552B5ADFE56 /* Base */,
+				6BC99F081C91F80679CFA5DDC6213D57 /* Maps */,
+			);
+			name = GoogleMaps;
+			path = GoogleMaps;
+			sourceTree = "<group>";
+		};
+		2DBAEB4D27CDA944F60E77A090BBE38E /* Pods-MegathyRN */ = {
+			isa = PBXGroup;
+			children = (
+				B27A79E25F2DD3F30A034801574FB5CC /* Pods-MegathyRN-acknowledgements.markdown */,
+				B7C2F1D649BEF40EAF9CBBA2521C822A /* Pods-MegathyRN-acknowledgements.plist */,
+				B2916FDF382E968FC407571798EB94CA /* Pods-MegathyRN-dummy.m */,
+				AD97DE266F3B6B237700B46DBF043202 /* Pods-MegathyRN-frameworks.sh */,
+				C7184B8185767885DEC5BA9B3F5C26EB /* Pods-MegathyRN-resources.sh */,
+				96B9BD8E1C52F50EFFEDBFA0824D94EC /* Pods-MegathyRN.debug.xcconfig */,
+				E8FDBFDA7CB33A00A768FC682A2B4BE7 /* Pods-MegathyRN.release.xcconfig */,
+			);
+			name = "Pods-MegathyRN";
+			path = "Target Support Files/Pods-MegathyRN";
+			sourceTree = "<group>";
+		};
+		3598CBA77D53C0AA5CCFD958CD2E8857 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BE887D0024608594C3B440F4DF167E08 /* GoogleMaps.bundle */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		501562BF592517FC6A65661FF1B35C78 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E004374149D836C1256FFFCB38FECB72 /* GoogleMapsBase.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5892BE373876FB2B83173E57C3FE826B /* Development Pods */ = {
+			isa = PBXGroup;
+			children = (
+				B180EBACA41496A2CDE52E2EC90D0E8B /* yoga */,
+			);
+			name = "Development Pods";
+			sourceTree = "<group>";
+		};
+		58996781A54EE964D7111D73083A18A5 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				2D154F4805B9715F0E6D79B0363CE280 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		6B9DDBFD34805D0CECB3FE7AA6B7B594 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				243FAC914C81DCF02EFAD12598762AD5 /* GoogleMaps */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		6BC99F081C91F80679CFA5DDC6213D57 /* Maps */ = {
+			isa = PBXGroup;
+			children = (
+				E10253D9A6AF596CDA1C3BBE1F2FBFD6 /* Frameworks */,
+				3598CBA77D53C0AA5CCFD958CD2E8857 /* Resources */,
+			);
+			name = Maps;
+			sourceTree = "<group>";
+		};
+		7BDD17CED8DD24AD3AED749441190DBA /* Pods-MegathyRNTests */ = {
+			isa = PBXGroup;
+			children = (
+				3062B741C4BBE467089970B2E9AD0D66 /* Pods-MegathyRNTests-acknowledgements.markdown */,
+				BA476C39A4C6659463FD34A308E4FCA0 /* Pods-MegathyRNTests-acknowledgements.plist */,
+				21B22E385BF4E226B419F306D075D39A /* Pods-MegathyRNTests-dummy.m */,
+				F94E97B2DB729CE934D713A8744CADFA /* Pods-MegathyRNTests-frameworks.sh */,
+				3C10A251C1796D3987175FE40797259B /* Pods-MegathyRNTests-resources.sh */,
+				3892BB6CCBCC0E275BE26C88F94D2144 /* Pods-MegathyRNTests.debug.xcconfig */,
+				2ECB8F3B9293EA566FEFF07D40004DD5 /* Pods-MegathyRNTests.release.xcconfig */,
+			);
+			name = "Pods-MegathyRNTests";
+			path = "Target Support Files/Pods-MegathyRNTests";
+			sourceTree = "<group>";
+		};
+		7DB346D0F39D3F0E887471402A8071AB = {
+			isa = PBXGroup;
+			children = (
+				93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */,
+				5892BE373876FB2B83173E57C3FE826B /* Development Pods */,
+				A42F72DC1D780481325DD00969B19BB6 /* Frameworks */,
+				6B9DDBFD34805D0CECB3FE7AA6B7B594 /* Pods */,
+				88FEE5BBC6BE4AB3A36D4C98F275CBE4 /* Products */,
+				C6FDBB77DDEC1B6BCA285C3EDA952C7E /* Targets Support Files */,
+			);
+			sourceTree = "<group>";
+		};
+		88FEE5BBC6BE4AB3A36D4C98F275CBE4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				11C61F79D8694198F6A2FBBCAB754DBD /* libPods-MegathyRN.a */,
+				0389ABA0D8444617BDED3AF35A00518F /* libPods-MegathyRN-tvOS.a */,
+				831307435677E2DB744C6F2A5EA98C1A /* libPods-MegathyRN-tvOSTests.a */,
+				AEE9B2AE86AB69E09E6C1A2B2A358718 /* libPods-MegathyRNTests.a */,
+				01AF39E19D40333ADC8C99C7EA961C32 /* libyoga.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9C1ABC9DEB30D76C0F5C596F02A8B7D1 /* Pods-MegathyRN-tvOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				2856CECB9001F890BADBDE1410984591 /* Pods-MegathyRN-tvOSTests-acknowledgements.markdown */,
+				FB0BAA8CA5433277035B1D8C8E5543B5 /* Pods-MegathyRN-tvOSTests-acknowledgements.plist */,
+				0ACCFBD6282A16111E03F1EB9BB21054 /* Pods-MegathyRN-tvOSTests-dummy.m */,
+				97658A4B7D19426AAB25DEC4D805A5F0 /* Pods-MegathyRN-tvOSTests-frameworks.sh */,
+				0559E7CCEC580159A946922CADB81BF7 /* Pods-MegathyRN-tvOSTests-resources.sh */,
+				CB413C51FA7A80E1FF77419C17EF2657 /* Pods-MegathyRN-tvOSTests.debug.xcconfig */,
+				98BB7C7E3A5249B28A8F6952E941B265 /* Pods-MegathyRN-tvOSTests.release.xcconfig */,
+			);
+			name = "Pods-MegathyRN-tvOSTests";
+			path = "Target Support Files/Pods-MegathyRN-tvOSTests";
+			sourceTree = "<group>";
+		};
+		9FC247385556789D716C7ACD19B8E1E6 /* Pod */ = {
+			isa = PBXGroup;
+			children = (
+				F280CC87C68461806DFBADA71434F93D /* yoga.podspec */,
+			);
+			name = Pod;
+			sourceTree = "<group>";
+		};
+		A42F72DC1D780481325DD00969B19BB6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				58996781A54EE964D7111D73083A18A5 /* iOS */,
+				20F731AE46C73F232AF0C168DC383CF9 /* tvOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B180EBACA41496A2CDE52E2EC90D0E8B /* yoga */ = {
+			isa = PBXGroup;
+			children = (
+				28DA6B987EE05B41D9EE5DE9967BE9DC /* Utils.cpp */,
+				9D30BA06FC7E2CCF8D1A928B14647366 /* Utils.h */,
+				A593133F4D9E15347747F569297B25AE /* YGEnums.cpp */,
+				90D51770E11643C1C7045A92E708F364 /* YGEnums.h */,
+				0F3F7D07070DBBB95560C0E19605B4B9 /* YGLayout.cpp */,
+				4CAA3E22C2E5C1590854ADE3EA41EA79 /* YGLayout.h */,
+				DB571BBD0F89B47B7C868DE35C3EE448 /* YGMacros.h */,
+				DA126A2BB4238E73E5C22CD82107221D /* YGNode.cpp */,
+				F0D17F2E3CDA2435D767547AD7807049 /* YGNode.h */,
+				D0B0FBF6FF249AA829326CAF6FA265BC /* YGNodePrint.cpp */,
+				EF83D289413744F4ABCEAD91B74F6066 /* YGNodePrint.h */,
+				CCF85EE06502F19F8F6770F549645D13 /* YGStyle.cpp */,
+				A4D6F53F5ED2C2C5EB7DD1649EBD4E73 /* YGStyle.h */,
+				D5477B0730030F65FC05AD501C7DA015 /* Yoga.cpp */,
+				A06AB91A8C6DDDA30F6492E286138A43 /* Yoga.h */,
+				6F0F1472AD22BC642AAFC94A02F42299 /* Yoga-internal.h */,
+				9FC247385556789D716C7ACD19B8E1E6 /* Pod */,
+				1033E29C1F917E322CCF3206F7943E82 /* Support Files */,
+			);
+			name = yoga;
+			path = "../../node_modules/react-native/ReactCommon/yoga";
+			sourceTree = "<group>";
+		};
+		C6FDBB77DDEC1B6BCA285C3EDA952C7E /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				2DBAEB4D27CDA944F60E77A090BBE38E /* Pods-MegathyRN */,
+				D1A8CCADC50CA40D262DBE75AB1EC71B /* Pods-MegathyRN-tvOS */,
+				9C1ABC9DEB30D76C0F5C596F02A8B7D1 /* Pods-MegathyRN-tvOSTests */,
+				7BDD17CED8DD24AD3AED749441190DBA /* Pods-MegathyRNTests */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		D1A8CCADC50CA40D262DBE75AB1EC71B /* Pods-MegathyRN-tvOS */ = {
+			isa = PBXGroup;
+			children = (
+				CB681B00DD85C19A5998710672484EB0 /* Pods-MegathyRN-tvOS-acknowledgements.markdown */,
+				3B7713FB7CB3423F1B7493FC667834CB /* Pods-MegathyRN-tvOS-acknowledgements.plist */,
+				FADA178402C1D2AA8E92C78DEDF37EF7 /* Pods-MegathyRN-tvOS-dummy.m */,
+				01410663122DD85D48C46C81D8A0CBF7 /* Pods-MegathyRN-tvOS-frameworks.sh */,
+				D9BC4E862EE31926DE6B334067145FA9 /* Pods-MegathyRN-tvOS-resources.sh */,
+				672578AFFF3B60B1B5E44DF1B3747BBC /* Pods-MegathyRN-tvOS.debug.xcconfig */,
+				C7C739FB78F69BF001707C9B35569462 /* Pods-MegathyRN-tvOS.release.xcconfig */,
+			);
+			name = "Pods-MegathyRN-tvOS";
+			path = "Target Support Files/Pods-MegathyRN-tvOS";
+			sourceTree = "<group>";
+		};
+		E10253D9A6AF596CDA1C3BBE1F2FBFD6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F95DB7ACF73CF03040C57A3D42223A51 /* GoogleMaps.framework */,
+				36DB83CB4279B90D59054691B89501D1 /* GoogleMapsCore.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		763E8D8F90A7B7C0429FF3456E71F0AA /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4F20FBDDD989977C81FE1D903092150B /* Utils.h in Headers */,
+				44B18D443DC51A2B58B1071A1AA5923E /* YGEnums.h in Headers */,
+				3FCB54FF2588CF97941E0F4C650D40DB /* YGLayout.h in Headers */,
+				B27F900C6FEDF3C7DE886AA297CBCF18 /* YGMacros.h in Headers */,
+				90B747DB9F79D36CC64AFFE2E9EE71E7 /* YGNode.h in Headers */,
+				7CD8F0022095DA60D5AE4D0576CB39F3 /* YGNodePrint.h in Headers */,
+				66FA983CA36F03196803F005F870363A /* YGStyle.h in Headers */,
+				BB6EDBF01A7F1C79B66F0D204E05C5D4 /* Yoga-internal.h in Headers */,
+				DBC7F167CF2BACE2DA8528D6AE2F55A6 /* Yoga.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		92AB8083A0508083C1F33BC09B7A18AB /* Pods-MegathyRNTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F3DC53F0FFADA9907564FA706462BCC3 /* Build configuration list for PBXNativeTarget "Pods-MegathyRNTests" */;
+			buildPhases = (
+				B2A840CC32E81BAD9421D9ED8AF2EB7D /* Sources */,
+				B7CAA3B4A41CFE6E23976B1BEBF15AA3 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Pods-MegathyRNTests";
+			productName = "Pods-MegathyRNTests";
+			productReference = AEE9B2AE86AB69E09E6C1A2B2A358718 /* libPods-MegathyRNTests.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		9A732AFA4D33ADA5710B5F4C41F47EAA /* Pods-MegathyRN */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 099739CF567869453D84CD6A43EDE9DE /* Build configuration list for PBXNativeTarget "Pods-MegathyRN" */;
+			buildPhases = (
+				B9B8752464BF8324CFBD06AB90782B05 /* Sources */,
+				48900501A462115A20D450642492AAFB /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D4C5EB863A9656DBC5A78C0F11C71110 /* PBXTargetDependency */,
+			);
+			name = "Pods-MegathyRN";
+			productName = "Pods-MegathyRN";
+			productReference = 11C61F79D8694198F6A2FBBCAB754DBD /* libPods-MegathyRN.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		AD7E6E4C64B7ED5D703BBEA17A81C71D /* yoga */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 148DBD5DBB96D6750876996F81A9E0BF /* Build configuration list for PBXNativeTarget "yoga" */;
+			buildPhases = (
+				2577024E1371F37D8850DE97A40DED59 /* Sources */,
+				0080D276871122A95DEF236CDB6DEC45 /* Frameworks */,
+				763E8D8F90A7B7C0429FF3456E71F0AA /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = yoga;
+			productName = yoga;
+			productReference = 01AF39E19D40333ADC8C99C7EA961C32 /* libyoga.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		B4CA02929C8CBCD82BC18DD921BBB2AE /* Pods-MegathyRN-tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0FB0D763853CF060A38DEAF368EDB865 /* Build configuration list for PBXNativeTarget "Pods-MegathyRN-tvOS" */;
+			buildPhases = (
+				B6AAE84E5FB56E9B7D60AF144A124993 /* Sources */,
+				6C9A7511FFE034805B428E4FC0C8C055 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Pods-MegathyRN-tvOS";
+			productName = "Pods-MegathyRN-tvOS";
+			productReference = 0389ABA0D8444617BDED3AF35A00518F /* libPods-MegathyRN-tvOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		EE38325C22522578BC3D32AE07E046B9 /* Pods-MegathyRN-tvOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 92CF0FFAEED467242114A9483CF6595E /* Build configuration list for PBXNativeTarget "Pods-MegathyRN-tvOSTests" */;
+			buildPhases = (
+				397F847A81B057AD010EC886D32448F3 /* Sources */,
+				EF4FA30C761B6CE636EAE74481C637EE /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Pods-MegathyRN-tvOSTests";
+			productName = "Pods-MegathyRN-tvOSTests";
+			productReference = 831307435677E2DB744C6F2A5EA98C1A /* libPods-MegathyRN-tvOSTests.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D41D8CD98F00B204E9800998ECF8427E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0930;
+				LastUpgradeCheck = 0930;
+			};
+			buildConfigurationList = 2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 7DB346D0F39D3F0E887471402A8071AB;
+			productRefGroup = 88FEE5BBC6BE4AB3A36D4C98F275CBE4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9A732AFA4D33ADA5710B5F4C41F47EAA /* Pods-MegathyRN */,
+				B4CA02929C8CBCD82BC18DD921BBB2AE /* Pods-MegathyRN-tvOS */,
+				EE38325C22522578BC3D32AE07E046B9 /* Pods-MegathyRN-tvOSTests */,
+				92AB8083A0508083C1F33BC09B7A18AB /* Pods-MegathyRNTests */,
+				AD7E6E4C64B7ED5D703BBEA17A81C71D /* yoga */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2577024E1371F37D8850DE97A40DED59 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28B138A370E59F718CC5E2CF5E8CBC37 /* Utils.cpp in Sources */,
+				74CEB9375C2A0193F6152B6798153A32 /* YGEnums.cpp in Sources */,
+				EC0FD589BF602129A51371208BC00681 /* YGLayout.cpp in Sources */,
+				66A1B1094381A430D061DB3CAC131D59 /* YGNode.cpp in Sources */,
+				72025F284AA37CCC6109EFCBABE891BB /* YGNodePrint.cpp in Sources */,
+				8FF145B7AD8BFC07D6AC3D3A81F362BE /* YGStyle.cpp in Sources */,
+				1EC61C5660EAC3687E698AF40C1421AF /* yoga-dummy.m in Sources */,
+				9AA3A48B71C536CF413A0A340995626F /* Yoga.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		397F847A81B057AD010EC886D32448F3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0C85DC2DE9B7FC714243A091602FA93 /* Pods-MegathyRN-tvOSTests-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2A840CC32E81BAD9421D9ED8AF2EB7D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5522A93968B6F07D99B9CB7435FE507D /* Pods-MegathyRNTests-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B6AAE84E5FB56E9B7D60AF144A124993 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B034AB6464BBFF3019521E2368D2EF46 /* Pods-MegathyRN-tvOS-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B9B8752464BF8324CFBD06AB90782B05 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				85992A6EDB6B00562318553415E66C4E /* Pods-MegathyRN-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D4C5EB863A9656DBC5A78C0F11C71110 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = yoga;
+			target = AD7E6E4C64B7ED5D703BBEA17A81C71D /* yoga */;
+			targetProxy = DBF6CCD58D252E27E65AC9A48BB17B18 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		10B3D6D5648DD7AB8F2FD9E4277CDB4C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 96B9BD8E1C52F50EFFEDBFA0824D94EC /* Pods-MegathyRN.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1A15F2823E31A3210FE31A7B90D32B8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_DEBUG=1",
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = NO_SIGNING/;
+				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SYMROOT = "${SRCROOT}/../build";
+				TVOS_DEPLOYMENT_TARGET = 9.2;
+			};
+			name = Debug;
+		};
+		20048DFF14169822A53FFBCA881F127C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 672578AFFF3B60B1B5E44DF1B3747BBC /* Pods-MegathyRN-tvOS.debug.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.2;
+			};
+			name = Debug;
+		};
+		39A485195E3407E8392BFC081CE8530B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"POD_CONFIGURATION_RELEASE=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = NO_SIGNING/;
+				STRIP_INSTALLED_PRODUCT = NO;
+				SYMROOT = "${SRCROOT}/../build";
+				TVOS_DEPLOYMENT_TARGET = 9.2;
+			};
+			name = Release;
+		};
+		3FFDDC39474429AEF0A6A3CCEA6FCBDF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E99F2F1C38FBB429A2B0BB5BC0AD733D /* yoga.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				GCC_PREFIX_HEADER = "Target Support Files/yoga/yoga-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4416C2F5018EC286E49F21D8E0B58EAB /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C7C739FB78F69BF001707C9B35569462 /* Pods-MegathyRN-tvOS.release.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5FB2E7744B184411CD31C61322DBA98F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E8FDBFDA7CB33A00A768FC682A2B4BE7 /* Pods-MegathyRN.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		68EAA38DA6FDD194BE3DE366E543498D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CB413C51FA7A80E1FF77419C17EF2657 /* Pods-MegathyRN-tvOSTests.debug.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.2;
+			};
+			name = Debug;
+		};
+		6D859CB5D1571D06CC165D403BC468F4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3892BB6CCBCC0E275BE26C88F94D2144 /* Pods-MegathyRNTests.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D35B99A739311B6A29195875C7CB1A71 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E99F2F1C38FBB429A2B0BB5BC0AD733D /* yoga.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				GCC_PREFIX_HEADER = "Target Support Files/yoga/yoga-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E7CF1168028EF54B7D75464BDB562CA1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2ECB8F3B9293EA566FEFF07D40004DD5 /* Pods-MegathyRNTests.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		FBE5D21C5455F5F3E38436DE033D215E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 98BB7C7E3A5249B28A8F6952E941B265 /* Pods-MegathyRN-tvOSTests.release.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				MACH_O_TYPE = staticlib;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 9.2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		099739CF567869453D84CD6A43EDE9DE /* Build configuration list for PBXNativeTarget "Pods-MegathyRN" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				10B3D6D5648DD7AB8F2FD9E4277CDB4C /* Debug */,
+				5FB2E7744B184411CD31C61322DBA98F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0FB0D763853CF060A38DEAF368EDB865 /* Build configuration list for PBXNativeTarget "Pods-MegathyRN-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				20048DFF14169822A53FFBCA881F127C /* Debug */,
+				4416C2F5018EC286E49F21D8E0B58EAB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		148DBD5DBB96D6750876996F81A9E0BF /* Build configuration list for PBXNativeTarget "yoga" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3FFDDC39474429AEF0A6A3CCEA6FCBDF /* Debug */,
+				D35B99A739311B6A29195875C7CB1A71 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2D8E8EC45A3A1A1D94AE762CB5028504 /* Build configuration list for PBXProject "Pods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A15F2823E31A3210FE31A7B90D32B8F /* Debug */,
+				39A485195E3407E8392BFC081CE8530B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		92CF0FFAEED467242114A9483CF6595E /* Build configuration list for PBXNativeTarget "Pods-MegathyRN-tvOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				68EAA38DA6FDD194BE3DE366E543498D /* Debug */,
+				FBE5D21C5455F5F3E38436DE033D215E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F3DC53F0FFADA9907564FA706462BCC3 /* Build configuration list for PBXNativeTarget "Pods-MegathyRNTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D859CB5D1571D06CC165D403BC468F4 /* Debug */,
+				E7CF1168028EF54B7D75464BDB562CA1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
+}

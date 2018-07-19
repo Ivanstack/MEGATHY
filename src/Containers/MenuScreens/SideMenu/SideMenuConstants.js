@@ -64,7 +64,7 @@ module.exports = {
             iconActive: commonUtilities.menuImage(constant.menuItemsKeys.contact, true),
         },
         {
-            name: "Chat with us",
+            name: "Feedback",
             icon: commonUtilities.menuImage(constant.menuItemsKeys.feedback, false),
             iconActive: commonUtilities.menuImage(constant.menuItemsKeys.feedback, true),
         },

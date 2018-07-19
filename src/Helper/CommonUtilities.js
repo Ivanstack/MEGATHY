@@ -177,7 +177,7 @@ export function menuImage(menuItem, isSelected) {
     switch (menuItem) {
         case constant.menuItemsKeys.category:
             if (isSelected) {
-                imageName = require("..//Resources/Images/MenuIcons/homeActive.png");
+                imageName = require("../Resources/Images/MenuIcons/homeActive.png");
             } else {
                 imageName = require("../Resources/Images/MenuIcons/home.png");
             }
@@ -290,18 +290,6 @@ export function menuImage(menuItem, isSelected) {
     return <Image style={styles.menuIcon} source={imageName} />;
 }
 
-// Way to implement showAlertYesNo function
-
-// CommonUtilities.showAlertYesNo("Are you sure you want to delete this address?").then(
-//     pressedYes => {
-//         // User pressed Yes
-//         constant.debugLog("User pressed Yes");
-//     },
-//     pressedNo => {
-//         // User pressed No
-//         constant.debugLog("User pressed No");
-//     }
-// );
 const styles = StyleSheet.create({
-    menuIcon: {marginLeft: 10,},
+    menuIcon: { marginLeft: 10 },
 });

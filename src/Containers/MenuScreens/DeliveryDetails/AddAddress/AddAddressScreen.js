@@ -155,7 +155,14 @@ class AddAddressScreen extends Component {
 
     _onSubmitPhone = () => {
         constant.debugLog("onSubmitPhone");
-        this.props.navigation.navigate("VerifyPhoneScreen");
+        this.props.navigation.navigate("VerifyPhoneScreen", {
+            confirmationType: constant.APIConfirmationTypeAddress,
+            callBackFunction: this._setPhoneValue
+        });
+    };
+
+    _setPhoneValue = value => {
+        this.setState({ phone: value });
     };
 
     _onSubmitAddress = () => {};

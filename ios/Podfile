@@ -1,0 +1,32 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'MegathyRN' do
+  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
+  # use_frameworks!
+
+  # Pods for MegathyRN
+  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga/yoga.podspec'
+  pod 'GoogleMaps'
+
+  pod 'react-native-maps', :path => '../node_modules/react-native-maps'
+
+  target 'MegathyRNTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end
+
+target 'MegathyRN-tvOS' do
+  # Uncomment the next line if you're using Swift or would like to use dynamic frameworks
+  # use_frameworks!
+
+  # Pods for MegathyRN-tvOS
+
+  target 'MegathyRN-tvOSTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end

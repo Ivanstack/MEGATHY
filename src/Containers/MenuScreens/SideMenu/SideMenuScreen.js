@@ -22,7 +22,8 @@ export default class SideMenuScreen extends Component {
                 <View style={styles.maincontainer}>
                     <View style={styles.headercontainer}>
                         <Text style={styles.headerTitle}>
-                            {global.currentUser === null ? "Welcome, Guest" : "Welcome, " + global.currentUser.userName}
+                            {/* {global.currentUser === null ? "Welcome, Guest" : "Welcome, " + global.currentUser.userName} */}
+                            {global.currentUser === null ? "Welcome, Guest" : "Welcome, User"}
                         </Text>
                     </View>
 
@@ -31,7 +32,6 @@ export default class SideMenuScreen extends Component {
                             {...this.props.drawerProps}
                             onItemPress={({ route, focused }) => {
                                 this.props.drawerProps.onItemPress({ route, focused });
-                                constant.debugLog("item pressed " + route.key);
                                 if (route.key === "AddressListScreen") {
                                     // this.props.drawerProps.getFirstScreenTap()
                                 } else if (route.key === "SecondScreen") {
@@ -40,7 +40,6 @@ export default class SideMenuScreen extends Component {
                                 }
                             }}
                             getLabel={scene => {
-                                constant.debugLog("Navigation Scene: " + JSON.stringify(scene));
                                 let menuItemDetails = sideMenuConstant.sideMenuItems[scene.index];
                                 return (
                                     <View style={styles.rowView}>

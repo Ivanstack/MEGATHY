@@ -12,7 +12,6 @@ import AppTextField from "../../Components/AppTextField";
 import * as constant from "../../Helper/Constants";
 
 // Redux
-import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 // Common Utilities

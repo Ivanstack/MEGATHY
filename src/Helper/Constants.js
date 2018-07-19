@@ -4,6 +4,24 @@ import React from "react";
 import { Image, Dimensions } from "react-native";
 var { EventEmitter } = require("fbemitter");
 
+flagImageIN = () => {
+    return (
+        <Image
+            style={{ width: 30, height: 20, marginTop: 15 }}
+            source={require("../Resources/Images/DeliveryDetails/IN.png")}
+        />
+    );
+};
+
+flagImageSA = () => {
+    return (
+        <Image
+            style={{ width: 30, height: 20, marginTop: 15 }}
+            source={require("../Resources/Images/DeliveryDetails/SA.png")}
+        />
+    );
+};
+
 module.exports = {
     /// Screen Width And Height
     scrWidth: Dimensions.get("screen").width,
@@ -37,19 +55,20 @@ module.exports = {
         logout: "logout",
     },
 
-    countyDetails: {
+    countryDetails: {
         IN: {
             name: "India",
             code: "IN",
             dialCode: "+91",
             mask: "99999 99999",
-            image: this.flagImageIN,
+            image: flagImageIN(),
         },
         SA: {
+            name: "Saudi Arabia",
             code: "SA",
             dialCode: "+966",
             mask: "99 999 9999",
-            image: this.flagImageSA,
+            image: flagImageSA(),
         },
     },
 
@@ -64,18 +83,6 @@ module.exports = {
 
     logoImage: () => {
         return <Image style={{ width: 189, height: 59 }} source={require("../Resources/Images/LogoTitleImage.png")} />;
-    },
-
-    flagImageIN: () => {
-        return (
-            <Image style={{ width: 30, height: 20 }} source={require("../Resources/Images/DeliveryDetails/IN.png")} />
-        );
-    },
-
-    flagImageSA: () => {
-        return (
-            <Image style={{ width: 30, height: 20 }} source={require("../Resources/Images/DeliveryDetails/SA.png")} />
-        );
     },
 
     /// Common Functions
@@ -169,6 +176,7 @@ module.exports = {
     themeLightGreenColor: "#53B326",
     grayShadeColor55: "#555555",
     senderBGColor: "#DCF8C6",
+    iosDefaultBlueColor: "#007aff",
 
     /// Font Family
     themeFont: "Ebrima",
@@ -207,7 +215,7 @@ module.exports = {
     // Chat Key
     kMessageTypeRequest: "Request",
     kMessageTypeReplay: "Replay",
-
+    
     actions: {
         /*
         Redux Action Keys Start
