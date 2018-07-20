@@ -27,6 +27,7 @@ const rootReducer = combineReducers({
     selectTimeSchedule: require("./SelectTimeScheduleReducer").reducer,
     calendar: require("./CalendarReducer").reducer,
     addressList: require("./AddressListReducer").reducer,
+    addressMap: require("./AddressMapReducer").reducer,
     addAddress: require("./AddAddressReducer").reducer,
     productList: require("./ProductReducer").reducer,
     orderSummary: require("./OrderSummaryReducer").reducer,

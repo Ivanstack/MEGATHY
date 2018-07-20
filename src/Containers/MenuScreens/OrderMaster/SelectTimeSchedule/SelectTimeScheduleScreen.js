@@ -110,7 +110,7 @@ class SelectTimeScheduleScreen extends Component {
                 },
                 () => {
                     this._getRemainingHours();
-                    this.storeCrntTimeInterval = setInterval(this._timerForStoreCurrentTime, 1000);
+                    this.storeTimeInterval = setInterval(this._timerForStoreCurrentTime, 1000);
                 }
             );
         } else if (newProps.isSetTimeSuccess === true) {
@@ -122,7 +122,7 @@ class SelectTimeScheduleScreen extends Component {
     }
 
     componentWillUnmount() {
-        clearInterval(this.storeCrntTimeInterval);
+        clearInterval(this.storeTimeInterval);
     }
 
     _displayStoreTime() {

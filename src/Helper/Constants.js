@@ -122,7 +122,7 @@ module.exports = {
     /// Rest API details
     // Base URL
     baseURL: "http://192.168.0.3/megathylaravel/public/api/v1/", // Jay Kaneriya
-    // baseURL: "http://192.168.0.11/Megathy/MegathyLaravel/public/api/v1/", // BharatBhai
+    // baseURL: "http://192.168.0.11/Megathy/MegathyLaravel/public/api/v1/", // Bharatbhai
     // baseURL: "http://192.168.0.2/MegathyLaravel/public/api/v1/", //Chintan Adatiya
     // baseURL: "http://manage.megathykom.com/api/v1/", // Live
 
@@ -215,7 +215,7 @@ module.exports = {
     // Chat Key
     kMessageTypeRequest: "Request",
     kMessageTypeReplay: "Replay",
-    
+
     actions: {
         /*
         Redux Action Keys Start
@@ -328,7 +328,18 @@ module.exports = {
         deleteAddressSuccess: "deleteAddressSuccess",
         deleteAddressFailure: "deleteAddressFailure",
 
-        // AddressList Screen
+        // AddressMap Screen
+        placeAutocompleteRequest: "placeAutocompleteRequest",
+        placeAutocompleteSuccess: "placeAutocompleteSuccess",
+        placeAutocompleteFailure: "placeAutocompleteFailure",
+        placeDetailRequest: "placeDetailRequest",
+        placeDetailSuccess: "placeDetailSuccess",
+        placeDetailFailure: "placeDetailFailure",
+        geocodeRequest: "geocodeRequest",
+        geocodeSuccess: "geocodeSuccess",
+        geocodeFailure: "geocodeFailure",
+
+        // AddAddress Screen
         addAddressRequest: "addAddressRequest",
         addAddressSuccess: "addAddressSuccess",
         addAddressFailure: "addAddressFailure",

@@ -21,13 +21,13 @@ import { connect } from "react-redux"; // Redux
 import * as constant from "../../../../Helper/Constants"; // Constants
 import * as CommonUtilities from "../../../../Helper/CommonUtilities"; // Common Utilities
 import * as networkUtility from "../../../../Helper/NetworkUtility"; // Network Utility
-import Spinner from "react-native-loading-spinner-overlay"; // Loading View
 import baseLocal from "../../../../Resources/Localization/baseLocalization"; // Localization
+import Spinner from "react-native-loading-spinner-overlay"; // Loading View
 
 import moment from "moment"; // Date/Time Conversition
 
 // Styles
-import OrderHistoryStyle from "./OrderHistoryStyle";
+import styles from "./ScheduleOrderListStyle";
 
 class ScheduleOrderListScreen extends Component {
     constructor(props) {
@@ -40,7 +40,7 @@ class ScheduleOrderListScreen extends Component {
         };
     }
 
-    static navigationOptions = CommonUtilities.navigationView(baseLocal.t("Order History"), false);
+    static navigationOptions = CommonUtilities.navigationView(baseLocal.t("Schedule Order History"), false);
 
     componentDidMount() {
         this._getOrderHistory();
@@ -91,7 +91,7 @@ class ScheduleOrderListScreen extends Component {
         return (
             <View style={{ margin: 4, flexDirection: "row", marginTop: 8 }}>
                 <Image style={{ width: 20, height: 20, marginRight: 8 }} source={imgSource} resizeMode="contain" />
-                <Text style={[OrderHistoryStyle.normalTitleText, { marginLeft: 8 }]}>{title}</Text>
+                <Text style={[styles.normalTitleText, { marginLeft: 8 }]}>{title}</Text>
             </View>
         );
     };
@@ -108,9 +108,9 @@ class ScheduleOrderListScreen extends Component {
                 style={{ backgroundColor: constant.prodCategoryBGColor }}
                 onPress={() => this._onPressOrderItem(item)}
             >
-                <View style={OrderHistoryStyle.orderHistoryItemConstainerStyle}>
+                <View style={styles.orderHistoryItemConstainerStyle}>
                     <View style={{ flex: 1, margin: 8, marginRight: 0 }}>
-                        <Text style={[OrderHistoryStyle.boldTitleText, { marginLeft: 36 }]}>
+                        <Text style={[styles.boldTitleText, { marginLeft: 36 }]}>
                             Order Id: {item.displayOrderId}
                         </Text>
                         {this._renderDateAndAddressView(
@@ -118,7 +118,7 @@ class ScheduleOrderListScreen extends Component {
                             false
                         )}
                         {this._renderDateAndAddressView(item.address_meta.address, true)}
-                        <Text style={[OrderHistoryStyle.normalTitleText, , { marginLeft: 36, marginTop: 4 }]}>
+                        <Text style={[styles.normalTitleText, , { marginLeft: 36, marginTop: 4 }]}>
                             Payment Mode: {item.paymentMode}
                         </Text>
                         <View
@@ -130,12 +130,12 @@ class ScheduleOrderListScreen extends Component {
                             }}
                         >
                             <Text
-                                style={[OrderHistoryStyle.boldTitleText, { color: constant.themeColor, marginTop: 4 }]}
+                                style={[styles.boldTitleText, { color: constant.themeColor, marginTop: 4 }]}
                             >
                                 SAR: {item.orderTotal}
                             </Text>
                             <View
-                                style={[OrderHistoryStyle.orderStatusViewStyle, { backgroundColor: orderStatusColor }]}
+                                style={[styles.orderStatusViewStyle, { backgroundColor: orderStatusColor }]}
                             >
                                 <Text
                                     style={{
@@ -166,7 +166,7 @@ class ScheduleOrderListScreen extends Component {
         return (
             // Main View (Container)
             <View>
-                <SafeAreaView style={[OrderHistoryStyle.mainContainer, { backgroundColor: constant.darkGrayBGColor }]}>
+                <SafeAreaView style={[styles.mainContainer, { backgroundColor: constant.darkGrayBGColor }]}>
                     {this.props.arrOrderHistory.length > 0 ? (
                         <FlatList
                             style={{

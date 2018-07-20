@@ -13,6 +13,7 @@ import { SelectTimeScheduleScreenCalls } from "./SelectTimeScheduleSagas";
 import { CalendarScreenCalls } from "./CalendarSagas";
 import { CategoryScreenCalls } from "./CategorySagas";
 import { AddressListScreenCalls } from "./AddressListSagas";
+import { AddressMapScreenCalls } from "./AddressMapSagas";
 import { AddAddressScreenCalls } from "./AddAddressSagas";
 import { SubCategoryScreenCalls } from "./SubCategorySagas";
 import { ProductScreenCalls } from "./ProductSagas";
@@ -88,6 +89,9 @@ export function* watcherSaga(action) {
     // Add Address Screen
     yield takeEvery(constant.actions.addAddressRequest, AddAddressScreenCalls);
     yield takeEvery(constant.actions.editAddressRequest, AddAddressScreenCalls);
+
+    // Address Map Screen
+    yield takeEvery(constant.actions.placeAutocompleteRequest, AddressListScreenCalls);
 
     // Order Summary Screen
     yield takeEvery(constant.actions.checkCoupenCodeRequest, OrderSummaryScreenCalls);

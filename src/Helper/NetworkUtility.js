@@ -14,13 +14,13 @@ export function setDefaultAPIConfig() {
         AppVersion: DeviceInfo.getVersion(),
         "User-Agent": DeviceInfo.getUserAgent(),
     };
-    // ValidityState = status => {
-    //     return status >= 200 && status < 300;
-    // };
 }
 
-export function getRequest(endPoint, parameters = "") {
+export function getRequest(endPoint, parameters = "", url="") {
     setDefaultAPIConfig();
+    if(url != ""){
+        axiosDefaults.baseURL = url;
+    }
 
     if (parameters.storeId === undefined && global.currentStore != null) {
         if (parameters === "") {

@@ -103,7 +103,7 @@ class OrderMasterScreen extends Component {
     }
 
     componentWillUnmount() {
-        clearInterval(this.storeCrntTimeInterval);
+        clearInterval(this.storeTimeInterval);
     }
 
     componentWillReceiveProps(newProps) {
@@ -128,7 +128,7 @@ class OrderMasterScreen extends Component {
                     storeTime: storeDate.getTime(),
                 },
                 () => {
-                    this.storeCrntTimeInterval = setInterval(this._timerForStoreCurrentTime, 1000);
+                    this.storeTimeInterval = setInterval(this._timerForStoreCurrentTime, 1000);
                 }
             );
         }
