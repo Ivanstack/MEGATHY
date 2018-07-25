@@ -1,75 +1,90 @@
 import * as constant from "../../Helper/Constants";
 // reducer with initial state
 export const initialState = {
-    isLoading: false,
-    isRefreshing: false,
-    isGetSuccess: false,
-    isDeleteSuccess: false,
-    arrAddress: [],
-    currentPage: 1,
-    lastPage: 0,
+    isAutoCompleteSuccess: false,
+    isPlaceDetailSuccess: false,
+    isGeoCodeSuccess: false,
+    resultAutoComplete: [],
+    resultPlaceDetail: undefined,
+    resultGeoCode: undefined,
     error: null,
 };
 
 export const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case constant.actions.getAddressRequest:
+        case constant.actions.placeAutocompleteRequest:
             return {
                 ...state,
-                isGetSuccess: false,
-                isDeleteSuccess: false,
-                isRefreshing: true,
-                isLoading: true,
+                isAutoCompleteSuccess: false,
+                isPlaceDetailSuccess: false,
+                isGeoCodeSuccess: false,
                 error: null,
             };
-        case constant.actions.getAddressSuccess:
+        case constant.actions.placeAutocompleteSuccess:
             return {
                 ...state,
-                arrAddress:
-                    action.response.current_page === 1
-                        ? action.response.data
-                        : [...state.arrAddress, ...action.response.data].filter(
-                              (val, id, array) => array.indexOf(val) === id
-                          ),
-                currentPage: action.response.current_page,
-                lastPage: action.response.last_page,
-                isGetSuccess: true,
-                isDeleteSuccess: false,
-                isRefreshing: false,
-                isLoading: false,
+                isAutoCompleteSuccess: true,
+                isPlaceDetailSuccess: false,
+                isGeoCodeSuccess: false,
+                resultAutoComplete: action.response,
                 error: null,
             };
-        case constant.actions.getAddressFailure:
+        case constant.actions.placeAutocompleteFailure:
             return {
                 ...state,
-                isGetSuccess: false,
-                isDeleteSuccess: false,
-                isRefreshing: false,
-                isLoading: false,
+                isAutoCompleteSuccess: false,
+                isPlaceDetailSuccess: false,
+                isGeoCodeSuccess: false,
                 error: action.error,
             };
-        case constant.actions.deleteAddressRequest:
+        case constant.actions.placeDetailRequest:
             return {
                 ...state,
-                isGetSuccess: false,
-                isDeleteSuccess: false,
-                isLoading: true,
+                isAutoCompleteSuccess: false,
+                isPlaceDetailSuccess: false,
+                isGeoCodeSuccess: false,
                 error: null,
             };
-        case constant.actions.deleteAddressSuccess:
+        case constant.actions.placeDetailSuccess:
             return {
                 ...state,
-                isGetSuccess: false,
-                isDeleteSuccess: true,
-                isLoading: false,
+                isAutoCompleteSuccess: false,
+                isPlaceDetailSuccess: true,
+                isGeoCodeSuccess: false,
+                resultPlaceDetail: action.response,
                 error: null,
             };
-        case constant.actions.deleteAddressFailure:
+        case constant.actions.placeDetailFailure:
             return {
                 ...state,
-                isGetSuccess: false,
-                isDeleteSuccess: false,
-                isLoading: false,
+                isAutoCompleteSuccess: false,
+                isPlaceDetailSuccess: false,
+                isGeoCodeSuccess: false,
+                error: action.error,
+            };
+        case constant.actions.geoCodeRequest:
+            return {
+                ...state,
+                isAutoCompleteSuccess: false,
+                isPlaceDetailSuccess: false,
+                isGeoCodeSuccess: false,
+                error: null,
+            };
+        case constant.actions.geoCodeSuccess:
+            return {
+                ...state,
+                isAutoCompleteSuccess: false,
+                isPlaceDetailSuccess: false,
+                isGeoCodeSuccess: true,
+                resultGeoCode: action.response,
+                error: null,
+            };
+        case constant.actions.geoCodeFailure:
+            return {
+                ...state,
+                isAutoCompleteSuccess: false,
+                isPlaceDetailSuccess: false,
+                isGeoCodeSuccess: false,
                 error: action.error,
             };
         default:

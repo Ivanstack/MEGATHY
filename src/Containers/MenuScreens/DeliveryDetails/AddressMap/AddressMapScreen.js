@@ -96,54 +96,87 @@ class AddressMapScreen extends Component {
         navigator.geolocation.clearWatch(this.watchID);
     };
 
-    componentWillReceiveProps = newProps => {};
+    componentWillReceiveProps = newProps => {
+        // if(newProps.isAutoCompleteSuccess === true){
+        //     if(newProps.result === undefined){
+        //         constant.debugLog("Request Invalid")
+        //     }else{
+        //     }
+        // }else if(newProps.isPlaceDetailSuccess === true){
+        //     if(newProps.result === undefined){
+        //         constant.debugLog("Request Invalid")
+        //     }else{
+        //     }
+        // }else if(newProps.isGeoCodeSuccess === true){
+        //     if(newProps.result === undefined){
+        //         constant.debugLog("Request Invalid")
+        //     }else{
+        //     }
+        // }
+    };
 
     _onRegionChange = region => {
-        constant.debugLog("Region Change");
-        this.setState({ region });
+        // constant.debugLog("Region Change");
+        // this.setState({ region });
+        this.setState(...this.state, {region});
         this._setMapPinImage();
     };
 
     _onRegionChangeComplete = region => {
-        constant.debugLog("Region Change Complete");
+        // constant.debugLog("Region Change Complete");
         this.setState({ region });
         this._setMapPinImage(true);
     };
 
+    _onChangeSearchText = searchText => {
+        this.setState({ searchText });
+        let placeAutoCompleteParameters = {
+            input: searchText,
+            key: constant.GoogleMapAPIKey,
+        };
+        this.props.dispatchPlaceAutoComplete(placeAutoCompleteParameters);
+    };
+
+    _onPressAddress = item => {
+
+    }
+
     _renderSearchResultItem = item => {
         return (
-            <View style={styles.searchResultListItem}>
-                <Text> Address </Text>
-                <View style={styles.searchResultListItemSeparator}/>
-            </View>
+            <TouchableOpacity style={styles.searchResultListItem} onPress={() => this._onPressAddress(item.item)}>
+                <Text style={styles.searchResultListItemText}> {item.item.description} </Text>
+                <View style={styles.searchResultListItemSeparator} />
+            </TouchableOpacity>
         );
     };
 
     _renderSearchResult = () => {
-        <FlatList
-            style={styles.searchResultList}
-            ref={flatList => {
-                this.arrAddress = flatList;
-            }}
-            data={this.props.arrAddress}
-            keyExtractor={this._keyExtractor}
-            renderItem={this._renderAddressItem}
-            showsHorizontalScrollIndicator={false}
-            removeClippedSubviews={false}
-            directionalLockEnabled
-            onEndReached={this._callLoadMore}
-            onEndReachedThreshold={0.7}
-        />;
+        // constant.debugLog("Reached Here")
+        return this.props.addressMap.resultAutoComplete.length > 0 ? (
+            <FlatList
+                style={styles.searchResultList}
+                ref={flatList => {
+                    this.arrAddress = flatList;
+                }}
+                data={this.props.addressMap.resultAutoComplete}
+                keyExtractor={(item, index) => item.id}
+                renderItem={this._renderSearchResultItem}
+                showsHorizontalScrollIndicator={false}
+                removeClippedSubviews={false}
+                directionalLockEnabled
+            />
+        ) : null;
     };
 
     render = () => {
         return (
             // Main View (Container)
             <View style={styles.container}>
-                <Spinner visible={this.props.isLoading} cancelable={true} textStyle={{ color: "#FFF" }} />
+                {/* <Spinner visible={this.props.isLoading} cancelable={true} textStyle={{ color: "#FFF" }} /> */}
                 <MapView
                     provider={PROVIDER_GOOGLE}
                     style={{ width: "100%", height: "100%" }}
+                    // region={this.state.region}
                     showsUserLocation={true}
                     initialRegion={this._getInitialState()}
                     onRegionChange={this._onRegionChange}
@@ -153,11 +186,12 @@ class AddressMapScreen extends Component {
                     <TextInput
                         ref={this.searchTextRef}
                         placeholder={baseLocal.t("Address")}
-                        onChangeText={searchText => this.setState({ searchText })}
+                        onChangeText={this._onChangeSearchText}
                         value={this.state.searchText}
                         style={{ width: "95%" }}
                     />
                 </View>
+                {this._renderSearchResult()}
                 <Image style={styles.mapPinImage} source={this.state.mapPinImage} />
             </View>
         );
@@ -166,19 +200,26 @@ class AddressMapScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        isLoading: state.login.isLoading,
-        isSuccess: state.login.isSuccess,
-        result: state.login.result,
-        error: state.login.error,
+        addressMap: state.addressMap,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        onLogin: parameters =>
+        dispatchPlaceAutoComplete: parameters =>
             dispatch({
-                type: constant.actions.loginRequest,
-                payload: { endPoint: constant.APILogin, parameters: parameters },
+                type: constant.actions.placeAutocompleteRequest,
+                payload: { url: constant.APIPlaceAutoComplete, endPoint: "json", parameters: parameters },
+            }),
+        dispatchPlaceDetail: parameters =>
+            dispatch({
+                type: constant.actions.placeDetailRequest,
+                payload: { url: constant.APIPlaceDetail, endPoint: "json", parameters: parameters },
+            }),
+        dispatchGeoCode: parameters =>
+            dispatch({
+                type: constant.actions.geoCodeRequest,
+                payload: { url: constant.APIGeoCode, endPoint: "json", parameters: parameters },
             }),
     };
 }
@@ -213,27 +254,37 @@ const styles = StyleSheet.create({
         width: "85%",
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: 5,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
         borderWidth: 1,
         borderColor: constant.darkGrayBGColor,
         backgroundColor: "white",
     },
     searchResultList: {
         position: "absolute",
-        top: 95,
+        top: 94,
         height: 150,
         width: "85%",
-        borderRadius: 5,
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5,
         borderWidth: 1,
         borderColor: constant.darkGrayBGColor,
         backgroundColor: "white",
     },
     searchResultListItem: {
-        width: "95%",
+        width: "100%",
+        height: 50,
+    },
+    searchResultListItemText: {
+        fontFamily: constant.themeFont,
+        fontSize: 14,
+        marginTop: 15,
+        marginLeft: 5,
     },
     searchResultListItemSeparator: {
         width: "100%",
         height: 1,
         backgroundColor: constant.darkGrayBGColor,
+        marginTop: 15,
     },
 });

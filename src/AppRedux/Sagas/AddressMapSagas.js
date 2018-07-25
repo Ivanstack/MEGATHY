@@ -2,78 +2,92 @@ import { takeLatest, takeEvery, call, put } from "redux-saga/effects";
 import * as constant from "../../Helper/Constants";
 import * as networkUtility from "../../Helper/NetworkUtility";
 import * as CommonUtilities from "../../Helper/CommonUtilities";
-const autoCompleteURL = "https://maps.googleapis.com/maps/api/place/autocomplete/"
-// const autoCompleteURL = "https://maps.googleapis.com/maps/api/place/autocomplete/"
-// const autoCompleteURL = "https://maps.googleapis.com/maps/api/place/autocomplete/"
 
 export function* AddressMapScreenCalls(action) {
-    if (action.payload.endPoint === constant.APIGetAddress) {
-        try {
-            const response = yield call(getAddressCall, action.payload);
-            yield put({ type: constant.actions.getAddressSuccess, response });
-        } catch (error) {
-            constant.debugLog("Error: " + JSON.stringify(error));
-            yield put({ type: constant.actions.getAddressFailure, error });
+    if (action.payload.url === undefined) {
+        if (action.payload.endPoint === constant.APIGetAddress) {
+            try {
+                const response = yield call(getAddressCall, action.payload);
+                yield put({ type: constant.actions.getAddressSuccess, response });
+            } catch (error) {
+                constant.debugLog("Error: " + JSON.stringify(error));
+                yield put({ type: constant.actions.getAddressFailure, error });
+            }
+        } else if (action.payload.endPoint.includes(constant.APIDeleteAddress)) {
+            try {
+                const response = yield call(deleteAddressCall, action.payload);
+                yield put({ type: constant.actions.deleteAddressSuccess, response });
+            } catch (error) {
+                constant.debugLog("Error: " + JSON.stringify(error));
+                yield put({ type: constant.actions.deleteAddressFailure, error });
+            }
         }
-    } else if (action.payload.endPoint.includes(constant.APIDeleteAddress)) {
-        try {
-            const response = yield call(deleteAddressCall, action.payload);
-            yield put({ type: constant.actions.deleteAddressSuccess, response });
-        } catch (error) {
-            constant.debugLog("Error: " + JSON.stringify(error));
-            yield put({ type: constant.actions.deleteAddressFailure, error });
+    } else {
+        if (action.payload.url === constant.APIPlaceAutoComplete) {
+            try {
+                const response = yield call(placeAutoCompleteCall, action.payload);
+                yield put({ type: constant.actions.placeAutocompleteSuccess, response });
+            } catch (error) {
+                constant.debugLog("Error: " + JSON.stringify(error));
+                yield put({ type: constant.actions.placeAutocompleteFailure, error });
+            }
+        } else if (action.payload.url === constant.APIPlaceDetail) {
+            try {
+                const response = yield call(placeDetailCall, action.payload);
+                yield put({ type: constant.actions.placeDetailSuccess, response });
+            } catch (error) {
+                constant.debugLog("Error: " + JSON.stringify(error));
+                yield put({ type: constant.actions.placeDetailFailure, error });
+            }
+        } else if (action.payload.url === constant.APIGeoCode) {
+            try {
+                const response = yield call(geoCodeCall, action.payload);
+                yield put({ type: constant.actions.geoCodeSuccess, response });
+            } catch (error) {
+                constant.debugLog("Error: " + JSON.stringify(error));
+                yield put({ type: constant.actions.geoCodeFailure, error });
+            }
         }
     }
 }
 
 placeAutoCompleteCall = payload => {
-    return networkUtility.getRequest(payload.endPoint, payload.parameters, url).then(
+    return networkUtility.getRequest(payload.endPoint, payload.parameters, payload.url).then(
         result => {
-            if (result.data.data.current_page === 1) {
-                result.data.data.data.map((value, index) => {
-                    if (index === 0) {
-                        value.selected = true;
-                    }
-                });
-            }
-            return result.data.data;
+            constant.debugLog(result.data.status);
+            return result.data.predictions === undefined ? [] : result.data.predictions;
         },
         error => {
             constant.debugLog("Status Code: " + error.status);
             constant.debugLog("Error Message: " + error.message);
-            if (error.status != 500) {
-                if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                    CommonUtilities.showAlert(error.data["messageAr"], false);
-                } else {
-                    CommonUtilities.showAlert(error.data["message"], false);
-                }
-            } else {
-                constant.debugLog("Internal Server Error: " + error.data);
-                CommonUtilities.showAlert("Opps! something went wrong");
-            }
             throw error;
         }
     );
 };
 
-deleteAddressCall = payload => {
-    return networkUtility.deleteRequest(payload.endPoint, payload.parameters).then(
+placeDetailCall = payload => {
+    return networkUtility.getRequest(payload.endPoint, payload.parameters, payload.url).then(
         result => {
-            return result.data.data;
+            constant.debugLog(result.data.status);
+            return result.data.result;
         },
         error => {
             constant.debugLog("Status Code: " + error.status);
             constant.debugLog("Error Message: " + error.message);
-            if (error.status != 500) {
-                if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
-                    CommonUtilities.showAlert(error.data["messageAr"], false);
-                } else {
-                    CommonUtilities.showAlert(error.data["message"], false);
-                }
-            } else {
-                constant.debugLog("Internal Server Error: " + error.data);
-                CommonUtilities.showAlert("Opps! something went wrong");
-            }
+            throw error;
+        }
+    );
+};
+
+geoCodeCall = payload => {
+    return networkUtility.getRequest(payload.endPoint, payload.parameters, payload.url).then(
+        result => {
+            constant.debugLog(result.data.status);
+            return result.data.results;
+        },
+        error => {
+            constant.debugLog("Status Code: " + error.status);
+            constant.debugLog("Error Message: " + error.message);
             throw error;
         }
     );

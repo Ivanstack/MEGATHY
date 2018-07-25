@@ -20,9 +20,11 @@ import { ProductScreenCalls } from "./ProductSagas";
 import { GeneralAPICallSagas } from "./GeneralAPICallSagas";
 import { OrderSummaryScreenCalls } from "./OrderSummarySagas";
 import { OrderHistoryScreenCalls } from "./OrderHistorySagas";
+import { ScheduleOrderListScreenCalls } from "./ScheduleOrderListSagas";
 import { SuggestProductScreenCalls } from "./SuggestProductSagas";
 import { ContactUsScreenCalls } from "./ContactUsSagas";
 import { ChatScreenCalls } from "./ChatSagas";
+import { ChangePasswordScreenCalls } from "./ChangePasswordSagas";
 
 // watcher saga: watches for actions dispatched to the store, starts worker saga
 export function* watcherSaga(action) {
@@ -91,7 +93,9 @@ export function* watcherSaga(action) {
     yield takeEvery(constant.actions.editAddressRequest, AddAddressScreenCalls);
 
     // Address Map Screen
-    yield takeEvery(constant.actions.placeAutocompleteRequest, AddressListScreenCalls);
+    yield takeEvery(constant.actions.placeAutocompleteRequest, AddressMapScreenCalls);
+    yield takeEvery(constant.actions.placeDetailRequest, AddressMapScreenCalls);
+    yield takeEvery(constant.actions.geoCodeRequest, AddressMapScreenCalls);
 
     // Order Summary Screen
     yield takeEvery(constant.actions.checkCoupenCodeRequest, OrderSummaryScreenCalls);
@@ -100,6 +104,9 @@ export function* watcherSaga(action) {
 
     // Order History Screen
     yield takeEvery(constant.actions.getOrderHistoryRequest, OrderHistoryScreenCalls);
+
+    // Schedule Order List Screen
+    yield takeEvery(constant.actions.getScheduleOrderListRequest, ScheduleOrderListScreenCalls);
 
     // SuggestProduct Screen
     yield takeEvery(constant.actions.suggestProductRequest, SuggestProductScreenCalls);
@@ -110,4 +117,7 @@ export function* watcherSaga(action) {
     // Chat Screen
     yield takeEvery(constant.actions.getChatRequest, ChatScreenCalls);
     yield takeEvery(constant.actions.sendMessageRequest, ChatScreenCalls);
+
+    // Change Password Screen
+    yield takeEvery(constant.actions.changePasswordRequest, ChangePasswordScreenCalls);
 }

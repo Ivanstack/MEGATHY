@@ -32,9 +32,11 @@ const rootReducer = combineReducers({
     productList: require("./ProductReducer").reducer,
     orderSummary: require("./OrderSummaryReducer").reducer,
     orderHistory: require("./OrderHistoryReducer").reducer,
+    scheduleOrderList: require("./ScheduleOrderListReducer").reducer,
     suggestProduct: require("./SuggestProductReducer").reducer,
     contactUs: require("./ContactUsReducer").reducer,
     chat: require("./ChatReducer").reducer,
+    changePassword: require("./ChangePasswordReducer").reducer,
 });
 
 export let sagaMiddleware = saga();

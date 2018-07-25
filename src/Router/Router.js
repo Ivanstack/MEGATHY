@@ -32,6 +32,7 @@ import OrderHistoryScreen from "../Containers/MenuScreens/OrderHistory/OrderHist
 import OrderDetailScreen from "../Containers/MenuScreens/OrderHistory/OrderDetail/OrderDetailScreen";
 
 // ScheduleOrderHistoryScreenNav
+import ScheduleOrderListScreen from "../Containers/MenuScreens/ScheduleOrderHistory/ScheduleOrderList/ScheduleOrderListScreen";
 
 // OrderStatusScreenNav
 
@@ -116,11 +117,10 @@ const OrderHistoryScreenNav = StackNavigator(
     }
 );
 
-// Order History Screen With Child Element
+// Schedule Order History Screen With Child Element
 const ScheduleOrderHistoryScreenNav = StackNavigator(
     {
-        OrderHistoryScreen: { screen: OrderHistoryScreen },
-        OrderDetailScreen: { screen: OrderDetailScreen },
+        ScheduleOrderListScreen: { screen: ScheduleOrderListScreen },
     },
     {
         headerMode: "screen",
@@ -228,7 +228,7 @@ const AppDrawer = DrawerNavigator(
         Categories: { screen: CategoryScreenNav },
         "Delivery Details": { screen: DeliveryDetailsNav },
         "Order History": { screen: OrderHistoryScreenNav },
-        "Schedule Orders": { screen: OrderHistoryScreenNav },
+        "Schedule Orders": { screen: ScheduleOrderHistoryScreenNav },
         "Order Status": { screen: OrderHistoryScreenNav },
         "User Profile": { screen: UserProfileScreenNav },
         "My Rewards Wallet": { screen: OrderHistoryScreenNav },

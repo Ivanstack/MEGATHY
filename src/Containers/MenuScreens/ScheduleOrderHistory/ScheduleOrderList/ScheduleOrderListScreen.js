@@ -23,7 +23,6 @@ import * as CommonUtilities from "../../../../Helper/CommonUtilities"; // Common
 import * as networkUtility from "../../../../Helper/NetworkUtility"; // Network Utility
 import baseLocal from "../../../../Resources/Localization/baseLocalization"; // Localization
 import Spinner from "react-native-loading-spinner-overlay"; // Loading View
-
 import moment from "moment"; // Date/Time Conversition
 
 // Styles
@@ -40,7 +39,7 @@ class ScheduleOrderListScreen extends Component {
         };
     }
 
-    static navigationOptions = CommonUtilities.navigationView(baseLocal.t("Schedule Order History"), false);
+    static navigationOptions = CommonUtilities.navigationView(baseLocal.t("Scheduled Order History"), false);
 
     componentDidMount() {
         this._getOrderHistory();
@@ -51,16 +50,20 @@ class ScheduleOrderListScreen extends Component {
     // Mics Methods
 
     _getOrderHistory = (isRefresh = false, isLoadMore = false) => {
-        let orderHistoryPage = 1;
-        if (!isRefresh && isLoadMore && this.props.currentPage < this.props.lastPage) {
-            orderHistoryPage = this.props.currentPage + 1;
+        let page = 1;
+        if (
+            !isRefresh &&
+            isLoadMore &&
+            this.props.scheduleOrderList.currentPage < this.props.scheduleOrderList.lastPage
+        ) {
+            page = this.props.scheduleOrderList.currentPage + 1;
         }
 
-        var orderHistoryParameters = {
-            page: orderHistoryPage,
+        var parameters = {
+            page: page,
         };
 
-        this.props.getOrderHistory(orderHistoryParameters);
+        this.props.getOrderHistory(parameters);
     };
 
     _onRefresh() {
@@ -71,7 +74,7 @@ class ScheduleOrderListScreen extends Component {
     _callLoadMore() {
         console.log("Call Load More .....");
 
-        if (this.props.currentPage < this.props.lastPage) {
+        if (this.props.scheduleOrderList.currentPage < this.props.scheduleOrderList.lastPage) {
             this._getOrderHistory(false, true);
         }
     }
@@ -79,10 +82,69 @@ class ScheduleOrderListScreen extends Component {
     // OnPress Methods
 
     _onPressOrderItem = item => {
-        this.props.navigation.navigate("OrderDetailScreen", { orderItem: item });
+        // this.props.navigation.navigate("OrderDetailScreen", { orderItem: item });
     };
 
     // Render Methods
+
+    _renderScheduleDateTime = orderTimeSessionMeta => {
+        let dateTimeTexts = [];
+
+        orderTimeSessionMeta.map((orderTimeSession, index) => {
+            let dateTime = moment(orderTimeSession.date + " " + orderTimeSession.time).format("DD-MM-YYYY hh:mm A");
+            let cartAmount = constant.currency + orderTimeSession.cartAmount;
+            let finalAmount = constant.currency + orderTimeSession.finalAmount;
+            let percentage = orderTimeSession.discountHike;
+
+            dateTimeTexts.push(
+                <View key={index}>
+                    <Text style={[styles.normalTitleText, { marginLeft: 8 }]}>{dateTime}</Text>
+                    <View style={{ flexDirection: "row" }}>
+                        <Text
+                            style={[
+                                styles.normalTitleText,
+                                { textDecorationLine: orderTimeSessionMeta.couponActive ? "line-through" : "none" },
+                            ]}
+                        >
+                            {orderTimeSessionMeta.couponActive ? cartAmount : ""}
+                        </Text>
+                        <Text style={[styles.normalTitleText]}>{finalAmount}</Text>
+                        <Text style={[styles.normalTitleText]}>
+                            {orderTimeSessionMeta.discountType === "percentage" ? "(" + percentage + ")" : ""}
+                        </Text>
+                    </View>
+                </View>
+            );
+        });
+
+        return dateTimeTexts;
+    };
+
+    _renderDateTimeView = orderTimeSessionMeta => {
+        return (
+            <View style={{ margin: 4, flexDirection: "row", marginTop: 8 }}>
+                <Image
+                    style={{ width: 20, height: 20, marginRight: 8 }}
+                    source={require("../../../../Resources/Images/Order/TimeIcon.png")}
+                    resizeMode="contain"
+                />
+                {this._renderScheduleDateTime(orderTimeSessionMeta)}
+            </View>
+        );
+    };
+
+    _renderAddressView = address => {
+        return (
+            <View style={{ margin: 4, flexDirection: "row", marginTop: 8 }}>
+                <Image
+                    style={{ width: 20, height: 20, marginRight: 8 }}
+                    source={require("../../../../Resources/Images/Order/LocationIcon.png")}
+                    resizeMode="contain"
+                />
+                <Text style={[styles.normalTitleText, { marginLeft: 8 }]}>{address}</Text>
+            </View>
+        );
+    };
 
     _renderDateAndAddressView = (title, isAddress) => {
         let imgSource = isAddress
@@ -111,13 +173,11 @@ class ScheduleOrderListScreen extends Component {
                 <View style={styles.orderHistoryItemConstainerStyle}>
                     <View style={{ flex: 1, margin: 8, marginRight: 0 }}>
                         <Text style={[styles.boldTitleText, { marginLeft: 36 }]}>
-                            Order Id: {item.displayOrderId}
+                            Order Id: {item.displayScheduleOrderId}
                         </Text>
-                        {this._renderDateAndAddressView(
-                            moment(item.orderDeliveryTime).format("DD-MM-YYYY hh:mm A"),
-                            false
-                        )}
-                        {this._renderDateAndAddressView(item.address_meta.address, true)}
+                        {this._renderDateTimeView(item.order_time_session_meta)}
+                        {this._renderAddressView(item.address_meta.address)}
+                        {/* {this._renderDateAndAddressView(item.address_meta.address, true)} */}
                         <Text style={[styles.normalTitleText, , { marginLeft: 36, marginTop: 4 }]}>
                             Payment Mode: {item.paymentMode}
                         </Text>
@@ -129,12 +189,10 @@ class ScheduleOrderListScreen extends Component {
                                 marginTop: 4,
                             }}
                         >
-                            <Text
-                                style={[styles.boldTitleText, { color: constant.themeColor, marginTop: 4 }]}
-                            >
+                            <Text style={[styles.boldTitleText, { color: constant.themeColor, marginTop: 4 }]}>
                                 SAR: {item.orderTotal}
                             </Text>
-                            <View
+                            {/* <View
                                 style={[styles.orderStatusViewStyle, { backgroundColor: orderStatusColor }]}
                             >
                                 <Text
@@ -147,7 +205,7 @@ class ScheduleOrderListScreen extends Component {
                                 >
                                     {orderStatus}
                                 </Text>
-                            </View>
+                            </View> */}
                         </View>
                     </View>
                     <View style={{ width: "10%", justifyContent: "center", alignItems: "center" }}>
@@ -167,7 +225,7 @@ class ScheduleOrderListScreen extends Component {
             // Main View (Container)
             <View>
                 <SafeAreaView style={[styles.mainContainer, { backgroundColor: constant.darkGrayBGColor }]}>
-                    {this.props.arrOrderHistory.length > 0 ? (
+                    {this.props.scheduleOrderList.arrScheduleOrderHistory.length > 0 ? (
                         <FlatList
                             style={{
                                 width: "95%",
@@ -179,12 +237,12 @@ class ScheduleOrderListScreen extends Component {
                             }}
                             refreshControl={
                                 <RefreshControl
-                                    refreshing={this.props.isRefreshing}
+                                    refreshing={this.props.scheduleOrderList.isRefreshing}
                                     onRefresh={this._onRefresh.bind(this)}
                                 />
                             }
-                            data={this.props.arrOrderHistory}
-                            keyExtractor={(item, index) => item.orderId.toString()}
+                            data={this.props.scheduleOrderList.arrScheduleOrderHistory}
+                            keyExtractor={(item, index) => item.scheduleOrderId.toString()}
                             renderItem={this._renderOrderHistoryItem.bind(this)}
                             showsHorizontalScrollIndicator={false}
                             removeClippedSubviews={false}
@@ -194,7 +252,11 @@ class ScheduleOrderListScreen extends Component {
                             // ListFooterComponent={this._renderFooter.bind(this)}
                         />
                     ) : (
-                        <Spinner visible={this.props.isLoading} cancelable={true} textStyle={{ color: "#FFF" }} />
+                        <Spinner
+                            visible={this.props.scheduleOrderList.isLoading}
+                            cancelable={true}
+                            textStyle={{ color: "#FFF" }}
+                        />
                     )}
                 </SafeAreaView>
             </View>
@@ -204,13 +266,7 @@ class ScheduleOrderListScreen extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        isLoading: state.orderHistory.isLoading,
-        isRefreshing: state.orderHistory.isRefreshing,
-        isOrderHistorySuccess: state.orderHistory.isOrderHistorySuccess,
-        arrOrderHistory: state.orderHistory.arrOrderHistory,
-        currentPage: state.orderHistory.currentPage,
-        lastPage: state.orderHistory.lastPage,
-        error: state.orderHistory.error,
+        scheduleOrderList: state.scheduleOrderList,
     };
 }
 
@@ -218,8 +274,8 @@ function mapDispatchToProps(dispatch) {
     return {
         getOrderHistory: parameters =>
             dispatch({
-                type: constant.actions.getOrderHistoryRequest,
-                payload: { endPoint: constant.APIGetOrderHistory, parameters: parameters },
+                type: constant.actions.getScheduleOrderListRequest,
+                payload: { endPoint: constant.APIGetScheduleOrderHistory, parameters: parameters },
             }),
     };
 }

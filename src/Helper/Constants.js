@@ -38,6 +38,7 @@ module.exports = {
     languageArabic: "ar",
     reloadOrderSummaryListener: "reloadOrderSummaryListener",
     DeviceInfo: require("react-native-device-info"),
+    currency: "SAR",
 
     menuItemsKeys: {
         category: "category",
@@ -115,6 +116,8 @@ module.exports = {
     notifyId: "0123456789",
     timeZone: "Asia/Riyadh",
 
+    GoogleMapAPIKey: "AIzaSyB7KeaAr7BRWu24qDcLh02cxJhH1Skvc40",
+
     APIConfirmationTypeRegister: "Register",
     APIConfirmationTypeForgotPassword: "Forgot Password",
     APIConfirmationTypeAddress: "Address Conformation",
@@ -159,8 +162,13 @@ module.exports = {
     APISuggestProduct: "suggestProduct",
     APIContactUs: "contactUs",
     APIGetOrderHistory: "orderHistory",
+    APIGetScheduleOrderHistory: "getScheduleOrder",
     APIGetChat: "getChat",
     APISendMessage: "chatRequest",
+    APIPlaceAutoComplete: "https://maps.googleapis.com/maps/api/place/autocomplete/",
+    APIPlaceDetail: "https://maps.googleapis.com/maps/api/place/details/",
+    APIGeoCode: "https://maps.googleapis.com/maps/api/geocode/",
+    APIChangePassword: "userChangPassword",
 
     // General API
     APIGetAppSettingsAndRewards: "getAppSettingsAndRewards",
@@ -335,9 +343,9 @@ module.exports = {
         placeDetailRequest: "placeDetailRequest",
         placeDetailSuccess: "placeDetailSuccess",
         placeDetailFailure: "placeDetailFailure",
-        geocodeRequest: "geocodeRequest",
-        geocodeSuccess: "geocodeSuccess",
-        geocodeFailure: "geocodeFailure",
+        geoCodeRequest: "geoCodeRequest",
+        geoCodeSuccess: "geoCodeSuccess",
+        geoCodeFailure: "geoCodeFailure",
 
         // AddAddress Screen
         addAddressRequest: "addAddressRequest",
@@ -370,6 +378,11 @@ module.exports = {
         getOrderHistorySuccess: "getOrderHistorySuccess",
         getOrderHistoryFailure: "getOrderHistoryFailure",
 
+        // ScheduleOrderList Screen
+        getScheduleOrderListRequest: "getScheduleOrderListRequest",
+        getScheduleOrderListSuccess: "getScheduleOrderListSuccess",
+        getScheduleOrderListFailure: "getScheduleOrderListFailure",
+
         // SuggestProduct Screen
         suggestProductRequest: "suggestProductRequest",
         suggestProductSuccess: "suggestProductSuccess",
@@ -388,6 +401,11 @@ module.exports = {
         sendMessageSuccess: "sendMessageSuccess",
         sendMessageFailure: "sendMessageFailure",
     },
+
+    // Change Password Us
+    changePasswordRequest: "changePasswordRequest",
+    changePasswordSuccess: "changePasswordSuccess",
+    changePasswordFailure: "changePasswordFailure",
 
     /*
         Redux Action Keys End
