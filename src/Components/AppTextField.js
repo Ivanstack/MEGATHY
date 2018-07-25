@@ -41,6 +41,7 @@ export default class AppTextField extends Component {
                     onBlur={this.props.onBlur}
                     onPress={this.props.onPress}
                     onSubmitEditing={this.props.onSubmitEditing}
+                    renderAccessory={this.props.renderAccessory}
                 />
             </View>
         );

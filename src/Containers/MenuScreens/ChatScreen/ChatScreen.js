@@ -26,6 +26,8 @@ import Spinner from "react-native-loading-spinner-overlay"; // Loading View
 import baseLocal from "../../../Resources/Localization/baseLocalization"; // Localization
 import ImageLoad from "react-native-image-placeholder";
 
+import moment from "moment"; // Date/Time Conversition
+
 // Styles
 import ChatScreenStyle from "./ChatScreenStyle";
 
@@ -51,15 +53,51 @@ class ChatScreen extends Component {
     }
 
     componentWillReceiveProps(newProps) {
-        if (newProps.isGetChatSuccess === true) {
-            this.forceUpdate();
-            // this.refs.chatList.scrollToIndex(newProps.arrChat.length - 1, true);
+        // if (newProps.isGetChatSuccess === true) {
+        //     this.forceUpdate();
+        //     // if (this.chatList != undefined) {
+        //     //     this.chatList.scrollToIndex(true, newProps.arrChat.length - 1);
+        //     // }
+        // }
+        if (newProps.isSendMsgSuccess === true) {
+            this.setState({ txtMsg: "" }, () => {
+                if (this.chatList != undefined) {
+                    setTimeout(() => {
+                        this.chatList.scrollToIndex({ animated: true, index: newProps.arrChat.length - 1 });
+                    }, 600);
+                }
+            });
         }
     }
+
+    // Mics Methods
+
+    _getTimeDifference = oldDate => {
+        let currentDate = moment();
+        let msgDate = moment(oldDate);
+        let dayDiff = Math.abs(new Date().getTime() - new Date(oldDate).getTime()) / (1000 * 3600 * 24);
+
+        if (Math.floor(dayDiff) > 0) {
+            return moment(oldDate).fromNow();
+        } else {
+            let hours = Math.floor(currentDate.diff(msgDate, "hours"));
+            let minutes = Math.floor(currentDate.diff(msgDate, "minutes") - hours * 60);
+            let seconds = Math.floor(currentDate.diff(msgDate, "seconds") - minutes * 60);
+
+            if (hours > 0) {
+                return `${hours} hours, ${minutes} minutes ago`;
+            } else if (minutes > 0) {
+                return `${minutes} minutes, ${seconds} seconds ago`;
+            } else {
+                return `${seconds === 0 ? 1 : seconds} seconds ago`;
+            }
+        }
+    };
 
     // On Press Methods
     _onPressSendMsg = (isSender = true) => {
         constant.debugLog("on Send press .....");
+        this.forceUpdate();
         var sendMessageParameters = {
             message: this.state.txtMsg,
             vendorId: constant.DeviceInfo.getUniqueID(),
@@ -77,7 +115,6 @@ class ChatScreen extends Component {
     };
 
     // Render Methods
-
     _renderChatItem = ({ item }) => {
         let isSender = item.type === constant.kMessageTypeRequest;
         return (
@@ -129,7 +166,7 @@ class ChatScreen extends Component {
                                     marginRight: 8,
                                 }}
                             >
-                                {item.timeAgo}
+                                {this._getTimeDifference(item.timestamp)}
                             </Text>
                         </View>
                     ) : (
@@ -233,16 +270,9 @@ class ChatScreen extends Component {
         return (
             // Main View (Container)
             <View style={ChatScreenStyle.mainContainer}>
-                {/* <Spinner
-                    {this.state.isShowImage?:
-                    visible={this.props.isLoading}
-                    cancelable={true}
-                    // textContent={"Please wait..."}
-                    textStyle={{ color: "#FFF" }}
-                /> */}
                 {/* <ScrollView style={{ width: "100%" }} contentContainerStyle={styles.scrollView} /> */}
                 {this._renderModalForShowImage()}
-                <View>
+                <View style={{ flex: 1 }}>
                     {this.props.arrChat.length > 0 ? (
                         <View style={{ justifyContent: "center", alignItems: "center", marginBottom: 50 }}>
                             <FlatList
@@ -252,7 +282,7 @@ class ChatScreen extends Component {
                                     // height: "100%",
                                     backgroundColor: "transparent",
                                 }}
-                                ref="chatList"
+                                ref={list => (this.chatList = list)}
                                 data={this.props.arrChat}
                                 keyExtractor={(item, index) => item.userChatId.toString()}
                                 renderItem={this._renderChatItem.bind(this)}
@@ -262,7 +292,11 @@ class ChatScreen extends Component {
                             />
                         </View>
                     ) : (
-                        <Text> No Chat </Text>
+                        <View style={{ marginBottom: 50, marginHorizontal: 16 }}>
+                            <Text style={{ fontFamily: constant.themeFont, fontSize: 17, marginVertical: 8 }}>
+                                {baseLocal.t("keyNoMessageTextFeedback")}
+                            </Text>
+                        </View>
                     )}
                     <View
                         style={{
@@ -282,6 +316,7 @@ class ChatScreen extends Component {
                                 source={require("../../../Resources/Images/Feedback/cameraIcon.png")}
                             />
                         </View>
+
                         <TextInput
                             style={{ borderColor: "transparent", borderWidth: 2, flex: 1 }}
                             placeholder="Type a message"
@@ -304,6 +339,14 @@ class ChatScreen extends Component {
                             </TouchableOpacity>
                         </View>
                     </View>
+                    {this.props.isLoading ? (
+                        <Spinner
+                            visible={this.props.isLoading}
+                            cancelable={true}
+                            // textContent={"Please wait..."}
+                            // textStyle={{ color: "#FFF" }}
+                        />
+                    ) : null}
                 </View>
             </View>
         );
@@ -314,6 +357,7 @@ function mapStateToProps(state, props) {
     return {
         isLoading: state.chat.isLoading,
         isGetChatSuccess: state.chat.isGetChatSuccess,
+        isSendMsgSuccess: state.chat.isSendMsgSuccess,
         arrChat: state.chat.arrChat,
         error: state.chat.error,
     };

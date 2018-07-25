@@ -81,12 +81,15 @@ class UserProfileScreen extends Component {
                 >
                     <Text style={UserProfileStyles.btnTxtStyle}>{baseLocal.t("Edit User Profile")}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    style={{ marginTop: 20, height: 30 }}
-                    onPress={() => this.props.navigation.navigate("ChangePasswordScreen")}
-                >
-                    <Text style={UserProfileStyles.btnTxtStyle}>{baseLocal.t("Change Password")}</Text>
-                </TouchableOpacity>
+                {global.currentUser.facebookId === "" ? (
+                    <TouchableOpacity
+                        style={{ marginTop: 20, height: 30 }}
+                        onPress={() => this.props.navigation.navigate("ChangePasswordScreen")}
+                    >
+                        <Text style={UserProfileStyles.btnTxtStyle}>{baseLocal.t("Change Password")}</Text>
+                    </TouchableOpacity>
+                ) : null}
+
                 <Text style={{ fontFamily: constant.themeFont, fontSize: 15, fontWeight: "bold", marginTop: 25 }}>
                     Choose your preffered language
                 </Text>

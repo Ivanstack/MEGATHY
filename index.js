@@ -1,4 +1,6 @@
-import { AppRegistry } from 'react-native';
-import App from './App';
+import { AppRegistry, Text } from "react-native";
+import App from "./App";
 
-AppRegistry.registerComponent('MegathyRN', () => App);
+Text.defaultProps.allowFontScaling = false;
+
+AppRegistry.registerComponent("MegathyRN", () => App);
