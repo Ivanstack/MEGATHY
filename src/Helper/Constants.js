@@ -170,6 +170,7 @@ module.exports = {
     APIPlaceDetail: "https://maps.googleapis.com/maps/api/place/details/",
     APIGeoCode: "https://maps.googleapis.com/maps/api/geocode/",
     APIChangePassword: "userChangPassword",
+    APIGetRewardHistory: "getRewardHistory",
 
     // General API
     APIGetAppSettingsAndRewards: "getAppSettingsAndRewards",
@@ -409,6 +410,11 @@ module.exports = {
         changePasswordRequest: "changePasswordRequest",
         changePasswordSuccess: "changePasswordSuccess",
         changePasswordFailure: "changePasswordFailure",
+
+        // Change Password Us
+        getWalletHistoryRequest: "getWalletHistoryRequest",
+        getWalletHistorySuccess: "getWalletHistorySuccess",
+        getWalletHistoryFailure: "getWalletHistoryFailure",
     },
 
     /*

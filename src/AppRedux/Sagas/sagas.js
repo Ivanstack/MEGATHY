@@ -25,6 +25,7 @@ import { SuggestProductScreenCalls } from "./SuggestProductSagas";
 import { ContactUsScreenCalls } from "./ContactUsSagas";
 import { ChatScreenCalls } from "./ChatSagas";
 import { ChangePasswordScreenCalls } from "./ChangePasswordSagas";
+import { WalletScreenCalls } from "./WalletSagas";
 
 // watcher saga: watches for actions dispatched to the store, starts worker saga
 export function* watcherSaga(action) {
@@ -121,4 +122,7 @@ export function* watcherSaga(action) {
 
     // Change Password Screen
     yield takeEvery(constant.actions.changePasswordRequest, ChangePasswordScreenCalls);
+
+    // Wallet Screen
+    yield takeEvery(constant.actions.getWalletHistoryRequest, WalletScreenCalls);
 }
