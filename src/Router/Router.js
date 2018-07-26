@@ -31,10 +31,12 @@ import AddressMapScreen from "../Containers/MenuScreens/DeliveryDetails/AddressM
 import OrderHistoryScreen from "../Containers/MenuScreens/OrderHistory/OrderHistory/OrderHistoryScreen";
 import OrderDetailScreen from "../Containers/MenuScreens/OrderHistory/OrderDetail/OrderDetailScreen";
 
+// OrderStatusScreenNav
+import OrderStatusScreen from "../Containers/MenuScreens/OrderStatus/OrderStatusList/OrderStatusListScreen";
+import OrderStatusDetailScreen from "../Containers/MenuScreens/OrderStatus/OrderStatusDetail/OrderStatusDetailScreen";
+
 // ScheduleOrderHistoryScreenNav
 import ScheduleOrderListScreen from "../Containers/MenuScreens/ScheduleOrderHistory/ScheduleOrderList/ScheduleOrderListScreen";
-
-// OrderStatusScreenNav
 
 // UserProfileScreenNav
 import UserProfileScreen from "../Containers/MenuScreens/UserProfile/UserProfile/UserProfileScreen";
@@ -64,6 +66,7 @@ import SecondScreen from "../Containers/MenuScreens/SecondScreen";
 // Constant
 import * as constant from "../Helper/Constants";
 import * as commonUtilities from "../Helper/CommonUtilities";
+import OrderStatusListScreen from "../Containers/MenuScreens/OrderStatus/OrderStatusList/OrderStatusListScreen";
 
 // Modal Screen
 // const OrderMasterScreenNav = StackNavigator(
@@ -96,10 +99,10 @@ const CategoryScreenNav = StackNavigator(
 // Delivery Detail Screen With Child Element
 const DeliveryDetailsNav = StackNavigator(
     {
-        AddressMapScreen: { screen: AddressMapScreen },
         AddressListScreen: { screen: AddressListScreen },
         AddAddressScreen: { screen: AddAddressScreen },
         VerifyPhoneScreen: { screen: VerifyPhoneScreen },
+        AddressMapScreen: { screen: AddressMapScreen },
     },
     {
         headerMode: "screen",
@@ -130,8 +133,8 @@ const ScheduleOrderHistoryScreenNav = StackNavigator(
 // Schedule Order History Screen With Child Element
 const OrderStatusScreenNav = StackNavigator(
     {
-        OrderHistoryScreen: { screen: OrderHistoryScreen },
-        OrderDetailScreen: { screen: OrderDetailScreen },
+        OrderStatusListScreen: { screen: OrderStatusListScreen },
+        OrderStatusDetailScreen: { screen: OrderStatusDetailScreen },
     },
     {
         headerMode: "screen",
@@ -229,7 +232,7 @@ const AppDrawer = DrawerNavigator(
         "Delivery Details": { screen: DeliveryDetailsNav },
         "Order History": { screen: OrderHistoryScreenNav },
         "Schedule Orders": { screen: ScheduleOrderHistoryScreenNav },
-        "Order Status": { screen: OrderHistoryScreenNav },
+        "Order Status": { screen: OrderStatusScreenNav },
         "User Profile": { screen: UserProfileScreenNav },
         "My Rewards Wallet": { screen: OrderHistoryScreenNav },
         "Change Store": { screen: StoreScreenNav },

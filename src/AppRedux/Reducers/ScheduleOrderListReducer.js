@@ -5,6 +5,7 @@ export const initialState = {
     isLoading: false,
     isRefreshing: false,
     isSuccess: false,
+    isCancelOrderSuccess: false,
     arrScheduleOrderHistory: [],
     currentPage: 1,
     lastPage: 0,
@@ -17,6 +18,7 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isSuccess: false,
+                isCancelOrderSuccess: false,
                 isRefreshing: true,
                 isLoading: true,
                 error: null,
@@ -31,6 +33,7 @@ export const reducer = (state = initialState, action) => {
                 currentPage: action.response.current_page,
                 lastPage: action.response.last_page,
                 isSuccess: true,
+                isCancelOrderSuccess: false,
                 isRefreshing: false,
                 isLoading: false,
                 error: null,
@@ -39,6 +42,34 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isSuccess: false,
+                isCancelOrderSuccess: false,
+                isRefreshing: false,
+                isLoading: false,
+                error: action.error,
+            };
+        case constant.actions.updateScheduleOrderStatusRequest:
+            return {
+                ...state,
+                isSuccess: false,
+                isCancelOrderSuccess: false,
+                isRefreshing: false,
+                isLoading: true,
+                error: null,
+            };
+        case constant.actions.updateScheduleOrderStatusSuccess:
+            return {
+                ...state,
+                isSuccess: false,
+                isCancelOrderSuccess: true,
+                isRefreshing: false,
+                isLoading: false,
+                error: null,
+            };
+        case constant.actions.updateScheduleOrderStatusFailure:
+            return {
+                ...state,
+                isSuccess: false,
+                isCancelOrderSuccess: false,
                 isRefreshing: false,
                 isLoading: false,
                 error: action.error,

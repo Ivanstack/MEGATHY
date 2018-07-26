@@ -44,11 +44,6 @@ const inactiveIndicatorViewHeight = 15;
 const labels = ["Select Address", "Select Time", "Payment"];
 const classContext = null;
 let arrAction = ["Call you", "Replace it with similar", "Delete it"];
-// let arrAction = [
-//     { title: "Call you", isSelected: true },
-//     { title: "Replace it with similar", isSelected: false },
-//     { title: "Delete it", isSelected: false },
-// ];
 const customStyles = {
     stepIndicatorSize: inactiveIndicatorViewHeight,
     currentStepIndicatorSize: activeIndicatorViewHeight,
@@ -115,7 +110,7 @@ class OrderMasterScreen extends Component {
                 ? "Thank you for your order, our employee will deliver your grocery and charge your credit card upon arrival"
                 : "Thank you for your order, our employee will deliver your grocery on time.";
             setTimeout(() => {
-                Alert.alert(baseLocal.t("Megathy"), baseLocal.t(strMsg), [
+                Alert.alert("Megathy", strMsg, [
                     { text: baseLocal.t("OK"), onPress: this._onPressAlertOkBtn.bind(this), style: "cancel" },
                 ]);
             }, 500);
@@ -186,7 +181,7 @@ class OrderMasterScreen extends Component {
             customerNote: selectedAction,
             deliveryCharg: this.objCartDetail.deliveryCharges,
             // deliveryTime: deliveryTime,
-            paymentMode: this.state.paymentByCard ? constant.kPaymentModeCard : constant.kPaymentModeCash,
+            paymentMode: this.objCartDetail.paymentMode,
             // userId: global.currentUser.id,
             vendorId: constant.DeviceInfo.getUniqueID(),
         };

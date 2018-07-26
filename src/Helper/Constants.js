@@ -124,8 +124,8 @@ module.exports = {
 
     /// Rest API details
     // Base URL
-    baseURL: "http://192.168.0.3/megathylaravel/public/api/v1/", // Jay Kaneriya
-    // baseURL: "http://192.168.0.11/Megathy/MegathyLaravel/public/api/v1/", // Bharatbhai
+    // baseURL: "http://192.168.0.3/megathylaravel/public/api/v1/", // Jay Kaneriya
+    baseURL: "http://192.168.0.11/Megathy/MegathyLaravel/public/api/v1/", // Bharatbhai
     // baseURL: "http://192.168.0.2/MegathyLaravel/public/api/v1/", //Chintan Adatiya
     // baseURL: "http://manage.megathykom.com/api/v1/", // Live
 
@@ -163,6 +163,7 @@ module.exports = {
     APIContactUs: "contactUs",
     APIGetOrderHistory: "orderHistory",
     APIGetScheduleOrderHistory: "getScheduleOrder",
+    APIUpdateScheduleOrderStatus: "updateScheduleOrderStatus",
     APIGetChat: "getChat",
     APISendMessage: "chatRequest",
     APIPlaceAutoComplete: "https://maps.googleapis.com/maps/api/place/autocomplete/",
@@ -382,6 +383,9 @@ module.exports = {
         getScheduleOrderListRequest: "getScheduleOrderListRequest",
         getScheduleOrderListSuccess: "getScheduleOrderListSuccess",
         getScheduleOrderListFailure: "getScheduleOrderListFailure",
+        updateScheduleOrderStatusRequest: "updateScheduleOrderStatusRequest",
+        updateScheduleOrderStatusSuccess: "updateScheduleOrderStatusSuccess",
+        updateScheduleOrderStatusFailure: "updateScheduleOrderStatusFailure",
 
         // SuggestProduct Screen
         suggestProductRequest: "suggestProductRequest",
@@ -400,12 +404,12 @@ module.exports = {
         sendMessageRequest: "sendMessageRequest",
         sendMessageSuccess: "sendMessageSuccess",
         sendMessageFailure: "sendMessageFailure",
-    },
 
-    // Change Password Us
-    changePasswordRequest: "changePasswordRequest",
-    changePasswordSuccess: "changePasswordSuccess",
-    changePasswordFailure: "changePasswordFailure",
+        // Change Password Us
+        changePasswordRequest: "changePasswordRequest",
+        changePasswordSuccess: "changePasswordSuccess",
+        changePasswordFailure: "changePasswordFailure",
+    },
 
     /*
         Redux Action Keys End

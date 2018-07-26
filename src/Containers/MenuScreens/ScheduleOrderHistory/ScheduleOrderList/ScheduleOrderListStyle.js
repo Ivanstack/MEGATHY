@@ -9,24 +9,24 @@ const redeemPointViewViewHeight = (7.5 * Dimensions.get("window").height) / 100;
 
 export default StyleSheet.create({
     mainContainer: {
-        // margin: 8,
         flexDirection: "row",
         backgroundColor: constant.darkGrayBGColor,
         alignItems: "center",
         justifyContent: "center",
-        // marginBottom:10
-        // flex: 1,
     },
     headerText: {
         color: "white",
-        // margin: 4,
         fontSize: 15,
         fontFamily: constant.themeFont,
     },
     normalTitleText: {
-        // margin: 8,
         fontSize: 15,
         fontFamily: constant.themeFont,
+    },
+    amountText: {
+        fontSize: 15,
+        fontFamily: constant.themeFont,
+        color: constant.themeColor,
     },
     smallSizeFontTitleText: {
         margin: 8,
@@ -34,7 +34,6 @@ export default StyleSheet.create({
         fontFamily: constant.themeFont,
     },
     boldTitleText: {
-        // margin: 12,
         fontSize: 15,
         fontWeight: "bold",
         fontFamily: constant.themeFont,
@@ -42,13 +41,8 @@ export default StyleSheet.create({
     orderHistoryItemConstainerStyle: {
         flexDirection: "row",
         flex: 1,
-        // justifyContent: "space-between",
-        // alignItems: "center",
-        // marginBottom: 10,
         backgroundColor: "white",
-        // paddingTop: 10,
-        // paddingBottom: 10,
-        margin:8,
+        margin: 8,
         marginBottom: 0,
     },
     orderStatusViewStyle: {
@@ -59,6 +53,5 @@ export default StyleSheet.create({
         borderRadius: 11,
         height: 22,
         width: 100,
-        // margin: 4,
     },
 });

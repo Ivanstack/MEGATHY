@@ -27,7 +27,7 @@ import baseLocal from "../../../../Resources/Localization/baseLocalization"; // 
 import moment from "moment"; // Date/Time Conversition
 
 // Styles
-import OrderHistoryStyle from "./OrderHistoryStyle";
+import styles from "./OrderHistoryStyle";
 
 class OrderHistoryScreen extends Component {
     constructor(props) {
@@ -83,15 +83,28 @@ class OrderHistoryScreen extends Component {
     };
 
     // Render Methods
-
-    _renderDateAndAddressView = (title, isAddress) => {
-        let imgSource = isAddress
-            ? require("../../../../Resources/Images/Order/LocationIcon.png")
-            : require("../../../../Resources/Images/Order/TimeIcon.png");
+    _renderDateAndTimeView = value => {
         return (
             <View style={{ margin: 4, flexDirection: "row", marginTop: 8 }}>
-                <Image style={{ width: 20, height: 20, marginRight: 8 }} source={imgSource} resizeMode="contain" />
-                <Text style={[OrderHistoryStyle.normalTitleText, { marginLeft: 8 }]}>{title}</Text>
+                <Image
+                    style={{ width: 20, height: 20, marginRight: 8 }}
+                    source={require("../../../../Resources/Images/Order/TimeIcon.png")}
+                    resizeMode="contain"
+                />
+                <Text style={[styles.normalTitleText, { marginLeft: 8 }]}>{value}</Text>
+            </View>
+        );
+    };
+
+    _renderAddressView = value => {
+        return (
+            <View style={{ margin: 4, flexDirection: "row", marginTop: 8 }}>
+                <Image
+                    style={{ width: 20, height: 20, marginRight: 8 }}
+                    source={require("../../../../Resources/Images/Order/LocationIcon.png")}
+                    resizeMode="contain"
+                />
+                <Text style={[styles.normalTitleText, { marginLeft: 8, width: "90%" }]}>{value}</Text>
             </View>
         );
     };
@@ -108,17 +121,14 @@ class OrderHistoryScreen extends Component {
                 style={{ backgroundColor: constant.prodCategoryBGColor }}
                 onPress={() => this._onPressOrderItem(item)}
             >
-                <View style={OrderHistoryStyle.orderHistoryItemConstainerStyle}>
+                <View style={styles.orderHistoryItemConstainerStyle}>
                     <View style={{ flex: 1, margin: 8, marginRight: 0 }}>
-                        <Text style={[OrderHistoryStyle.boldTitleText, { marginLeft: 36 }]}>
+                        <Text style={[styles.boldTitleText, { marginLeft: 36 }]}>
                             Order Id: {item.displayOrderId}
                         </Text>
-                        {this._renderDateAndAddressView(
-                            moment(item.orderDeliveryTime).format("DD-MM-YYYY hh:mm A"),
-                            false
-                        )}
-                        {this._renderDateAndAddressView(item.address_meta.address, true)}
-                        <Text style={[OrderHistoryStyle.normalTitleText, , { marginLeft: 36, marginTop: 4 }]}>
+                        {this._renderDateAndTimeView(moment(item.orderDeliveryTime).format("DD-MM-YYYY hh:mm A"))}
+                        {this._renderAddressView(item.address_meta.address)}
+                        <Text style={[styles.normalTitleText, , { marginLeft: 36, marginTop: 4 }]}>
                             Payment Mode: {item.paymentMode}
                         </Text>
                         <View
@@ -130,12 +140,12 @@ class OrderHistoryScreen extends Component {
                             }}
                         >
                             <Text
-                                style={[OrderHistoryStyle.boldTitleText, { color: constant.themeColor, marginTop: 4 }]}
+                                style={[styles.boldTitleText, { color: constant.themeColor, marginTop: 4 }]}
                             >
                                 SAR: {item.orderTotal}
                             </Text>
                             <View
-                                style={[OrderHistoryStyle.orderStatusViewStyle, { backgroundColor: orderStatusColor }]}
+                                style={[styles.orderStatusViewStyle, { backgroundColor: orderStatusColor }]}
                             >
                                 <Text
                                     style={{
@@ -166,7 +176,7 @@ class OrderHistoryScreen extends Component {
         return (
             // Main View (Container)
             <View>
-                <SafeAreaView style={[OrderHistoryStyle.mainContainer, { backgroundColor: constant.darkGrayBGColor }]}>
+                <SafeAreaView style={[styles.mainContainer, { backgroundColor: constant.darkGrayBGColor }]}>
                     {this.props.arrOrderHistory.length > 0 ? (
                         <FlatList
                             style={{

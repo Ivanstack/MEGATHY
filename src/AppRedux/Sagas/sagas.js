@@ -104,9 +104,10 @@ export function* watcherSaga(action) {
 
     // Order History Screen
     yield takeEvery(constant.actions.getOrderHistoryRequest, OrderHistoryScreenCalls);
-
+    
     // Schedule Order List Screen
     yield takeEvery(constant.actions.getScheduleOrderListRequest, ScheduleOrderListScreenCalls);
+    yield takeEvery(constant.actions.updateScheduleOrderStatusRequest, ScheduleOrderListScreenCalls);
 
     // SuggestProduct Screen
     yield takeEvery(constant.actions.suggestProductRequest, SuggestProductScreenCalls);

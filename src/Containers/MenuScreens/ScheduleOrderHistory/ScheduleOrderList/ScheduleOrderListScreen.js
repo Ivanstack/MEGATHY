@@ -24,10 +24,12 @@ import * as networkUtility from "../../../../Helper/NetworkUtility"; // Network 
 import baseLocal from "../../../../Resources/Localization/baseLocalization"; // Localization
 import Spinner from "react-native-loading-spinner-overlay"; // Loading View
 import moment from "moment"; // Date/Time Conversition
+import ActionSheet from "react-native-actionsheet";
 
 // Styles
 import styles from "./ScheduleOrderListStyle";
 
+var selectedOrderId = 0;
 class ScheduleOrderListScreen extends Component {
     constructor(props) {
         super(props);
@@ -45,7 +47,11 @@ class ScheduleOrderListScreen extends Component {
         this._getOrderHistory();
     }
 
-    componentWillReceiveProps(newProps) {}
+    componentWillReceiveProps(newProps) {
+        if (newProps.scheduleOrderList.isCancelOrderSuccess === true) {
+            this._onRefresh();
+        }
+    }
 
     // Mics Methods
 
@@ -80,9 +86,37 @@ class ScheduleOrderListScreen extends Component {
     }
 
     // OnPress Methods
+    _showActionSheet = () => {
+        this.ActionSheet.show();
+    };
+
+    _onPressActionSheetIndex = index => {
+        if (index === 0) {
+            // Cancel Order
+            CommonUtilities.showAlertYesNo("Are you sure want to cancel this order?").then(
+                pressedYes => {
+                    // User pressed Yes
+                    let cancelOrderParameters = {
+                        scheduleOrderId: selectedOrderId,
+                        status: "Deleted",
+                    };
+
+                    this.props.updateScheduleOrderStatus(cancelOrderParameters);
+                },
+                pressedNo => {} // User pressed No
+            );
+        } else if (index === 1) {
+            // Cancel
+        }
+    };
 
     _onPressOrderItem = item => {
-        // this.props.navigation.navigate("OrderDetailScreen", { orderItem: item });
+        if (item.paymentMode === constant.kPaymentModeCash) {
+            selectedOrderId = item.scheduleOrderId;
+            this._showActionSheet();
+        } else {
+            CommonUtilities.showAlert("Oops! you cannot cancel order whose payment mode is not cash", false);
+        }
     };
 
     // Render Methods
@@ -92,8 +126,8 @@ class ScheduleOrderListScreen extends Component {
 
         orderTimeSessionMeta.map((orderTimeSession, index) => {
             let dateTime = moment(orderTimeSession.date + " " + orderTimeSession.time).format("DD-MM-YYYY hh:mm A");
-            let cartAmount = constant.currency + orderTimeSession.cartAmount;
-            let finalAmount = constant.currency + orderTimeSession.finalAmount;
+            let cartAmount = constant.currency + " " + orderTimeSession.cartAmount;
+            let finalAmount = constant.currency + " " + orderTimeSession.finalAmount;
             let percentage = orderTimeSession.discountHike;
 
             dateTimeTexts.push(
@@ -102,15 +136,15 @@ class ScheduleOrderListScreen extends Component {
                     <View style={{ flexDirection: "row" }}>
                         <Text
                             style={[
-                                styles.normalTitleText,
-                                { textDecorationLine: orderTimeSessionMeta.couponActive ? "line-through" : "none" },
+                                styles.amountText,
+                                { textDecorationLine: orderTimeSession.couponActive ? "line-through" : "none" },
                             ]}
                         >
-                            {orderTimeSessionMeta.couponActive ? cartAmount : ""}
+                            {orderTimeSession.couponActive ? "  " + cartAmount + " " : "  "}
                         </Text>
-                        <Text style={[styles.normalTitleText]}>{finalAmount}</Text>
-                        <Text style={[styles.normalTitleText]}>
-                            {orderTimeSessionMeta.discountType === "percentage" ? "(" + percentage + ")" : ""}
+                        <Text style={styles.amountText}>{finalAmount}</Text>
+                        <Text style={styles.amountText}>
+                            {orderTimeSession.discountType === "percentage" ? " (" + percentage + "%" + ")" : ""}
                         </Text>
                     </View>
                 </View>
@@ -128,7 +162,7 @@ class ScheduleOrderListScreen extends Component {
                     source={require("../../../../Resources/Images/Order/TimeIcon.png")}
                     resizeMode="contain"
                 />
-                {this._renderScheduleDateTime(orderTimeSessionMeta)}
+                <View>{this._renderScheduleDateTime(orderTimeSessionMeta)}</View>
             </View>
         );
     };
@@ -141,7 +175,7 @@ class ScheduleOrderListScreen extends Component {
                     source={require("../../../../Resources/Images/Order/LocationIcon.png")}
                     resizeMode="contain"
                 />
-                <Text style={[styles.normalTitleText, { marginLeft: 8 }]}>{address}</Text>
+                <Text style={[styles.normalTitleText, { marginLeft: 8, width: "90%" }]}>{address}</Text>
             </View>
         );
     };
@@ -225,6 +259,14 @@ class ScheduleOrderListScreen extends Component {
             // Main View (Container)
             <View>
                 <SafeAreaView style={[styles.mainContainer, { backgroundColor: constant.darkGrayBGColor }]}>
+                    <ActionSheet
+                        ref={o => (this.ActionSheet = o)}
+                        title={baseLocal.t("Scheduled Order Options")}
+                        options={[baseLocal.t("Cancel Order"), baseLocal.t("Cancel")]}
+                        cancelButtonIndex={1}
+                        destructiveButtonIndex={0}
+                        onPress={this._onPressActionSheetIndex}
+                    />
                     {this.props.scheduleOrderList.arrScheduleOrderHistory.length > 0 ? (
                         <FlatList
                             style={{
@@ -276,6 +318,11 @@ function mapDispatchToProps(dispatch) {
             dispatch({
                 type: constant.actions.getScheduleOrderListRequest,
                 payload: { endPoint: constant.APIGetScheduleOrderHistory, parameters: parameters },
+            }),
+        updateScheduleOrderStatus: parameters =>
+            dispatch({
+                type: constant.actions.updateScheduleOrderStatusRequest,
+                payload: { endPoint: constant.APIUpdateScheduleOrderStatus, parameters: parameters },
             }),
     };
 }

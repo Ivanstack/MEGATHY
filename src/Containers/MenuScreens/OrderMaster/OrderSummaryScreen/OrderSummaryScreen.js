@@ -183,10 +183,11 @@ class OrderSummaryScreen extends Component {
                 ? this.props.parentScreen.selectedDates.length
                 : 1;
 
-        this.objCartDescription["basicOrderAmount"] =
-            (fnCart.getTotalPriceCartItems() +
-                parseFloat(this._getDeliveryChargesFromOrderAmount(fnCart.getTotalPriceCartItems()))) *
-            this.selectedDaysCount;
+        this.objCartDescription["basicOrderAmount"] = (
+            fnCart.getTotalPriceCartItems() +
+            parseFloat(this._getDeliveryChargesFromOrderAmount(fnCart.getTotalPriceCartItems())) *
+                this.selectedDaysCount
+        ).toFixed(2);
         this.objCartDescription["deliveryCharges"] = this._getDeliveryChargesFromOrderAmount(
             this.objCartDescription.basicOrderAmount
         );
@@ -196,7 +197,9 @@ class OrderSummaryScreen extends Component {
             this.objCartDescription["vatAmount"] = (
                 (this.objCartDescription.basicOrderAmount * global.currentSettings["vat-percentage"]) /
                 100
-            ).toFixed(2);
+            )
+                .toFixed(2)
+                .toFixed(2);
             this.objCartDescription["finalOrderAmount"] = this._getOrderAmountIncludingVAT();
         } else {
             this.objCartDescription["finalOrderAmount"] = this.objCartDescription.basicOrderAmount;
@@ -205,13 +208,19 @@ class OrderSummaryScreen extends Component {
         if (this.props.objCoupenCode) {
             this.isCoupenCodeAvailable = true;
             if (this.props.objCoupenCode.type === constant.kCoupenCodeDiscountTypePercentage) {
-                this.objCartDescription["coupenDiscount"] =
+                this.objCartDescription["coupenDiscount"] = (
                     ((this.props.objCoupenCode.discount * this.objCartDescription.basicOrderAmount) / 100) *
-                    this.selectedDaysCount;
+                    this.selectedDaysCount
+                ).toFixed(2);
             } else {
-                this.objCartDescription["coupenDiscount"] = this.props.objCoupenCode.discount * this.selectedDaysCount;
+                this.objCartDescription["coupenDiscount"] = (
+                    this.props.objCoupenCode.discount * this.selectedDaysCount
+                ).toFixed(2);
             }
         }
+
+        this.objCartDescription.paymentMode =
+            this.state.paymentByCard === true ? constant.kPaymentModeCard : constant.kPaymentModeCash;
         this.props.parentScreen.objCartDetail = this.objCartDescription;
         this.setState({ txtRedeemPoint: this.totalRewardPoint });
         // constant.debugLog("cart description :===> " + JSON.stringify(this.objCartDescription));
@@ -239,12 +248,16 @@ class OrderSummaryScreen extends Component {
         if (this.props.objCoupenCode) {
             this.isCoupenCodeAvailable = true;
             if (this.props.objCoupenCode.type === constant.kCoupenCodeDiscountTypePercentage) {
-                this.objCartDescription["coupenDiscount"] =
-                    (this.props.objCoupenCode.discount * this.objCartDescription.basicOrderAmount) / 100;
+                this.objCartDescription["coupenDiscount"] = (
+                    (this.props.objCoupenCode.discount * this.objCartDescription.basicOrderAmount) /
+                    100
+                ).toFixed(2);
             } else {
                 this.objCartDescription["coupenDiscount"] = this.props.objCoupenCode.discount;
             }
         }
+        this.objCartDescription.paymentMode =
+            this.state.paymentByCard === true ? constant.kPaymentModeCard : constant.kPaymentModeCash;
         this.props.parentScreen.objCartDetail = this.objCartDescription;
         this.setState({ txtRedeemPoint: this.totalRewardPoint });
         // constant.debugLog("cart description :===> " + JSON.stringify(this.objCartDescription));
@@ -269,7 +282,7 @@ class OrderSummaryScreen extends Component {
         let orderAmount = this.objCartDescription.basicOrderAmount;
         let grossAmount = orderAmount;
         if (global.currentSettings["vat-percentage"] > 0) {
-            grossAmount = grossAmount + (orderAmount * global.currentSettings["vat-percentage"]) / 100;
+            grossAmount = grossAmount + ((orderAmount * global.currentSettings["vat-percentage"]) / 100).toFixed(2);
         }
         // let pointAmount = (this.state.txtRedeemPoint * global.currentSettings["reward-sr"]) / 100;
         // if (pointAmount > grossAmount) {
@@ -356,10 +369,6 @@ class OrderSummaryScreen extends Component {
     };
 
     onPressSend = () => {
-        // this.setState({
-        //     paymentByCard: !this.state.paymentByCard,
-        // });
-
         if (
             this.props.parentScreen.isScheduleOrder &&
             (this.props.parentScreen.selectedDates === undefined || this.props.parentScreen.selectedDates.length <= 0)
@@ -377,11 +386,6 @@ class OrderSummaryScreen extends Component {
         } else {
             this.props.parentScreen.setState({ isItemAvailableModalVisible: true });
         }
-
-        // constant.debugLog("Selected Time :===> " + JSON.stringify(this.props.parentScreen.selectedTimeSlot));
-        // constant.debugLog("Selected Address :===> " + JSON.stringify(this.props.parentScreen.selectedAddress));
-        // constant.debugLog("totalRewardPoint :===> " + this.props.totalRewardPoint);
-        // constant.debugLog("totalRewardPoint_SR :===> " + this.props.totalRewardPoint_SR);
     };
 
     onPressShowHideRedeemView = () => {
