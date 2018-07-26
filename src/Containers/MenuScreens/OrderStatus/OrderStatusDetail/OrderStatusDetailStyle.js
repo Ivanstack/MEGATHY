@@ -31,4 +31,17 @@ export default StyleSheet.create({
         fontWeight: "bold",
         fontSize: 16,
     },
+    imgMsgStyle: {
+        width: 15,
+        height: 15,
+        position: "absolute",
+        top: 10,
+    },
+    orderStatusContainer: {
+        width: "90%",
+        // marginTop: "12%",
+        marginLeft: 10,
+        flexDirection: "row",
+        height: 60, //"13.5%",
+    },
 });
