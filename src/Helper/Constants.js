@@ -185,6 +185,7 @@ module.exports = {
     themeYellowColor: "#FAC818",
     themeLightGreenColor: "#53B326",
     grayShadeColor55: "#555555",
+    grayShadeColorAA: "#AAAAAA",
     senderBGColor: "#DCF8C6",
     iosDefaultBlueColor: "#007aff",
 
@@ -225,6 +226,11 @@ module.exports = {
     // Chat Key
     kMessageTypeRequest: "Request",
     kMessageTypeReplay: "Replay",
+
+    // Wallet Key
+    kWalletTypeAll: "all",
+    kWalletTypeRedeemed: "paid",
+    kWalletTypeCollected: "received",
 
     actions: {
         /*

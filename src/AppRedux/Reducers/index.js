@@ -37,7 +37,7 @@ const rootReducer = combineReducers({
     contactUs: require("./ContactUsReducer").reducer,
     chat: require("./ChatReducer").reducer,
     changePassword: require("./ChangePasswordReducer").reducer,
-    Wallet: require("./WalletReducer").reducer,
+    wallet: require("./WalletReducer").reducer,
 });
 
 export let sagaMiddleware = saga();

@@ -60,6 +60,9 @@ import ContactUsScreen from "../Containers/MenuScreens/ContactUs/ContactUsScreen
 // ChatScreenNav
 import ChatScreen from "../Containers/MenuScreens/ChatScreen/ChatScreen";
 
+// MyRewardWalletNav
+import MyRewardWallet from "../Containers/MenuScreens/Wallet/WalletScreen";
+
 import OrderMasterScreen from "../Containers/MenuScreens/OrderMaster/OrderMasterScreen";
 import SecondScreen from "../Containers/MenuScreens/SecondScreen";
 
@@ -156,8 +159,8 @@ const UserProfileScreenNav = StackNavigator(
 // My Rewards Wallet Screen With Child Element
 const MyRewardsWalletScreenNav = StackNavigator(
     {
-        OrderHistoryScreen: { screen: OrderHistoryScreen },
-        OrderDetailScreen: { screen: OrderDetailScreen },
+        MyRewardWallet: { screen: MyRewardWallet },
+        // OrderDetailScreen: { screen: OrderDetailScreen },
     },
     {
         headerMode: "screen",
@@ -234,7 +237,7 @@ const AppDrawer = DrawerNavigator(
         "Schedule Orders": { screen: ScheduleOrderHistoryScreenNav },
         "Order Status": { screen: OrderStatusScreenNav },
         "User Profile": { screen: UserProfileScreenNav },
-        "My Rewards Wallet": { screen: OrderHistoryScreenNav },
+        "My Rewards Wallet": { screen: MyRewardsWalletScreenNav },
         "Change Store": { screen: StoreScreenNav },
         "Suggest a Product": { screen: SuggestProductScreenNav },
         "Terms of Services": { screen: TermsOfServicesScreenNav },

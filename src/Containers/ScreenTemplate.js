@@ -23,7 +23,7 @@ class CalendarScreen extends Component {
         this.state = {};
     }
 
-    static navigationOptions = CommonUtilities.navigationView(baseLocal.t("Location"), true);
+    static navigationOptions = CommonUtilities.navigationView(baseLocal.t("Location"), false);
 
     componentDidMount = () => {};
 

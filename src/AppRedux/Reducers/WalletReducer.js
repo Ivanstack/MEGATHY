@@ -6,8 +6,11 @@ export const initialState = {
     isRefreshingAll: false,
     isRefreshingPaid: false,
     isRefreshingReceived: false,
-    isOrderHistorySuccess: false,
-    arrOrderHistory: [],
+    isWalletSuccess: false,
+    arrWalletAllData: [],
+    arrWalletRedeemedData: [],
+    arrWalletCollectedData: [],
+    currentSelectedType: constant.kWalletTypeAll,
     currentPage: 1,
     lastPage: 0,
     error: null,
@@ -15,7 +18,7 @@ export const initialState = {
 
 export const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case constant.actions.getOrderHistoryRequest:
+        case constant.actions.getWalletHistoryRequest:
             return {
                 ...state,
                 isOrderHistorySuccess: false,
@@ -23,21 +26,37 @@ export const reducer = (state = initialState, action) => {
                 isLoading: true,
                 error: null,
             };
-        case constant.actions.getOrderHistorySuccess:
+
+        case constant.actions.getWalletHistorySuccess:
             return {
                 ...state,
-                arrOrderHistory:
-                    action.response.current_page === 1
-                        ? action.response.data
-                        : [...state.arrOrderHistory, ...action.response.data],
-                currentPage: action.response.current_page,
-                lastPage: action.response.last_page,
+                arrWalletAllData:
+                    action.response.currentType === constant.kWalletTypeAll
+                        ? action.response.data.current_page === 1
+                            ? action.response.data.data
+                            : [...state.arrWalletAllData, ...action.response.data.data]
+                        : [...state.arrWalletAllData],
+                arrWalletRedeemedData:
+                    action.response.currentType === constant.kWalletTypeRedeemed
+                        ? action.response.data.current_page === 1
+                            ? action.response.data.data
+                            : [...state.arrWalletRedeemedData, ...action.response.data.data]
+                        : [...state.arrWalletRedeemedData],
+                arrWalletCollectedData:
+                    action.response.currentType === constant.kWalletTypeCollected
+                        ? action.response.data.current_page === 1
+                            ? action.response.data.data
+                            : [...state.arrWalletCollectedData, ...action.response.data.data]
+                        : [...state.arrWalletCollectedData],
+                currentSelectedType: action.response.currentType, // get current selected type
+                currentPage: action.response.data.current_page,
+                lastPage: action.response.data.last_page,
                 isOrderHistorySuccess: true,
                 isRefreshing: false,
                 isLoading: false,
                 error: null,
             };
-        case constant.actions.getOrderHistoryFailure:
+        case constant.actions.getWalletHistoryFailure:
             return {
                 ...state,
                 isOrderHistorySuccess: false,

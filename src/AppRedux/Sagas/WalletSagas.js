@@ -18,7 +18,16 @@ export function* WalletScreenCalls(action) {
 getWalletHistoryCall = payload => {
     return networkUtility.getRequest(payload.endPoint, payload.parameters).then(
         result => {
-            return result.data;
+            let responseData = {};
+            responseData["data"] = result.data.data;
+            if (result.request.responseURL.includes(constant.kWalletTypeAll)) {
+                responseData["currentType"] = constant.kWalletTypeAll;
+            } else if (result.request.responseURL.includes(constant.kWalletTypeRedeemed)) {
+                responseData["currentType"] = constant.kWalletTypeRedeemed;
+            } else {
+                responseData["currentType"] = constant.kWalletTypeCollected;
+            }
+            return responseData;
         },
         error => {
             constant.debugLog("Status Code: " + error.status);
@@ -37,4 +46,3 @@ getWalletHistoryCall = payload => {
         }
     );
 };
-
