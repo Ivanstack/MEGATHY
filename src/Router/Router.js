@@ -20,6 +20,7 @@ import CartScreen from "../Containers/MenuScreens/Category/CartScreen/CartScreen
 import CalendarScreen from "../Containers/MenuScreens/OrderMaster/Calendar/CalendarScreen";
 import SelectTimeScreen from "../Containers/MenuScreens/OrderMaster/SelectTime/SelectTimeScreen";
 import OrderSummaryScreen from "../Containers/MenuScreens/OrderMaster/OrderSummaryScreen/OrderSummaryScreen";
+import SearchScreen from "../Containers/MenuScreens/Category/SearchScreen/SearchScreen"
 
 // DeliveryDetailsNav
 import AddressListScreen from "../Containers/MenuScreens/DeliveryDetails/AddressList/AddressListScreen";
@@ -92,6 +93,8 @@ const CategoryScreenNav = StackNavigator(
         SelectTimeScreen: { screen: SelectTimeScreen },
         SelectTimeScreen: { screen: SelectTimeScreen },
         OrderSummaryScreen: { screen: OrderSummaryScreen },
+        SearchScreen : {screen:SearchScreen}
+
         // OrderMasterScreen: { screen: OrderMasterScreen },
     },
     {

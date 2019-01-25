@@ -31,6 +31,14 @@ export default class componentName extends Component {
                             size={25}
                             color="white"
                         />
+
+                          <Icon
+                            name= "search"
+                            style={{ marginRight: 10, marginTop: 5 }}
+                            size={25}
+                            color="white"
+                        />
+                        
                     </TouchableOpacity>
                     <Text style={styles.headerText}> {this.props.title} </Text>
                 </View>
@@ -41,7 +49,7 @@ export default class componentName extends Component {
 
 const styles = StyleSheet.create({
     headerText: {
-        color: "white",
+        color: "black",
         margin: 4,
         fontSize: 17,
         fontWeight: "bold",

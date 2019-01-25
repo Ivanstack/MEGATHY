@@ -65,9 +65,10 @@ class CategoryScreen extends Component {
     }
 
     static navigationOptions = ({ navigation }) => ({
+
         headerLeft: (
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
+                <View style={{ flexDirection: "row", width: "100%"}}>
                     <TouchableOpacity
                         onPress={() => {
                             // console.log("Nav Params :==> ",navigation.state.params);
@@ -91,16 +92,22 @@ class CategoryScreen extends Component {
                     </TouchableOpacity>
                     <Text style={CategoryStyles.headerText}>{baseLocal.t("Megathy")}</Text>
                 </View>
-
-                {/* <TouchableOpacity onPress={() => navigation.navigate("DrawerToggle")}>
-          <Icon
-            name="search"
-            style={{ marginLeft: 20 }}
-            size={25}
-            color="white"
-          />
-        </TouchableOpacity> */}
             </View>
+        ),
+        headerRight: (
+        <TouchableOpacity
+            style={{ alignSelf: "flex-end" }}
+            onPress={() => {
+               navigation.push('SearchScreen')
+            }}
+        >
+            <Icon
+                name="search"
+                style={{ marginRight: 10,marginBottom:10 }}
+                size={30}
+                color="white"
+            />
+        </TouchableOpacity>
         ),
         headerStyle: {
             backgroundColor: constant.themeColor,
@@ -153,10 +160,10 @@ class CategoryScreen extends Component {
 
         /*
     console.log("getCategory Parameters :===> ", categoryParameters);
-
+    
     // Show Loading View
     this.setState({ visible: true });
-
+    
     networkUtility
       .getRequest(constant.APIGetCategory, categoryParameters)
       .then(
@@ -169,7 +176,7 @@ class CategoryScreen extends Component {
             ...this.state.categoryData,
             ...resultData.data
           ].filter((val, id, array) => array.indexOf(val) === id);
-
+    
           // Hide Loading View
           this.setState({
             categoryData: newArrCategory,
@@ -180,10 +187,10 @@ class CategoryScreen extends Component {
         error => {
           constants.debugLog("\nStatus Code: " + error.status);
           constants.debugLog("\nError Message: " + error);
-
+    
           // Hide Loading View
           this.setState({ visible: false });
-
+    
           if (error.status != 500) {
             if (
               global.currentAppLanguage === constant.languageArabic &&
@@ -199,15 +206,15 @@ class CategoryScreen extends Component {
           }
         }
       );
-
+    
     networkUtility.getRequest(constant.APIGetBanners).then(
       result => {
         // Hide Loading View
-
+    
         // console.log("Get Category :======> ",data.data.data);
         console.log("Get Banner Data :======> ", result.data.data);
         this.setState({ bannerData: result.data.data });
-
+    
         // }
       },
       error => {
@@ -265,35 +272,35 @@ class CategoryScreen extends Component {
                     loop={true}
                     // index={0}
                     // onIndexChanged={index => {console.log("Change Swipe Index :==> ", index)}}
-                    onMomentumScrollEnd={(e, state, context) => {}}
+                    onMomentumScrollEnd={(e, state, context) => { }}
                     dot={<View style={CategoryStyles.dot} />}
                     activeDot={<View style={CategoryStyles.activeDot} />}
                     paginationStyle={CategoryStyles.pagination}
                 >
                     {this.props.arrBanners.length > 0
                         ? this.props.arrBanners.map((value, index) => {
-                              return (
-                                  <View key={index} style={{ height: "100%" }}>
-                                      <ImageLoad
-                                          style={CategoryStyles.image}
-                                          isShowActivity={false}
-                                          placeholderSource={require("../../../../Resources/Images/DefaultProductImage.png")}
-                                          source={{ uri: value.banner_image_url }}
-                                      />
-                                  </View>
-                              );
-                          })
+                            return (
+                                <View key={index} style={{ height: "100%" }}>
+                                    <ImageLoad
+                                        style={CategoryStyles.image}
+                                        isShowActivity={false}
+                                        placeholderSource={require("../../../../Resources/Images/DefaultProductImage.png")}
+                                        source={{ uri: value.banner_image_url }}
+                                    />
+                                </View>
+                            );
+                        })
                         : // <View/>
-                          this.items.map((value, index) => {
-                              return (
-                                  <View key={index} style={{ height: 200 }}>
-                                      <Image
-                                          style={CategoryStyles.image}
-                                          source={require("../../../../Resources/Images/DefaultProductImage.png")}
-                                      />
-                                  </View>
-                              );
-                          })}
+                        this.items.map((value, index) => {
+                            return (
+                                <View key={index} style={{ height: 200 }}>
+                                    <Image
+                                        style={CategoryStyles.image}
+                                        source={require("../../../../Resources/Images/DefaultProductImage.png")}
+                                    />
+                                </View>
+                            );
+                        })}
                 </Swiper>
             </View>
         );
@@ -466,11 +473,11 @@ class CategoryScreen extends Component {
                             onEndReached={this._callLoadMore}
                             onEndReachedThreshold={0.5}
                             ListHeaderComponent={this._renderHeader.bind(this)}
-                            // ListFooterComponent={this._renderFooter.bind(this)}
+                        // ListFooterComponent={this._renderFooter.bind(this)}
                         />
                     ) : (
-                        <Spinner visible={this.props.isLoading} cancelable={true} textStyle={{ color: "#FFF" }} />
-                    )}
+                            <Spinner visible={this.props.isLoading} cancelable={true} textStyle={{ color: "#FFF" }} />
+                        )}
 
                     {this._renderCartItemsView()}
                 </SafeAreaView>
