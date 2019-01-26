@@ -308,7 +308,13 @@ function mapStateToProps(state, props) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return {};
+    return {
+        onPressLogout: parameters =>
+            dispatch({
+                type: constant.actions.logOutRequest,
+                payload: { endPoint: constant.APILogout, parameters: parameters},
+            }),
+    };
 }
 
 export default connect(

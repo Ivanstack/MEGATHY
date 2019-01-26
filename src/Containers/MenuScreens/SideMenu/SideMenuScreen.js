@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { StyleSheet, ScrollView, Text, View, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, ScrollView, Text, View, TouchableOpacity, Image, AsyncStorage } from "react-native";
 import { NavigationActions, DrawerItems } from "react-navigation";
 
 // Constant
@@ -12,8 +12,21 @@ import * as commonUtilities from "../../../Helper/CommonUtilities";
 import baseLocal from "../../../Resources/Localization/baseLocalization";
 
 export default class SideMenuScreen extends Component {
+
+    constructor(props){
+        super(props);
+        
+    }
+
+
     _onPressLogout = () => {
-        this.props.onPressLogout("abc");
+        console.log("Props : ",this.props);
+        let userID = "";
+        AsyncStorage.getItem(constant.keyCurrentUser).then(value => (userID = value.id));
+        var logoutSessionParameter = {
+            userId: userID,
+        };
+        this.props.onPressLogout(logoutSessionParameter);
     };
 
     render = () => {
