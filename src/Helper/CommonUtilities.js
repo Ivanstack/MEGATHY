@@ -215,6 +215,14 @@ export function menuImage(menuItem, isSelected) {
             }
             break;
 
+        case constant.menuItemsKeys.favourite:
+        if (isSelected) {
+            imageName = require("../Resources/Images/MenuIcons/favouritesActive.png");
+        } else {
+            imageName = require("../Resources/Images/MenuIcons/favourites.png");
+        }
+        break;
+
         case constant.menuItemsKeys.profile:
             if (isSelected) {
                 imageName = require("../Resources/Images/MenuIcons/profileActive.png");

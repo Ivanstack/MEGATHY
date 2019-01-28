@@ -34,6 +34,11 @@ module.exports = {
             iconActive: commonUtilities.menuImage(constant.menuItemsKeys.orderStatus, true),
         },
         {
+            name: "Favourite",
+            icon: commonUtilities.menuImage(constant.menuItemsKeys.favourite, false),
+            iconActive: commonUtilities.menuImage(constant.menuItemsKeys.favourite, true),
+        },
+        {
             name: "User Profile",
             icon: commonUtilities.menuImage(constant.menuItemsKeys.profile, false),
             iconActive: commonUtilities.menuImage(constant.menuItemsKeys.profile, true),

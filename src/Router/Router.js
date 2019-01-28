@@ -36,6 +36,10 @@ import OrderDetailScreen from "../Containers/MenuScreens/OrderHistory/OrderDetai
 import OrderStatusScreen from "../Containers/MenuScreens/OrderStatus/OrderStatusList/OrderStatusListScreen";
 import OrderStatusDetailScreen from "../Containers/MenuScreens/OrderStatus/OrderStatusDetail/OrderStatusDetailScreen";
 
+// FavouriteScreenNav
+import FavouriteScreen from "../Containers/MenuScreens/Favourite/FavouriteScreen";
+
+
 // ScheduleOrderHistoryScreenNav
 import ScheduleOrderListScreen from "../Containers/MenuScreens/ScheduleOrderHistory/ScheduleOrderList/ScheduleOrderListScreen";
 
@@ -147,6 +151,16 @@ const OrderStatusScreenNav = StackNavigator(
     }
 );
 
+// Favourite Screen Screen With Child Element
+const FavouriteScreenNav = StackNavigator(
+    {
+       FavouriteScreen: { screen: FavouriteScreen },
+    },
+    {
+        headerMode: "screen",
+    }
+);
+
 // User Profile Screen With Child Element
 const UserProfileScreenNav = StackNavigator(
     {
@@ -239,6 +253,7 @@ const AppDrawer = DrawerNavigator(
         "Order History": { screen: OrderHistoryScreenNav },
         "Schedule Orders": { screen: ScheduleOrderHistoryScreenNav },
         "Order Status": { screen: OrderStatusScreenNav },
+        "Favourite": { screen: FavouriteScreenNav },
         "User Profile": { screen: UserProfileScreenNav },
         "My Rewards Wallet": { screen: MyRewardsWalletScreenNav },
         "Change Store": { screen: StoreScreenNav },

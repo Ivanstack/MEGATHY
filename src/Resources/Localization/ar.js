@@ -14,6 +14,7 @@ export default {
     "Suggest a Product": "اقترح منتج",
     "Terms of Services": "الشروط و الأحكام",
     "Contact us": "تواصل معنا",
+    "Favourite" : "مفضل",
     Logout: "خروج",
 
     // Login

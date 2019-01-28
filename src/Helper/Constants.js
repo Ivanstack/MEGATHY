@@ -46,6 +46,7 @@ module.exports = {
         orderHistory: "orderHistory",
         scheduledOrders: "scheduledOrders",
         orderStatus: "orderStatus",
+        favourite:"favourite",
         profile: "profile",
         wallet: "wallet",
         changeStore: "changeStore",

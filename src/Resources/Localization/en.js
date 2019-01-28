@@ -13,7 +13,7 @@ export default {
     "User Profile": "User Profile",
     "Suggest a Product": "Suggest a Product",
     "Terms of Services": "Terms of Services",
-    "Contact us": "Contact us",
+    "Contact us": "Contact us", "Favourite" : "Favourite",
     Logout: "Logout",
 
     // Login
