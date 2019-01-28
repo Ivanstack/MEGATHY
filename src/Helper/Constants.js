@@ -176,6 +176,10 @@ module.exports = {
     APIGetAppSettingsAndRewards: "getAppSettingsAndRewards",
     APIGetStoreTimeZone: "getStoreTimeZone",
 
+    // Logout API
+
+    APILogout:"userlogout",
+
     /// Colors
     themeColor: "#CF2526",
     prodCategoryBGColor: "#EFEDE9",
@@ -231,6 +235,9 @@ module.exports = {
     kWalletTypeAll: "all",
     kWalletTypeRedeemed: "paid",
     kWalletTypeCollected: "received",
+
+
+    
 
     actions: {
         /*
@@ -421,6 +428,13 @@ module.exports = {
         getWalletHistoryRequest: "getWalletHistoryRequest",
         getWalletHistorySuccess: "getWalletHistorySuccess",
         getWalletHistoryFailure: "getWalletHistoryFailure",
+
+        // SideMenu Screen
+
+        //Logout 
+        logOutRequest: "logOutRequest",
+        logOutSuccess: "logOutSuccess",
+        logOutFailure: "logOutFailure",
     },
 
     /*
