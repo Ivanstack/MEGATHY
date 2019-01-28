@@ -26,6 +26,13 @@ import Spinner from "react-native-loading-spinner-overlay"; // Loading View
 import moment from "moment"; // Date/Time Conversition
 import ActionSheet from "react-native-actionsheet";
 
+
+//Common Styles
+import CommonStyle from "../../../../Helper/CommonStyle"
+
+//Lib
+import Icon from "react-native-vector-icons/EvilIcons";
+
 // Styles
 import styles from "./ScheduleOrderListStyle";
 
@@ -41,8 +48,41 @@ class ScheduleOrderListScreen extends Component {
         };
     }
 
-    static navigationOptions = CommonUtilities.navigationView(baseLocal.t("Scheduled Order History"), false);
+    
+    static navigationOptions = ({ navigation }) => ({
 
+        headerLeft: (
+            <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
+                <View style={{ flexDirection: "row", width: "100%"}}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            // console.log("Nav Params :==> ",navigation.state.params);
+                            if (navigation.state.params != undefined && navigation.state.params.category != undefined) {
+                                navigation.goBack();
+                            } else {
+                                navigation.navigate("DrawerToggle");
+                            }
+                        }}
+                    >
+                        <Icon
+                            name={
+                                navigation.state.params != undefined && navigation.state.params.category != undefined
+                                    ? "arrow-left"
+                                    : "navicon"
+                            }
+                            style={{ marginLeft: 10 }}
+                            size={35}
+                            color="white"
+                        />
+                    </TouchableOpacity>
+                    <Text style={CommonStyle.headerText}>{baseLocal.t("Scheduled Order History")}</Text>
+                </View>
+            </View>
+        ),
+        headerStyle: {
+            backgroundColor: constant.themeColor,
+        },
+    });
     componentDidMount() {
         this._getOrderHistory();
     }

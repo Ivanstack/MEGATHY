@@ -11,5 +11,12 @@ export default StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: constant.themeColor,
-},
+  }, 
+  headerText: {
+    color: "white",
+    margin: 4,
+    // marginLeft: 5,
+    fontSize: 15,
+    fontFamily: constant.themeFont, flex: 1
+  },
 });

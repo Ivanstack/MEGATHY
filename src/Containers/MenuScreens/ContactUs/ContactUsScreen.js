@@ -17,6 +17,12 @@ import baseLocal from "../../../Resources/Localization/baseLocalization"; // Loc
 import AppTextField from "../../../Components/AppTextField"; // Custom Text Field
 import KeyboardManager from "react-native-keyboard-manager"; // IQKeyboard Manager
 
+//Common Styles
+import CommonStyle from "../../../Helper/CommonStyle"
+
+//Lib
+import Icon from "react-native-vector-icons/EvilIcons";
+
 class ContactUsScreen extends Component {
     constructor(props) {
         super(props);
@@ -34,8 +40,40 @@ class ContactUsScreen extends Component {
         };
     }
 
-    static navigationOptions = CommonUtilities.navigationView(baseLocal.t("Contact us"), false);
+    static navigationOptions = ({ navigation }) => ({
 
+        headerLeft: (
+            <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
+                <View style={{ flexDirection: "row", width: "100%"}}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            // console.log("Nav Params :==> ",navigation.state.params);
+                            if (navigation.state.params != undefined && navigation.state.params.category != undefined) {
+                                navigation.goBack();
+                            } else {
+                                navigation.navigate("DrawerToggle");
+                            }
+                        }}
+                    >
+                        <Icon
+                            name={
+                                navigation.state.params != undefined && navigation.state.params.category != undefined
+                                    ? "arrow-left"
+                                    : "navicon"
+                            }
+                            style={{ marginLeft: 10 }}
+                            size={35}
+                            color="white"
+                        />
+                    </TouchableOpacity>
+                    <Text style={CommonStyle.headerText}>{baseLocal.t("Contact us")}</Text>
+                </View>
+            </View>
+        ),
+        headerStyle: {
+            backgroundColor: constant.themeColor,
+        },
+    });
     componentDidMount() {}
 
     componentWillReceiveProps(newProps) {

@@ -29,6 +29,10 @@ import baseLocal from "../../../../Resources/Localization/baseLocalization";
 // Order Master Screen
 import OrderMasterScreen from "../../OrderMaster/OrderMasterScreen";
 
+//Common Styles
+import CommonStyle from "../../../../Helper/CommonStyle"
+
+
 // Variable
 const orderNowViewHeight = (12 * Dimensions.get("window").height) / 100;
 var isScheduleOrder = false;
@@ -36,6 +40,9 @@ var isScheduleOrder = false;
 class CartScreen extends Component {
     constructor(props) {
         super(props);
+
+    
+
         // Class Props
         this.y_translate = new Animated.Value(0);
         //Class State
@@ -46,15 +53,41 @@ class CartScreen extends Component {
         };
     }
 
+
     static navigationOptions = ({ navigation }) => ({
-        header: null,
-        headerMode: "none",
+        headerLeft: (
+            <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
+                <View style={{ flexDirection: "row", width: "100%" }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            // console.log("Nav Params :==> ",navigation.state.params);
+                            navigation.goBack();
+                        }}
+                    >
+                        <Icon name={"arrow-left"} style={{ marginLeft: 10, marginTop: 5 }} size={25} color="white" />
+                    </TouchableOpacity>
+                    <Text style={CommonStyle.headerText}>{baseLocal.t("Shopping Cart")}</Text>
+                </View>
+            </View>
+        ),
+        headerRight:(
+            <View>
+                <TouchableOpacity style={{ height: 40, marginRight: 8 }} onPress = {navigation.getParam('handleRemoveAllProducts')} >
+                    <Text style={[CartStyle.navigationButtonText, { fontSize: 17 }]}>{baseLocal.t("Remove All")} </Text>
+                </TouchableOpacity>
+            </View>
+            
+        ),
+        headerStyle: {
+            backgroundColor: constant.themeColor,
+        },
     });
+
 
     // App Life Cycle Methods
     componentDidMount() {
         this.GetOrSaveCartItem();
-
+        this.props.navigation.setParams({handleRemoveAllProducts:this._onPressRemoveAllProduct});
         Animated.spring(this.y_translate, {
             toValue: orderNowViewHeight,
         }).start();
@@ -237,8 +270,8 @@ class CartScreen extends Component {
                             SAR {item.product_price[0].discountPrice} ({item.product_price[0].hike}%)
                         </Text>
                     ) : (
-                        <Text style={CartStyle.cartProductPriceLbl}>SAR {item.product_price[0].discountPrice}</Text>
-                    )}
+                            <Text style={CartStyle.cartProductPriceLbl}>SAR {item.product_price[0].discountPrice}</Text>
+                        )}
                 </View>
             </View>
         );
@@ -376,8 +409,8 @@ class CartScreen extends Component {
                             {item.product_price[0].status === constant.kProductDiscountActive ? (
                                 this._renderPriceCutView(item)
                             ) : (
-                                <Text style={CartStyle.productPriceLbl}>SAR {item.product_price[0].price}</Text>
-                            )}
+                                    <Text style={CartStyle.productPriceLbl}>SAR {item.product_price[0].price}</Text>
+                                )}
                         </View>
 
                         <View
@@ -420,7 +453,7 @@ class CartScreen extends Component {
 
     _renderOrderMasterScreenWithModal = () => {
         return (
-           <Modal 
+            <Modal
                 animationType="slide"
                 transparent={false}
                 visible={this.state.isOrderMasterVisible}
@@ -446,12 +479,12 @@ class CartScreen extends Component {
                         flex: 1,
                     }}
                 >
-                    {this._renderCustomNavigationView()}
+                    {/* {this._renderCustomNavigationView()} */}
                     {this._renderOrderMasterScreenWithModal()}
                     {global.arrCartItems.length > 0 ? (
                         <FlatList
                             style={{
-                                marginBottom: 10,
+                                marginBottom: 0,
                             }}
                             ref={flatList => {
                                 this.cartList = flatList;
@@ -464,16 +497,16 @@ class CartScreen extends Component {
                             directionalLockEnabled
                         />
                     ) : (
-                        <View
-                            style={{
-                                flex: 1,
-                                alignItems: "center",
-                                justifyContent: "center",
-                            }}
-                        >
-                            <Text style={{ fontSize: 17 }}> Your cart is empty</Text>
-                        </View>
-                    )}
+                            <View
+                                style={{
+                                    flex: 1,
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                <Text style={{ fontSize: 17 }}> Your cart is empty</Text>
+                            </View>
+                        )}
                     <View style={CartStyle.cartContainer}>
                         <View
                             style={{

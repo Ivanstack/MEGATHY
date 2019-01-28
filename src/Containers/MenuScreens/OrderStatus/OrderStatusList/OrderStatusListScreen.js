@@ -26,6 +26,13 @@ import baseLocal from "../../../../Resources/Localization/baseLocalization"; // 
 
 import moment from "moment"; // Date/Time Conversition
 
+//Common Styles
+import CommonStyle from "../../../../Helper/CommonStyle"
+
+//Lib
+import Icon from "react-native-vector-icons/EvilIcons";
+
+
 // Styles
 import styles from "./OrderStatusListStyle";
 
@@ -40,7 +47,42 @@ class OrderStatusListScreen extends Component {
         };
     }
 
-    static navigationOptions = CommonUtilities.navigationView(baseLocal.t("Order Status"), false);
+    static navigationOptions = ({ navigation }) => ({
+
+        headerLeft: (
+            <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
+                <View style={{ flexDirection: "row", width: "100%"}}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            // console.log("Nav Params :==> ",navigation.state.params);
+                            if (navigation.state.params != undefined && navigation.state.params.category != undefined) {
+                                navigation.goBack();
+                            } else {
+                                navigation.navigate("DrawerToggle");
+                            }
+                        }}
+                    >
+                        <Icon
+                            name={
+                                navigation.state.params != undefined && navigation.state.params.category != undefined
+                                    ? "arrow-left"
+                                    : "navicon"
+                            }
+                            style={{ marginLeft: 10 }}
+                            size={35}
+                            color="white"
+                        />
+                    </TouchableOpacity>
+                    <Text style={CommonStyle.headerText}>{baseLocal.t("Order Status")}</Text>
+                </View>
+            </View>
+        ),
+        headerStyle: {
+            backgroundColor: constant.themeColor,
+        },
+    });
+
+
 
     componentDidMount() {
         this._getOrderHistory();

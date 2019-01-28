@@ -29,6 +29,12 @@ import styles from "./WalletStyle";
 
 import moment from "moment";
 
+//Common Styles
+import CommonStyle from "../../../Helper/CommonStyle"
+
+//Lib
+import Icon from "react-native-vector-icons/EvilIcons";
+
 const filterAll = "all";
 const filterPaid = "paid";
 const filterReceived = "received";
@@ -51,8 +57,41 @@ class WalletScreen extends Component {
         this.segment_X_Translate = new Animated.Value(0);
     }
 
-    static navigationOptions = CommonUtilities.navigationView(baseLocal.t("My Rewards Wallet"), false);
+    
+    static navigationOptions = ({ navigation }) => ({
 
+        headerLeft: (
+            <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
+                <View style={{ flexDirection: "row", width: "100%"}}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            // console.log("Nav Params :==> ",navigation.state.params);
+                            if (navigation.state.params != undefined && navigation.state.params.category != undefined) {
+                                navigation.goBack();
+                            } else {
+                                navigation.navigate("DrawerToggle");
+                            }
+                        }}
+                    >
+                        <Icon
+                            name={
+                                navigation.state.params != undefined && navigation.state.params.category != undefined
+                                    ? "arrow-left"
+                                    : "navicon"
+                            }
+                            style={{ marginLeft: 10 }}
+                            size={35}
+                            color="white"
+                        />
+                    </TouchableOpacity>
+                    <Text style={CommonStyle.headerText}>{baseLocal.t("My Rewards Wallet")}</Text>
+                </View>
+            </View>
+        ),
+        headerStyle: {
+            backgroundColor: constant.themeColor,
+        },
+    });
     componentDidMount = () => {
         Animated.timing(this.segment_X_Translate, {
             toValue: 0,

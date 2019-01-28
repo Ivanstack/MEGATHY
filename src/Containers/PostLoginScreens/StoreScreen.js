@@ -36,6 +36,12 @@ import baseLocal from "../../Resources/Localization/baseLocalization";
 // Common Utilities
 import * as CommonUtilities from "../../Helper/CommonUtilities";
 
+//Common Styles
+import CommonStyle from "../../Helper/CommonStyle"
+
+//Lib
+import Icon from "react-native-vector-icons/EvilIcons";
+
 var selectedCity = null;
 var selectedArea = null;
 var isChangeStoreScr = false;
@@ -56,6 +62,40 @@ class StoreScreen extends Component {
     }
 
     static navigationOptions = CommonUtilities.navigationView(baseLocal.t("Change Store"), false);
+    static navigationOptions = ({ navigation }) => ({
+
+        headerLeft: (
+            <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
+                <View style={{ flexDirection: "row", width: "100%"}}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            // console.log("Nav Params :==> ",navigation.state.params);
+                            if (navigation.state.params != undefined && navigation.state.params.category != undefined) {
+                                navigation.goBack();
+                            } else {
+                                navigation.navigate("DrawerToggle");
+                            }
+                        }}
+                    >
+                        <Icon
+                            name={
+                                navigation.state.params != undefined && navigation.state.params.category != undefined
+                                    ? "arrow-left"
+                                    : "navicon"
+                            }
+                            style={{ marginLeft: 10 }}
+                            size={35}
+                            color="white"
+                        />
+                    </TouchableOpacity>
+                    <Text style={CommonStyle.headerText}>{baseLocal.t("Change Store")}</Text>
+                </View>
+            </View>
+        ),
+        headerStyle: {
+            backgroundColor: constant.themeColor,
+        },
+    });
     // static navigationOptions =
     //     isChangeStoreScr === true ? CommonUtilities.navigationView(baseLocal.t("Change Store"), false) : null;
 

@@ -14,7 +14,7 @@ export default StyleSheet.create({
     },
     navigationView: {
         width: "100%",
-        // marginTop: -20,
+        //marginTop: -20,
         paddingTop: 20,
         height: 64,
         backgroundColor: constant.themeColor,

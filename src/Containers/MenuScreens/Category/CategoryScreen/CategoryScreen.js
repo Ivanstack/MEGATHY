@@ -34,6 +34,10 @@ import Swiper from "react-native-swiper";
 import ImageLoad from "react-native-image-placeholder";
 import Spinner from "react-native-loading-spinner-overlay";
 
+//Common Styles
+import CommonStyle from "../../../../Helper/CommonStyle"
+
+
 // Network Utility
 import * as CommonUtilites from "../../../../Helper/CommonUtilities";
 
@@ -90,7 +94,7 @@ class CategoryScreen extends Component {
                             color="white"
                         />
                     </TouchableOpacity>
-                    <Text style={CategoryStyles.headerText}>{baseLocal.t("Megathy")}</Text>
+                    <Text style={CommonStyle.headerText}>{baseLocal.t("Megathy")}</Text>
                 </View>
             </View>
         ),

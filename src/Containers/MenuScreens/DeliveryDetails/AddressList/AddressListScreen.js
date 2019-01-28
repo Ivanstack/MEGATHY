@@ -40,6 +40,14 @@ import baseLocal from "../../../../Resources/Localization/baseLocalization";
 // AddressListItem
 import AddressListItem from "./AddressListItem";
 
+//Common Styles
+import CommonStyle from "../../../../Helper/CommonStyle"
+
+//Lib
+import Icon from "react-native-vector-icons/EvilIcons";
+
+
+
 class AddressListScreen extends Component {
     constructor(props) {
         super(props);
@@ -50,7 +58,40 @@ class AddressListScreen extends Component {
         baseLocal.locale = global.currentAppLanguage;
     }
 
-    static navigationOptions = CommonUtilities.navigationView("Address List");
+    static navigationOptions = ({ navigation }) => ({
+
+        headerLeft: (
+            <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
+                <View style={{ flexDirection: "row", width: "100%"}}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            // console.log("Nav Params :==> ",navigation.state.params);
+                            if (navigation.state.params != undefined && navigation.state.params.category != undefined) {
+                                navigation.goBack();
+                            } else {
+                                navigation.navigate("DrawerToggle");
+                            }
+                        }}
+                    >
+                        <Icon
+                            name={
+                                navigation.state.params != undefined && navigation.state.params.category != undefined
+                                    ? "arrow-left"
+                                    : "navicon"
+                            }
+                            style={{ marginLeft: 10 }}
+                            size={35}
+                            color="white"
+                        />
+                    </TouchableOpacity>
+                    <Text style={CommonStyle.headerText}>{baseLocal.t("Address List")}</Text>
+                </View>
+            </View>
+        ),
+        headerStyle: {
+            backgroundColor: constant.themeColor,
+        },
+    });
 
     _keyExtractor = (item, index) => item.id.toString();
 
