@@ -38,6 +38,7 @@ const rootReducer = combineReducers({
     chat: require("./ChatReducer").reducer,
     changePassword: require("./ChangePasswordReducer").reducer,
     wallet: require("./WalletReducer").reducer,
+    serchProduct:require("./SearchProductReducer").reducer
 });
 
 export let sagaMiddleware = saga();

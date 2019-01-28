@@ -23,7 +23,8 @@ export default StyleSheet.create({
     margin: 4,
     // marginLeft: 5,
     fontSize: 15,
-    fontFamily: constant.themeFont, flex: 1
+    fontFamily: constant.themeFont,
+     flex: 1
   },
   overlayLayer: {
     flex: 1,
