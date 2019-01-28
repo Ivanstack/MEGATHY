@@ -2,7 +2,8 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { StyleSheet, ScrollView, Text, View, TouchableOpacity, Image, AsyncStorage } from "react-native";
 import { NavigationActions, DrawerItems } from "react-navigation";
-
+import {connect} from "react-redux";
+import Spinner from "react-native-loading-spinner-overlay"; // Loading View
 // Constant
 import * as constant from "../../../Helper/Constants";
 import * as sideMenuConstant from "./SideMenuConstants";
@@ -11,22 +12,25 @@ import * as commonUtilities from "../../../Helper/CommonUtilities";
 // Localization
 import baseLocal from "../../../Resources/Localization/baseLocalization";
 
-export default class SideMenuScreen extends Component {
+class SideMenuScreen extends Component {
 
     constructor(props){
-        super(props);
-        
+        super(props);        
     }
 
+    componentWillReceiveProps(nextProps){
+        console.log("Side Screen : Next Props ======> ",nextProps);
+        if (!nextProps.logout.isLoading) {
+            if(nextProps.logout.result) {
+                commonUtilities.logout();
+            }
+        }
+    }
 
-    _onPressLogout = () => {
-        console.log("Props : ",this.props);
-        let userID = "";
-        AsyncStorage.getItem(constant.keyCurrentUser).then(value => (userID = value.id));
-        var logoutSessionParameter = {
-            userId: userID,
-        };
-        this.props.onPressLogout(logoutSessionParameter);
+    _onPressLogout = async () => {
+        //this.props.drawerProps.navigation.navigate('DrawerClose');
+        this.props.onPressLogout();
+
     };
 
     render = () => {
@@ -80,10 +84,35 @@ export default class SideMenuScreen extends Component {
                         </View>
                     </TouchableOpacity>
                 </View>
+                <Spinner visible={this.props.logout.isLoading} cancelable={true} textStyle={{ color: "#FFF" }} />
             </ScrollView>
         );
     };
 }
+
+// Mics Methods
+
+function mapStateToProps(state, props) {
+    return {
+        logout:state.logout,
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        onPressLogout: parameters =>
+            dispatch({
+                type: constant.actions.logOutRequest,
+                payload: { endPoint: constant.APILogout, parameters: parameters},
+            }),
+    };
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(SideMenuScreen);
+
 
 const styles = StyleSheet.create({
     maincontainer: {

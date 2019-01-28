@@ -19,11 +19,8 @@ export function* LogoutScreenCalls(action) {
 
 
 logoutWithEmail = payload => {
-    return networkUtility.postRequest(payload.endPoint, payload.parameters).then(
+    return networkUtility.getRequest(payload.endPoint, payload.parameters).then(
         result => {
-            global.currentUser = result.data.data.userData;
-            global.currentSettings = result.data.data.settingData;
-            AsyncStorage.clear();
             constant.debugLog("User Logout Success");
             return result;
         },

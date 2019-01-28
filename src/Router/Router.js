@@ -270,7 +270,8 @@ const AppDrawer = DrawerNavigator(
             },
         },
         headerMode: "none",
-        contentComponent: props => <SideMenuScreen drawerProps={props} onPressLogout={this.onPressLogout} />,
+        contentComponent: props => <SideMenuScreen drawerProps={props} />,
+        // contentComponent: props => <SideMenuScreen drawerProps={props} onPressLogout={this.onPressLogout} />,
     }
 );
 
@@ -309,11 +310,7 @@ function mapStateToProps(state, props) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        onPressLogout: parameters =>
-            dispatch({
-                type: constant.actions.logOutRequest,
-                payload: { endPoint: constant.APILogout, parameters: parameters},
-            }),
+       
     };
 }
 

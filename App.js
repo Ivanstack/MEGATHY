@@ -5,7 +5,14 @@
  */
 
 import React, { Component } from "react";
-import { Platform, StyleSheet, Text, View, AsyncStorage, StatusBar } from "react-native";
+import {
+    Platform,
+    StyleSheet,
+    Text,
+    View,
+    AsyncStorage,
+    StatusBar
+} from "react-native";
 
 // Redux
 import { Provider, connect } from "react-redux";
@@ -22,10 +29,13 @@ import * as Constants from "./src/Helper/Constants";
 // Common Utilities
 import * as CommonUtilities from "./src/Helper/CommonUtilities";
 
+
+
 export default class App extends Component {
     constructor(props) {
         super(props);
 
+        console.log("App Props : ====> ", props);
         // Set Statusbar Light Content for iOS
         StatusBar.setBarStyle("light-content", true);
 
@@ -40,7 +50,7 @@ export default class App extends Component {
 
         context = this;
         Constants.emitter.addListener(Constants.logoutListener, () => {
-            context.setState({ isLogin: false, isStoreSet: false });
+            context.setState({ isLogin: false, isStoreSet: false, });
         });
 
         Constants.emitter.addListener(Constants.loginListener, () => {
@@ -58,17 +68,17 @@ export default class App extends Component {
             if (global.currentUser === null) {
                 this.setState({
                     isLogin: false,
-                    isStoreSet: false,
+                    isStoreSet: false
                 });
             } else if (global.currentStore === null) {
                 this.setState({
                     isLogin: true,
-                    isStoreSet: false,
+                    isStoreSet: false
                 });
             } else {
                 this.setState({
                     isLogin: true,
-                    isStoreSet: true,
+                    isStoreSet: true
                 });
             }
         }, 200); // Time to display Splash Screen
@@ -76,11 +86,8 @@ export default class App extends Component {
 
     render() {
         if (this.state.isLogin == null) {
-            return (
-                <View />
-            )
-        }
-        else if (this.state.isStoreSet) {
+            return <View />;
+        } else if (this.state.isStoreSet) {
             return (
                 <Provider store={store}>
                     <Router />
