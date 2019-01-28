@@ -171,7 +171,6 @@ module.exports = {
     APIGeoCode: "https://maps.googleapis.com/maps/api/geocode/",
     APIChangePassword: "userChangPassword",
     APIGetRewardHistory: "getRewardHistory",
-    APIGetproductSuggestion:"getProductSuggestion",
 
     // General API
     APIGetAppSettingsAndRewards: "getAppSettingsAndRewards",
@@ -422,12 +421,6 @@ module.exports = {
         getWalletHistoryRequest: "getWalletHistoryRequest",
         getWalletHistorySuccess: "getWalletHistorySuccess",
         getWalletHistoryFailure: "getWalletHistoryFailure",
-
-        // Seach products
-
-        seachAllProductsRequest:"seachAllProductsRequest",
-        seachAllProductsSuccess:"seachAllProductsSuccess",
-        seachAllProductsFailure:"seachAllProductsFailure"
     },
 
     /*
