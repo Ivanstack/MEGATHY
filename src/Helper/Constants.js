@@ -160,6 +160,8 @@ module.exports = {
     APIUnsetOrderTimeSession: "unsetOrderTimeSession",
     APIGetUserBookedSession: "getUserBookedSession",
     APICheckCoupenCode: "checkCoupon",
+    APIGetFavouriteProducts:"getFavouriteProduct",
+    APIRemoveFavouriteProduct:"removeFavouriteProduct",
     APISuggestProduct: "suggestProduct",
     APIContactUs: "contactUs",
     APIGetOrderHistory: "orderHistory",
@@ -401,6 +403,16 @@ module.exports = {
         updateScheduleOrderStatusRequest: "updateScheduleOrderStatusRequest",
         updateScheduleOrderStatusSuccess: "updateScheduleOrderStatusSuccess",
         updateScheduleOrderStatusFailure: "updateScheduleOrderStatusFailure",
+
+        //Favourite Screen
+
+        getFavouriteProductRequest:"getFavouriteProductRequest",
+        getFavouriteProductSuccess:"getFavouriteProductSuccess",
+        getFavouriteProductFailure:"getFavouriteProductFailure",
+
+       removeFavouriteProductRequest:"removeFavouriteProductRequest",
+       removeFavouriteProductSuccess:"removeFavouriteProductSuccess",
+       removeFavouriteProductFailure:"removeFavouriteProductFailure",
 
         // SuggestProduct Screen
         suggestProductRequest: "suggestProductRequest",

@@ -163,6 +163,8 @@ export function deleteRequest(endPoint, parameters = "") {
         }
     }
 
+
+
     console.log("\n\n ================>");
     console.log("\n HTTP Method: Post");
     console.log("\n Request for URL: " + constants.baseURL);

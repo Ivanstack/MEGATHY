@@ -32,6 +32,7 @@ const rootReducer = combineReducers({
     productList: require("./ProductReducer").reducer,
     orderSummary: require("./OrderSummaryReducer").reducer,
     orderHistory: require("./OrderHistoryReducer").reducer,
+    favourite: require("./FavouriteProductReducer").reducer,
     scheduleOrderList: require("./ScheduleOrderListReducer").reducer,
     suggestProduct: require("./SuggestProductReducer").reducer,
     contactUs: require("./ContactUsReducer").reducer,

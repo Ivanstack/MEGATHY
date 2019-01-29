@@ -55,10 +55,15 @@ export default StyleSheet.create({
     height: 20,
     marginBottom: 2
   },
-  addProductBtn: {
+   addProductBtn: {
     backgroundColor: "transparent",
     marginTop: 20,
     marginRight: 10
+  },
+  FavouriteProductBtn: {
+    backgroundColor: "transparent",
+    marginTop: 20,
+    marginLeft:50
   },
   productPriceLbl: {
     fontSize: 13,

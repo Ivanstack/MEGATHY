@@ -20,6 +20,7 @@ import { ProductScreenCalls } from "./ProductSagas";
 import { GeneralAPICallSagas } from "./GeneralAPICallSagas";
 import { OrderSummaryScreenCalls } from "./OrderSummarySagas";
 import { OrderHistoryScreenCalls } from "./OrderHistorySagas";
+import { FavouriteScreenCalls } from "./FavouriteProductSaga";
 import { ScheduleOrderListScreenCalls } from "./ScheduleOrderListSagas";
 import { SuggestProductScreenCalls } from "./SuggestProductSagas";
 import { ContactUsScreenCalls } from "./ContactUsSagas";
@@ -110,6 +111,13 @@ export function* watcherSaga(action) {
     // Schedule Order List Screen
     yield takeEvery(constant.actions.getScheduleOrderListRequest, ScheduleOrderListScreenCalls);
     yield takeEvery(constant.actions.updateScheduleOrderStatusRequest, ScheduleOrderListScreenCalls);
+
+    // Favourite Screen 
+
+    yield takeEvery(constant.actions.getFavouriteProductRequest, FavouriteScreenCalls);
+    yield takeEvery(constant.actions.removeFavouriteProductRequest, FavouriteScreenCalls);
+
+
 
     // SuggestProduct Screen
     yield takeEvery(constant.actions.suggestProductRequest, SuggestProductScreenCalls);
