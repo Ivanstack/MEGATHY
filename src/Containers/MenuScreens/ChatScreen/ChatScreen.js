@@ -15,7 +15,10 @@ import {
     TextInput,
     Image,
     Modal,
+    ActionSheetIOS,
     TouchableWithoutFeedback,
+    CameraRoll,
+    Alert,
 } from "react-native";
 
 import { connect } from "react-redux"; // Redux
@@ -25,7 +28,7 @@ import * as networkUtility from "../../../Helper/NetworkUtility"; // Network Uti
 import Spinner from "react-native-loading-spinner-overlay"; // Loading View
 import baseLocal from "../../../Resources/Localization/baseLocalization"; // Localization
 import ImageLoad from "react-native-image-placeholder";
-
+import ImagePicker from 'react-native-image-picker'; //Image Picker 
 import moment from "moment"; // Date/Time Conversition
 
 //Common Styles
@@ -100,11 +103,26 @@ class ChatScreen extends Component {
         if (newProps.isSendMsgSuccess === true) {
             this.setState({ txtMsg: "" }, () => {
                 if (this.chatList != undefined) {
-                    setTimeout(() => {
-                        this.chatList.scrollToIndex({ animated: true, index: newProps.arrChat.length - 1 });
-                    }, 600);
+                    // setTimeout(() => {
+                    //     this.chatList.scrollToEnd({animated:true});
+                    //     //this.chatList.scrollToIndex({ animated: true, index: newProps.arrChat.length - 1 });
+                    // }, 600);
                 }
             });
+        }else if(newProps.isGetChatSuccess === true) {
+            this.forceUpdate();
+            if (this.chatList != undefined) {
+                this.chatList.scrollToEnd({animated:true});
+            }
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.chatList != undefined) {
+            setTimeout(() => {
+                this.chatList.scrollToEnd({animated:true});
+                //this.chatList.scrollToIndex({ animated: true, index: newProps.arrChat.length - 1 });
+            }, 600);
         }
     }
 
@@ -134,14 +152,18 @@ class ChatScreen extends Component {
 
     // On Press Methods
     _onPressSendMsg = (isSender = true) => {
-        constant.debugLog("on Send press .....");
-        this.forceUpdate();
-        var sendMessageParameters = {
-            message: this.state.txtMsg,
-            vendorId: constant.DeviceInfo.getUniqueID(),
-        };
 
-        this.props.sendMessage(sendMessageParameters);
+        if(this.state.txtMsg.trim().length === 0) {
+            return
+        } 
+
+        constant.debugLog("on Send press .....");
+
+        let messageData = new FormData();
+        messageData.append("message", this.state.txtMsg);
+        messageData.append("vendorId", constant.DeviceInfo.getUniqueID());
+        this.forceUpdate();
+        this.props.sendMessage(messageData);
 
         // let arrChatTemp = this.state.arrChat;
         // let objChat = {};
@@ -151,6 +173,92 @@ class ChatScreen extends Component {
         // arrChatTemp.push(objChat);
         // this.setState({ arrChat: arrChatTemp });
     };
+
+    
+
+    _onPressCameraButton = () => {
+
+        const options = {
+            title: 'Select Avatar',
+        };
+
+        if (Platform.OS === 'ios') {
+            ActionSheetIOS.showActionSheetWithOptions({
+              options: ['Camera', 'Photos','Cancel'],
+            },
+            (buttonIndex) => {
+              if (buttonIndex === 0) { 
+                console.log('Camera Press');
+                this._openImagePickerCamera();
+              } else if (buttonIndex === 1) { /* destructive action */
+                console.log('Photos Press');
+                this._openImagePickerGallary();
+              } else if (buttonIndex === 2) { /* destructive action */
+                console.log('Cancel Press');
+              }
+            });
+          } else {
+            Alert:alert('This component not support in your OS')
+          }
+    }
+
+
+    //Image Picker Open Methods
+
+    _openImagePickerGallary = () => {
+        ImagePicker.launchImageLibrary(null, (response) => {
+            console.log('Response = ', response);
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+                alert(response.error)
+            } else {
+                constant.debugLog("ImagePicker_Response =====>",response);
+                constant.debugLog("on Send Picked Image .....");
+
+                let imageData = new FormData();
+                let objImg = {
+                    name:response.fileName,
+                    uri:response.uri,
+                    type:response.type,
+                }
+                imageData.append("image", objImg);
+                imageData.append("vendorId", constant.DeviceInfo.getUniqueID());
+                this.forceUpdate();
+                this.props.sendMessage(imageData);
+
+
+            }
+        });
+    }
+    _openImagePickerCamera = () => {
+        ImagePicker.launchCamera(null, (response) => {
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+                alert("Device has no Camera.")
+            } else {
+                constant.debugLog("ImagePicker_Response =====>",response);
+                constant.debugLog("Capured Image Save .....");
+
+                let imageData = new FormData();
+                let objImg = {
+                    name:response.fileName,
+                    uri:response.uri,
+                    type:response.type,
+                }
+                imageData.append("image", objImg);
+                imageData.append("vendorId", constant.DeviceInfo.getUniqueID());
+                this.forceUpdate();
+                this.props.sendMessage(imageData);
+            }
+        });
+    }
+
 
     // Render Methods
     _renderChatItem = ({ item }) => {
@@ -320,12 +428,14 @@ class ChatScreen extends Component {
                                     // height: "100%",
                                     backgroundColor: "transparent",
                                 }}
+                                scrollToEnd
                                 ref={list => (this.chatList = list)}
                                 data={this.props.arrChat}
                                 keyExtractor={(item, index) => item.userChatId.toString()}
                                 renderItem={this._renderChatItem.bind(this)}
                                 showsHorizontalScrollIndicator={false}
                                 directionalLockEnabled
+                                onLayout={() => this.chatList.scrollToEnd({animated:true})}
                                 // ListFooterComponent={this._renderFooter.bind(this)}
                             />
                         </View>
@@ -348,11 +458,13 @@ class ChatScreen extends Component {
                         }}
                     >
                         <View style={{ justifyContent: "center", alignItems: "center", width: "15%" }}>
-                            <Image
-                                style={{ height: 25, width: 25 }}
-                                resizeMode="cover"
-                                source={require("../../../Resources/Images/Feedback/cameraIcon.png")}
-                            />
+                            <TouchableOpacity onPress={this._onPressCameraButton}>
+                                <Image
+                                    style={{ height: 25, width: 25 }}
+                                    resizeMode="cover"
+                                    source={require("../../../Resources/Images/Feedback/cameraIcon.png")}
+                                />
+                            </TouchableOpacity>
                         </View>
 
                         <TextInput

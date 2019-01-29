@@ -325,7 +325,7 @@ class StoreScreen extends Component {
                     {baseLocal.t("SELECT STORE")}
                 </Text>
 
-                <View>
+                <View style = {{alignItems:'center'}}>
                     <Picker
                         selectedValue={this.state.selectedStoreName === undefined ? "" : this.state.selectedStoreName}
                         style={{ height: 100, width: 200 }}
@@ -338,7 +338,7 @@ class StoreScreen extends Component {
                     >
                         {storeItems}
                     </Picker>
-                    {/* <View
+                    <View
                         style={{
                             position: "absolute",
                             // marginHorizontal: 40,
@@ -357,7 +357,7 @@ class StoreScreen extends Component {
                             height: 1,
                             width: "60%",
                         }}
-                    /> */}
+                    />
                 </View>
                 {/* // Back and Reset Buttons View */}
                 <View style={{ width: "80%", flexDirection: "row", justifyContent: "space-around", marginTop: 100 }}>

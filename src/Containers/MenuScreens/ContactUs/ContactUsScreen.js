@@ -85,13 +85,22 @@ class ContactUsScreen extends Component {
         }
     }
 
-    _onChangeText = text => {
-        ["email", "comment"].map(name => ({ name, ref: this[name] })).forEach(({ name, ref }) => {
-            if (ref.isFocused()) {
-                this.setState({ [name]: text });
-            }
-        });
+    _onChangeTextEmail = text => {
+        // ["email", "comment"].map(name => ({ name, ref: this[name] })).forEach(({ name, ref }) => {
+        //     if (ref.isFocused()) {
+        //         this.setState({ [name]: text });
+        //     }
+        // });
+        this.setState({
+            email:text,
+        })
     };
+
+    _onChangeTextComment = text => {
+        this.setState({
+            comment:text,
+        })
+    }
 
     _onSubmitEmail = () => {
         this.comment.focus();
@@ -146,7 +155,8 @@ class ContactUsScreen extends Component {
                         returnKeyType="next"
                         keyboardType="email-address"
                         onSubmitEditing={this._onSubmitEmail}
-                        onChangeText={this._onChangeText}
+                        onChangeText={this._onChangeTextEmail}
+                        type = "email"
                     />
                     {/* // Password Text Field */}
                     <AppTextField
@@ -158,7 +168,7 @@ class ContactUsScreen extends Component {
                         tintColor={constant.themeColor}
                         returnKeyType="done"
                         onSubmitEditing={this._onSubmitComment}
-                        onChangeText={this._onChangeText}
+                        onChangeText={this._onChangeTextComment}
                     />
                 </View>
                 {/* // Add Location Button */}

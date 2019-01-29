@@ -47,7 +47,7 @@ getChatCall = payload => {
 };
 
 sendMessageCall = payload => {
-    return networkUtility.postRequest(payload.endPoint, payload.parameters).then(
+    return networkUtility.postRequestWithFormData(payload.endPoint, payload.parameters).then(
         result => {
             constant.debugLog("Chat Response: " + JSON.stringify(result.data.data));
             return result.data.data;
