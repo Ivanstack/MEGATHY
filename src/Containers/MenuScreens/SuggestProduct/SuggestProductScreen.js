@@ -94,6 +94,9 @@ class SuggestProductScreen extends Component {
     };
 
     _onPressRemoveProduct = product => {
+        if (this.state.arrProducts.length === 1) {
+            return;
+        }
         this.setState({
             arrProducts: this.state.arrProducts.filter(value => value !== product),
         });
