@@ -56,7 +56,7 @@ class UserProfileScreen extends Component {
         },
     });
 
-    componentDidMount() {}
+    componentDidMount() { }
 
     _changeLanguage = index => {
         global.currentAppLanguage = index === 0 ? constant.languageArabic : constant.languageEnglish;
@@ -90,10 +90,10 @@ class UserProfileScreen extends Component {
                     </TouchableOpacity>
                 ) : null}
 
-                <Text style={{ fontFamily: constant.themeFont, fontSize: 15, fontWeight: "bold", marginTop: 25 }}>
+                <Text style={{ fontFamily: constant.themeFont, fontSize: 15, fontWeight: "bold", marginTop: 25, paddingLeft: 15 }}>
                     Choose your preffered language
                 </Text>
-                <Text style={{ fontFamily: constant.themeFont, fontSize: 15, fontWeight: "bold", marginTop: 4 }}>
+                <Text style={{ fontFamily: constant.themeFont, fontSize: 15, fontWeight: "bold", marginTop: 4, paddingLeft: 15 }}>
                     (اختار لغتك المفضلة:)
                 </Text>
 
@@ -113,7 +113,7 @@ class UserProfileScreen extends Component {
                 />
 
                 <Text
-                    style={{ fontFamily: constant.themeFont, fontSize: 16, position: "absolute", bottom: 5, left: 10 }}
+                    style={{ fontFamily: constant.themeFont, fontSize: 16, position: "absolute", bottom: 5, left: 10, paddingBottom: 15 }}
                 >
                     {baseLocal.t("App Version: ")}
                     {constant.DeviceInfo.getVersion() === undefined ? "0.0" : constant.DeviceInfo.getVersion()}

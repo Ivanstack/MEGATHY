@@ -28,6 +28,8 @@ import { ChatScreenCalls } from "./ChatSagas";
 import { ChangePasswordScreenCalls } from "./ChangePasswordSagas";
 import { WalletScreenCalls } from "./WalletSagas";
 import { LogoutScreenCalls } from "./LogoutSagas";
+import { UpdateUserProfileScreenCalls } from "./EditUserProfileSagas";
+import { FavouriteScreenCalls } from "./FavouriteProductSaga";
 
 // watcher saga: watches for actions dispatched to the store, starts worker saga
 export function* watcherSaga(action) {
@@ -107,7 +109,7 @@ export function* watcherSaga(action) {
 
     // Order History Screen
     yield takeEvery(constant.actions.getOrderHistoryRequest, OrderHistoryScreenCalls);
-    
+
     // Schedule Order List Screen
     yield takeEvery(constant.actions.getScheduleOrderListRequest, ScheduleOrderListScreenCalls);
     yield takeEvery(constant.actions.updateScheduleOrderStatusRequest, ScheduleOrderListScreenCalls);
@@ -137,9 +139,15 @@ export function* watcherSaga(action) {
     // Wallet Screen
     yield takeEvery(constant.actions.getWalletHistoryRequest, WalletScreenCalls);
 
+    // Edit User Profile Screen
+    yield takeEvery(constant.actions.updateUserProfileRequest, UpdateUserProfileScreenCalls);
+
+    // Favourite Screen 
+    yield takeEvery(constant.actions.addFavouriteProductRequest, FavouriteScreenCalls);
+
     //SideMenu Screen
 
     //Logout
 
-    yield takeEvery(constant.actions.logOutRequest,LogoutScreenCalls);
+    yield takeEvery(constant.actions.logOutRequest, LogoutScreenCalls);
 }

@@ -10,23 +10,25 @@ export default StyleSheet.create({
         flex: 1,
         // justifyContent: "center",
         // alignItems: "center",
-        margin: 15,
+        backgroundColor: "white",
+        margin: 0
     },
     scrollView: {
         flexGrow: 1,
         justifyContent: "flex-start",
         alignItems: "center",
-        height: Dimensions.get("window").height,
+        height: Dimensions.get("window").height
     },
     btnTxtStyle: {
         fontFamily: constant.themeFont,
         color: constant.iosDefaultBlueColor,
+        paddingLeft: 15,
     },
     headerText: {
         color: "white",
         margin: 4,
         // marginLeft: 5,
         fontSize: 15,
-        fontFamily: constant.themeFont,
-    },
+        fontFamily: constant.themeFont
+    }
 });

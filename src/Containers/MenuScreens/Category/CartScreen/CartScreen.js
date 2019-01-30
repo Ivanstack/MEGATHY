@@ -41,7 +41,7 @@ class CartScreen extends Component {
     constructor(props) {
         super(props);
 
-    
+
 
         // Class Props
         this.y_translate = new Animated.Value(0);
@@ -70,13 +70,13 @@ class CartScreen extends Component {
                 </View>
             </View>
         ),
-        headerRight:(
+        headerRight: (
             <View>
-                <TouchableOpacity style={{ height: 40, marginRight: 8 }} onPress = {navigation.getParam('handleRemoveAllProducts')} >
+                <TouchableOpacity style={{ height: 40, marginRight: 8 }} onPress={navigation.getParam('handleRemoveAllProducts')} >
                     <Text style={[CartStyle.navigationButtonText, { fontSize: 17 }]}>{baseLocal.t("Remove All")} </Text>
                 </TouchableOpacity>
             </View>
-            
+
         ),
         headerStyle: {
             backgroundColor: constant.themeColor,
@@ -87,7 +87,7 @@ class CartScreen extends Component {
     // App Life Cycle Methods
     componentDidMount() {
         this.GetOrSaveCartItem();
-        this.props.navigation.setParams({handleRemoveAllProducts:this._onPressRemoveAllProduct});
+        this.props.navigation.setParams({ handleRemoveAllProducts: this._onPressRemoveAllProduct });
         Animated.spring(this.y_translate, {
             toValue: orderNowViewHeight,
         }).start();

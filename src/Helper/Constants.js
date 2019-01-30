@@ -46,7 +46,7 @@ module.exports = {
         orderHistory: "orderHistory",
         scheduledOrders: "scheduledOrders",
         orderStatus: "orderStatus",
-        favourite:"favourite",
+        favourite: "favourite",
         profile: "profile",
         wallet: "wallet",
         changeStore: "changeStore",
@@ -143,6 +143,7 @@ module.exports = {
     APIVerifyPhoneCode: "verifyPhoneCode",
     APIRequestVerifyPhones: "requestVerifyPhones",
     APIUpdatePassword: "updatePassword",
+    APIUpdateProfile: "updateProfile",
 
     /// Menu Screens
     APIGetCategory: "getCategory",
@@ -175,14 +176,15 @@ module.exports = {
     APIGeoCode: "https://maps.googleapis.com/maps/api/geocode/",
     APIChangePassword: "userChangPassword",
     APIGetRewardHistory: "getRewardHistory",
-
+    APIAddFavouriteProduct:"addFavouriteProduct",
     // General API
     APIGetAppSettingsAndRewards: "getAppSettingsAndRewards",
     APIGetStoreTimeZone: "getStoreTimeZone",
 
     // Logout API
 
-    APILogout:"userlogout",
+    APILogout: "userlogout",
+
 
     /// Colors
     themeColor: "#CF2526",
@@ -241,7 +243,7 @@ module.exports = {
     kWalletTypeCollected: "received",
 
 
-    
+
 
     actions: {
         /*
@@ -447,12 +449,25 @@ module.exports = {
         getWalletHistorySuccess: "getWalletHistorySuccess",
         getWalletHistoryFailure: "getWalletHistoryFailure",
 
+
+        // Edit User Profile 
+
+        updateUserProfileRequest: "updateUserProfileRequest",
+        updateUserProfileSuccess: "updateUserProfileSuccess",
+        updateUserProfileFailure: "updateUserProfileFailure",
+
         // SideMenu Screen
 
         //Logout 
         logOutRequest: "logOutRequest",
         logOutSuccess: "logOutSuccess",
         logOutFailure: "logOutFailure",
+
+        //Favourite Product Screen
+        addFavouriteProductRequest:"addFavouriteProductRequest",
+        addFavouriteProductSuccess:"addFavouriteProductSuccess",
+        addFavouriteProductFailure:"addFavouriteProductFailure",
+
     },
 
     /*

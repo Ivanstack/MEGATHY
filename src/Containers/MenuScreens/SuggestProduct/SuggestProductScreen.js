@@ -28,7 +28,7 @@ class SuggestProductScreen extends Component {
 
         this._setDefaultProducts();
         baseLocal.locale = global.currentAppLanguage;
-        KeyboardManager.setShouldResignOnTouchOutside(true);
+        KeyboardManager.setShouldResignOnTouchOutside(false);
         KeyboardManager.setToolbarPreviousNextButtonEnable(false);
         this.arrTextFields = [];
         this.state = {
@@ -63,21 +63,28 @@ class SuggestProductScreen extends Component {
         }
     };
 
-    _onChangeText = text => {
-        this.arrTextFields.map(name => ({ name, ref: this[name] })).forEach(({ name, ref }) => {
-            if (ref.isFocused()) {
-                var updatedProducrts = this.state.arrProducts;
-                updatedProducrts.map((product, index) => {
-                    if (product.id == name.split(textRefPrefix)[1]) {
-                        product.value = text;
-                    }
-                });
+    _onChangeText = (text,reference) => {
+        // this.arrTextFields.map(name => ({ name, ref: this[name] })).forEach(({ name, ref }) => {
+        //     if (ref.isFocused()) {
+        //         var updatedProducrts = this.state.arrProducts;
+        //         updatedProducrts.map((product, index) => {
+        //             if (product.id == name.split(textRefPrefix)[1]) {
+        //                 product.value = text;
+        //             }
+        //         });
+        //         this.setState({
+        //             arrProducts: updatedProducrts,
+        //         });
+        //     }
+        // });
 
-                this.setState({
-                    arrProducts: updatedProducrts,
-                });
-            }
+        var updatedProducrts = this.state.arrProducts;
+        updatedProducrts.map((product, index) => {
+          if (product.id == reference.split(textRefPrefix)[1]) {
+            product.value = text;
+          }
         });
+        this.setState({ arrProducts: updatedProducrts });
     };
 
     _refForProductId = id => {
@@ -104,7 +111,7 @@ class SuggestProductScreen extends Component {
 
     _onPressSend = () => {
         var products = "";
-        this.state.arrProducts.map(value => (products += value.value.trim() + ","));
+        this.state.arrProducts.map(value => (products += value.value.trim().length > 0 ? value.value.trim() + "," : ""));
         if (products.length > 0) {
             products = products.slice(0, -1);
         } else {
@@ -177,10 +184,10 @@ class SuggestProductScreen extends Component {
                             value={value.value}
                             selectTextOnFocus={false}
                             textColor={constant.themeColor}
-                            baseColor={constant.themeColor}
+                            baseColor={ value.value.length > 0 ? constant.themeColor : constant.grayShadeColorAA }  
                             tintColor={constant.themeColor}
                             returnKeyType="next"
-                            onChangeText={this._onChangeText}
+                            onChangeText={(text) => this._onChangeText(text,ref)}
                         />
                     </View>
                     <TouchableOpacity
@@ -263,7 +270,8 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: "flex-start",
         alignItems: "center",
-        height: Dimensions.get("window").height,
+        paddingBottom:10,
+        //height: Dimensions.get("window").height,
     },
     navigationView: {
         width: "100%",
