@@ -64,6 +64,64 @@ export function getRequest(endPoint, parameters = "", url="") {
     });
 }
 
+export function requestWithUrl(endPoint, parameters = "", url="") {
+    setDefaultAPIConfig();
+    if(url != ""){
+        axiosDefaults.baseURL = url;
+    }
+
+    if (parameters.storeId === undefined && global.currentStore != null) {
+        if (parameters === "") {
+            parameters = {
+                storeId: global.currentStore.storeId,
+            };
+        } else {
+            parameters["storeId"] = global.currentStore.storeId;
+        }
+    }
+
+    if (parameters.userId === undefined && global.currentUser != null) {
+        if (parameters === "") {
+            parameters = {
+                userId: global.currentUser.id,
+            };
+        } else {
+            parameters["userId"] = global.currentUser.id;
+        }
+    }
+
+    console.log("\n\n ================>");
+    console.log("\n HTTP Method: Get");
+    console.log("\n Request for URL: " + constants.baseURL);
+    console.log("\n Endpoint: " + endPoint);
+    console.log("\n Parameters: " + JSON.stringify(parameters));
+    console.log("\n Headers: " + JSON.stringify(axiosDefaults.headers));
+    console.log("<================\n\n");
+
+    return new Promise((resolve, reject) => {
+        axios
+            .get(endPoint, {
+                params: parameters === undefined || parameters === null ? "" : parameters,
+            })
+            .then(function(response) {
+                constants.debugLog(response);
+                resolve(response);
+            })
+            .catch(function(error) {
+                constants.debugLog(error)
+                let errorResponse = ""
+                if(error.message === "Network Error"){
+                    CommonUtilities.showNetworkAlert()
+                }else if (error.response.status === 403) {
+                    CommonUtilities.logout(false)
+                } else {
+                    errorResponse = error.response
+                }
+                reject(error.response);
+            });
+    });
+}
+
 export function postRequestWithFormData(endPoint,parameters = "") {
     axiosDefaults.baseURL = constants.baseURL;
     axiosDefaults.timeout = 60000;

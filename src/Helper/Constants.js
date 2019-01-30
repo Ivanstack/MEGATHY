@@ -161,6 +161,7 @@ module.exports = {
     APIGetUserBookedSession: "getUserBookedSession",
     APICheckCoupenCode: "checkCoupon",
     APIGetFavouriteProducts:"getFavouriteProduct",
+    APIAddFavouriteProduct:"addFavouriteProduct",
     APIRemoveFavouriteProduct:"removeFavouriteProduct",
     APISuggestProduct: "suggestProduct",
     APIContactUs: "contactUs",
@@ -409,6 +410,10 @@ module.exports = {
         getFavouriteProductRequest:"getFavouriteProductRequest",
         getFavouriteProductSuccess:"getFavouriteProductSuccess",
         getFavouriteProductFailure:"getFavouriteProductFailure",
+
+        addFavouriteProductRequest:"addFavouriteProductRequest",
+        addFavouriteProductSuccess:"addFavouriteProductSuccess",
+        addFavouriteProductFailure:"addFavouriteProductFailure",
 
        removeFavouriteProductRequest:"removeFavouriteProductRequest",
        removeFavouriteProductSuccess:"removeFavouriteProductSuccess",

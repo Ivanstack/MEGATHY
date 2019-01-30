@@ -38,7 +38,7 @@ import * as networkUtility from "../../../../Helper/NetworkUtility";
 
 // Components Style
 import ProductStyles from "./ProductScrStyle";
-
+import CollectionView from '../../../../Helper/Components/Collection'
 // Localization
 import baseLocal from "../../../../Resources/Localization/baseLocalization";
 
@@ -66,6 +66,8 @@ class ProductScreen extends Component {
                 <View style={{ flexDirection: "row" }}>
                     <TouchableOpacity
                         onPress={() => {
+                            console.log(navigation);
+                            
                             navigation.state.params.onNavigateBack();
                             navigation.goBack();
                         }}
@@ -191,214 +193,10 @@ class ProductScreen extends Component {
         this.getProductList(true);
     }
 
-    _onPressAddProduct = item => {
-        item.totalAddedProduct = item.totalAddedProduct ? item.totalAddedProduct + 1 : 1;
-
-        let oldCartItem = cartFunc.findCartItem(item.PkId);
-
-        if (global.arrCartItems.length > 0) {
-            if (oldCartItem) {
-                console.log("Item is available in arr");
-                console.log("Array before replace : ====> ", global.arrCartItems);
-                let itemIdx = global.arrCartItems.indexOf(oldCartItem);
-                global.arrCartItems.splice(itemIdx, 1, item);
-            } else {
-                console.log("Item is not available in arr");
-                global.arrCartItems.push(item);
-            }
-        } else {
-            console.log("Item is not available in arr");
-            global.arrCartItems.push(item);
-        }
-        this.setState({ productQuentity: this.state.productQuentity + 1 });
-    };
-
-    _onPressRemoveProduct = item => {
-        if (item.totalAddedProduct > 0) {
-            item.totalAddedProduct = item.totalAddedProduct - 1;
-            this.setState({ productQuentity: this.state.productQuentity - 1 });
-            let oldCartItem = cartFunc.findCartItem(item.PkId);
-            let itemIdx = global.arrCartItems.indexOf(oldCartItem);
-
-            if (global.arrCartItems.length > 0) {
-                if (item.totalAddedProduct === 0) {
-                    global.arrCartItems.splice(itemIdx, 1);
-                } else if (oldCartItem) {
-                    console.log("Item is available in arr");
-                    console.log("Array before replace : ====> ", global.arrCartItems);
-                    global.arrCartItems.splice(itemIdx, 1, item);
-                    // console.log("Array after replace : ====> ",global.arrCartItems);
-                } else {
-                    console.log("Item is not available in arr");
-                    global.arrCartItems.push(item);
-                }
-            } else {
-                console.log("Item is not available in arr");
-                global.arrCartItems.push(item);
-            }
-        }
-    };
-
-    _renderProductDiscountView = item => {
-        return (
-            <View
-                style={{
-                    backgroundColor: constant.themeColor,
-                    borderColor: "transparent",
-                    borderBottomRightRadius: 10,
-                    borderTopRightRadius: 10,
-                    flex: 1,
-                    height: 20,
-                    position: "absolute",
-                    top: 45,
-                    paddingLeft: 5,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    paddingRight: 10,
-                }}
-            >
-                <Text
-                    style={{
-                        fontFamily: constant.themeFont,
-                        fontWeight: "bold",
-                        fontSize: 10,
-                        color: "white",
-                    }}
-                >
-                    {item.product_price[0].hike} % OFF
-                </Text>
-            </View>
-        );
-    };
-
-    _renderPriceCutView = item => {
-        return (
-            <View>
-                <View style={{ alignSelf: "flex-start", justifyContent: "center", backgroundColor: "transparent" }}>
-                    <Text style={ProductStyles.productPriceLbl}>SAR {item.product_price[0].price}</Text>
-                    <View>
-                        <View style={ProductStyles.productPriceCutView} />
-                    </View>
-                </View>
-
-                <View style={{ justifyContent: "center", backgroundColor: "transparent" }}>
-                    <Text style={ProductStyles.productPriceLbl}>SAR {item.product_price[0].discountPrice}</Text>
-                </View>
-            </View>
-        );
-    };
-
     _renderCategoryItem = ({ item, index }) => {
+        console.log(item);
         return (
-            <View
-                style={{
-                    width: "50%",
-                    height: Dimensions.get("window").width / 2 + 80,
-                }}
-            >
-                <View style={ProductStyles.productCountainer}>
-                    <TouchableWithoutFeedback onPress={this._onPressAddProduct.bind(this, item)}>
-                        <View style={{ flex: 1 }}>
-                            <View
-                                style={{
-                                    flex: 1,
-                                    marginTop: 10,
-                                    backgroundColor: "transparent",
-                                    justifyContent: "space-between",
-                                    flexDirection: "column",
-                                }}
-                            >
-                                <View>
-                                    <ImageLoad
-                                        style={ProductStyles.productImg}
-                                        isShowActivity={false}
-                                        placeholderSource={require("../../../../Resources/Images/DefaultProductImage.png")}
-                                        source={{
-                                            uri: item.productImageUrl,
-                                        }}
-                                    />
-
-                                    <View>
-                                        <Text style={ProductStyles.productNameLbl} numberOfLines={2}>
-                                            {global.currentAppLanguage === constant.languageArabic
-                                                ? item.productNameAr
-                                                : item.productName}
-                                        </Text>
-                                        <Text style={ProductStyles.productQuentityLbl}>
-                                            {item.productQuntity}
-                                            {global.currentAppLanguage === constant.languageArabic
-                                                ? item.productUnitAr
-                                                : item.productUnit}
-                                        </Text>
-                                    </View>
-                                </View>
-
-                                <View
-                                    style={{
-                                        marginBottom: 5,
-                                        flexDirection: "row",
-                                        justifyContent: "space-between",
-                                        height: 40,
-                                    }}
-                                >
-                                    <View>
-                                        {item.product_price[0].status === constant.kProductDiscountActive ? (
-                                            this._renderPriceCutView(item)
-                                        ) : (
-                                            <Text style={ProductStyles.productPriceLbl}>
-                                                SAR {item.product_price[0].price}
-                                            </Text>
-                                        )}
-                                    </View>
-
-                                    {/* <View style={{ backgroundColor: "blue",marginBottom: 2,marginLeft:5 }}> */}
-                                    <TouchableOpacity
-                                        style={ProductStyles.addProductBtn}
-                                        onPress={this._onPressAddProduct.bind(this, item)}
-                                    >
-                                        <Image
-                                            style={ProductStyles.addProductImg}
-                                            source={require("../../../../Resources/Images/HomeScr/BtnAddProductWithPlus.png")}
-                                        />
-                                    </TouchableOpacity>
-                                    {/* </View> */}
-                                </View>
-                            </View>
-
-                            {item.product_price[0].discountType === constant.kProductDiscountPercentage &&
-                            item.product_price[0].status === constant.kProductDiscountActive
-                                ? this._renderProductDiscountView(item)
-                                : null}
-
-                            {item.totalAddedProduct > 0 && global.arrCartItems.length > 0 ? (
-                                <View style={ProductStyles.productSelectBtns}>
-                                    <TouchableOpacity onPress={this._onPressRemoveProduct.bind(this, item)}>
-                                        <Image
-                                            style={ProductStyles.selectedProductQuentity}
-                                            source={require("../../../../Resources/Images/HomeScr/BtnRemoveProduct.png")}
-                                        />
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity onPress={this._onPressAddProduct.bind(this, item)}>
-                                        <View style={ProductStyles.showSelectedProductQuentityView}>
-                                            <Text
-                                                style={{
-                                                    fontSize: 12,
-                                                    fontFamily: constant.themeFont,
-                                                    color: "white",
-                                                    fontWeight: "400",
-                                                }}
-                                            >
-                                                x{item.totalAddedProduct}
-                                            </Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            ) : null}
-                        </View>
-                    </TouchableWithoutFeedback>
-                </View>
-            </View>
+            <CollectionView item = {item}/>
         );
     };
 

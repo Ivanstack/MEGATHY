@@ -6,6 +6,7 @@ export const initialState = {
     isRefreshing: false,
     isProductSuccess: false,
     isDeleteSuccess: false,
+    isAddSuccess:false,
     arrProduct: [],
     currentPage: 1,
     lastPage: 0,
@@ -47,7 +48,29 @@ export const reducer = (state = initialState, action) => {
                 error: action.error,
             };
 
-            case constant.actions.removeFavouriteProductRequest:
+            case constant.actions.addFavouriteProductRequest:
+            return {
+                ...state,
+                isAddSuccess: false,
+                isLoading: true,
+                error: null,
+            };
+        case constant.actions.addFavouriteProductSuccess:
+            return {
+                ...state,
+                isAddSuccess: true,
+                isLoading: false,
+                error: null,
+            };
+        case constant.actions.addFavouriteProductFailure:
+            return {
+                ...state,
+                isAddSuccess: false,
+                isLoading: false,
+                error: action.error,
+            };
+
+        case constant.actions.removeFavouriteProductRequest:
             return {
                 ...state,
                 isDeleteSuccess: false,
@@ -64,6 +87,7 @@ export const reducer = (state = initialState, action) => {
         case constant.actions.removeFavouriteProductFailure:
             return {
                 ...state,
+                arrProduct: action.error.status === 404 ? arrProduct:[],
                 isDeleteSuccess: false,
                 isLoading: false,
                 error: action.error,

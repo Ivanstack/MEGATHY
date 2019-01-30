@@ -22,6 +22,15 @@ export function* FavouriteScreenCalls(action) {
             yield put({ type: constant.actions.removeFavouriteProductFailure, error });
         }
     }
+    else  if (action.payload.endPoint === constant.APIAddFavouriteProduct) {
+        try {
+            const response = yield call(addFavouriteProductCall, action.payload);
+            yield put({ type: constant.actions.addFavouriteProductSuccess, response });
+        } catch (error) {
+            constant.debugLog("Error: " + JSON.stringify(error));
+            yield put({ type: constant.actions.addFavouriteProductFailure, error });
+        }
+    }
 }
 
 getFavouriteProductCall = payload => {
@@ -49,6 +58,29 @@ getFavouriteProductCall = payload => {
 
 removeFavouriteProductCall = payload => {
     return networkUtility.deleteRequest(payload.endPoint, payload.parameters).then(
+        result => {
+            return result.data.data;
+        },
+        error => {
+            constant.debugLog("Status Code: " + error.status);
+            constant.debugLog("Error Message: " + error.message);
+            if (error.status != 500) {
+                if (global.currentAppLanguage === constant.languageArabic && error.data["messageAr"] != undefined) {
+                    CommonUtilities.showAlert(error.data["messageAr"], false);
+                } else {
+                    CommonUtilities.showAlert(error.data["message"], false);
+                }
+            } else {
+                constant.debugLog("Internal Server Error: " + error.data);
+                CommonUtilities.showAlert("Opps! something went wrong");
+            }
+            throw error;
+        }
+    );
+};
+
+addFavouriteProductCall = payload => {
+    return networkUtility.requestWithUrl(payload.endPoint, payload.parameters).then(
         result => {
             return result.data.data;
         },

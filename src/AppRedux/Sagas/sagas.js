@@ -115,7 +115,9 @@ export function* watcherSaga(action) {
     // Favourite Screen 
 
     yield takeEvery(constant.actions.getFavouriteProductRequest, FavouriteScreenCalls);
+    yield takeEvery(constant.actions.addFavouriteProductRequest, FavouriteScreenCalls);
     yield takeEvery(constant.actions.removeFavouriteProductRequest, FavouriteScreenCalls);
+   
 
 
 
