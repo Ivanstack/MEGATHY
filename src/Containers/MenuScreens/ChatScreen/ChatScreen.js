@@ -59,7 +59,7 @@ class ChatScreen extends Component {
 
         headerLeft: (
             <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
-                <View style={{ flexDirection: "row", width: "100%"}}>
+                <View style={{ flexDirection: "row", width: "100%" }}>
                     <TouchableOpacity
                         onPress={() => {
                             // console.log("Nav Params :==> ",navigation.state.params);
@@ -109,10 +109,10 @@ class ChatScreen extends Component {
                     // }, 600);
                 }
             });
-        }else if(newProps.isGetChatSuccess === true) {
+        } else if (newProps.isGetChatSuccess === true) {
             this.forceUpdate();
             if (this.chatList != undefined) {
-                this.chatList.scrollToEnd({animated:true});
+                this.chatList.scrollToEnd({ animated: true });
             }
         }
     }
@@ -120,7 +120,9 @@ class ChatScreen extends Component {
     componentDidUpdate() {
         if (this.chatList != undefined) {
             setTimeout(() => {
-                this.chatList.scrollToEnd({animated:true});
+                if (this.chatList != undefined) {
+                    this.chatList.scrollToEnd({ animated: true });
+                }
                 //this.chatList.scrollToIndex({ animated: true, index: newProps.arrChat.length - 1 });
             }, 600);
         }
@@ -153,9 +155,9 @@ class ChatScreen extends Component {
     // On Press Methods
     _onPressSendMsg = (isSender = true) => {
 
-        if(this.state.txtMsg.trim().length === 0) {
+        if (this.state.txtMsg.trim().length === 0) {
             return
-        } 
+        }
 
         constant.debugLog("on Send press .....");
 
@@ -174,7 +176,7 @@ class ChatScreen extends Component {
         // this.setState({ arrChat: arrChatTemp });
     };
 
-    
+
 
     _onPressCameraButton = () => {
 
@@ -184,22 +186,22 @@ class ChatScreen extends Component {
 
         if (Platform.OS === 'ios') {
             ActionSheetIOS.showActionSheetWithOptions({
-              options: ['Camera', 'Photos','Cancel'],
+                options: ['Camera', 'Photos', 'Cancel'],
             },
-            (buttonIndex) => {
-              if (buttonIndex === 0) { 
-                console.log('Camera Press');
-                this._openImagePickerCamera();
-              } else if (buttonIndex === 1) { /* destructive action */
-                console.log('Photos Press');
-                this._openImagePickerGallary();
-              } else if (buttonIndex === 2) { /* destructive action */
-                console.log('Cancel Press');
-              }
-            });
-          } else {
-            Alert:alert('This component not support in your OS')
-          }
+                (buttonIndex) => {
+                    if (buttonIndex === 0) {
+                        console.log('Camera Press');
+                        this._openImagePickerCamera();
+                    } else if (buttonIndex === 1) { /* destructive action */
+                        console.log('Photos Press');
+                        this._openImagePickerGallary();
+                    } else if (buttonIndex === 2) { /* destructive action */
+                        console.log('Cancel Press');
+                    }
+                });
+        } else {
+            Alert: alert('This component not support in your OS')
+        }
     }
 
 
@@ -214,14 +216,14 @@ class ChatScreen extends Component {
                 console.log('ImagePicker Error: ', response.error);
                 alert(response.error)
             } else {
-                constant.debugLog("ImagePicker_Response =====>",response);
+                constant.debugLog("ImagePicker_Response =====>", response);
                 constant.debugLog("on Send Picked Image .....");
 
                 let imageData = new FormData();
                 let objImg = {
-                    name:response.fileName,
-                    uri:response.uri,
-                    type:response.type,
+                    name: response.fileName,
+                    uri: response.uri,
+                    type: response.type,
                 }
                 imageData.append("image", objImg);
                 imageData.append("vendorId", constant.DeviceInfo.getUniqueID());
@@ -242,14 +244,14 @@ class ChatScreen extends Component {
                 console.log('ImagePicker Error: ', response.error);
                 alert("Device has no Camera.")
             } else {
-                constant.debugLog("ImagePicker_Response =====>",response);
+                constant.debugLog("ImagePicker_Response =====>", response);
                 constant.debugLog("Capured Image Save .....");
 
                 let imageData = new FormData();
                 let objImg = {
-                    name:response.fileName,
-                    uri:response.uri,
-                    type:response.type,
+                    name: response.fileName,
+                    uri: response.uri,
+                    type: response.type,
                 }
                 imageData.append("image", objImg);
                 imageData.append("vendorId", constant.DeviceInfo.getUniqueID());
@@ -280,12 +282,12 @@ class ChatScreen extends Component {
                         source={require("../../../Resources/Images/Feedback/ChatAngleRight.png")}
                     />
                 ) : (
-                    <Image
-                        style={[ChatScreenStyle.imgMsgStyle, { left: 0 }]}
-                        resizeMode="cover"
-                        source={require("../../../Resources/Images/Feedback/ChatAngleLeft.png")}
-                    />
-                )}
+                        <Image
+                            style={[ChatScreenStyle.imgMsgStyle, { left: 0 }]}
+                            resizeMode="cover"
+                            source={require("../../../Resources/Images/Feedback/ChatAngleLeft.png")}
+                        />
+                    )}
                 <View
                     style={{
                         width: "96%",
@@ -316,55 +318,55 @@ class ChatScreen extends Component {
                             </Text>
                         </View>
                     ) : (
-                        // <Image resi/>
-                        // <View style={{}}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                this.showImage = item.display_image;
-                                this.setState({ isShowImage: !this.state.isShowImage });
-                            }}
-                        >
-                            <ImageLoad
-                                style={{
-                                    height: 135,
-                                    width: "100%",
-                                    // borderColor: "transparent",
-                                    // borderRadius: 10,
-                                    // borderWidth: 1,
-                                }}
-                                borderRadius={5}
-                                isShowActivity={false}
-                                // resizeMode="contain"
-                                placeholderSource={require("../../../Resources/Images/DefaultProductImage.png")}
-                                source={{
-                                    uri: item.display_image,
+                            // <Image resi/>
+                            // <View style={{}}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    this.showImage = item.display_image;
+                                    this.setState({ isShowImage: !this.state.isShowImage });
                                 }}
                             >
-                                <View
+                                <ImageLoad
                                     style={{
-                                        position: "absolute",
-                                        bottom: 2,
-                                        right: 5,
-                                        backgroundColor: "lightgray",
+                                        height: 135,
+                                        width: "100%",
+                                        // borderColor: "transparent",
+                                        // borderRadius: 10,
+                                        // borderWidth: 1,
+                                    }}
+                                    borderRadius={5}
+                                    isShowActivity={false}
+                                    // resizeMode="contain"
+                                    placeholderSource={require("../../../Resources/Images/DefaultProductImage.png")}
+                                    source={{
+                                        uri: item.display_image,
                                     }}
                                 >
-                                    <Text
+                                    <View
                                         style={{
-                                            fontFamily: constant.themeFont,
-                                            fontSize: 11,
-                                            alignSelf: "flex-end",
-                                            color: "black",
-                                            // margin: 2,
-                                            // marginRight: 8,
+                                            position: "absolute",
+                                            bottom: 2,
+                                            right: 5,
+                                            backgroundColor: "lightgray",
                                         }}
                                     >
-                                        {item.timeAgo}
-                                    </Text>
-                                </View>
-                            </ImageLoad>
-                        </TouchableOpacity>
-                        // </View>
-                    )}
+                                        <Text
+                                            style={{
+                                                fontFamily: constant.themeFont,
+                                                fontSize: 11,
+                                                alignSelf: "flex-end",
+                                                color: "black",
+                                                // margin: 2,
+                                                // marginRight: 8,
+                                            }}
+                                        >
+                                            {item.timeAgo}
+                                        </Text>
+                                    </View>
+                                </ImageLoad>
+                            </TouchableOpacity>
+                            // </View>
+                        )}
                     {/* <Text style={{ fontFamily: constant.themeFont, fontSize: 12, margin: 2, marginLeft: 8 }}>
                         {item.message}
                     </Text> */}
@@ -428,24 +430,21 @@ class ChatScreen extends Component {
                                     // height: "100%",
                                     backgroundColor: "transparent",
                                 }}
-                                scrollToEnd
-                                ref={list => (this.chatList = list)}
                                 data={this.props.arrChat}
                                 keyExtractor={(item, index) => item.userChatId.toString()}
                                 renderItem={this._renderChatItem.bind(this)}
                                 showsHorizontalScrollIndicator={false}
                                 directionalLockEnabled
-                                onLayout={() => this.chatList.scrollToEnd({animated:true})}
-                                // ListFooterComponent={this._renderFooter.bind(this)}
+                            // ListFooterComponent={this._renderFooter.bind(this)}
                             />
                         </View>
                     ) : (
-                        <View style={{ marginBottom: 50, marginHorizontal: 16 }}>
-                            <Text style={{ fontFamily: constant.themeFont, fontSize: 17, marginVertical: 8 }}>
-                                {baseLocal.t("keyNoMessageTextFeedback")}
-                            </Text>
-                        </View>
-                    )}
+                            <View style={{ marginBottom: 50, marginHorizontal: 16 }}>
+                                <Text style={{ fontFamily: constant.themeFont, fontSize: 17, marginVertical: 8 }}>
+                                    {baseLocal.t("keyNoMessageTextFeedback")}
+                                </Text>
+                            </View>
+                        )}
                     <View
                         style={{
                             height: 50,
@@ -493,8 +492,8 @@ class ChatScreen extends Component {
                         <Spinner
                             visible={this.props.isLoading}
                             cancelable={true}
-                            // textContent={"Please wait..."}
-                            // textStyle={{ color: "#FFF" }}
+                        // textContent={"Please wait..."}
+                        // textStyle={{ color: "#FFF" }}
                         />
                     ) : null}
                 </View>

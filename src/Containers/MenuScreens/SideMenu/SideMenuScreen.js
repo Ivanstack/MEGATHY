@@ -16,19 +16,28 @@ class SideMenuScreen extends Component {
 
     constructor(props){
         super(props);        
+        this.state = {
+            isLogoutPressed:false,
+        };
     }
 
     componentWillReceiveProps(nextProps){
         console.log("Side Screen : Next Props ======> ",nextProps);
-        if (!nextProps.logout.isLoading) {
-            if(nextProps.logout.result) {
-                commonUtilities.logout();
+        if (this.state.isLogoutPressed) {
+            if (!nextProps.logout.isLoading) {
+                if(nextProps.logout.result) {
+                    commonUtilities.logout();
+                }
             }
         }
+        
     }
 
     _onPressLogout = async () => {
         //this.props.drawerProps.navigation.navigate('DrawerClose');
+        this.setState ({
+            isLogoutPressed:true,
+        })
         this.props.onPressLogout();
 
     };

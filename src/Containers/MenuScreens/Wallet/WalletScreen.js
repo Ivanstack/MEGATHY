@@ -52,21 +52,25 @@ class WalletScreen extends Component {
             filterType: filterAll,
             currentPosition: 0,
             scrollY: new Animated.Value(0),
+            navigationTitleIndex: 0
         };
         this.arrShowWallet = [];
         this.segment_X_Translate = new Animated.Value(0);
     }
 
-    
     static navigationOptions = ({ navigation }) => ({
-
         headerLeft: (
-            <View style={{ flexDirection: "row", justifyContent: "space-between", flex: 1 }}>
-                <View style={{ flexDirection: "row", width: "100%"}}>
+            <View
+                style={{ flexDirection: "row", justifyContent: "flex-start", flex: 1 }}
+            >
+                <View style={{ flexDirection: "row", width: "100%" }}>
                     <TouchableOpacity
                         onPress={() => {
                             // console.log("Nav Params :==> ",navigation.state.params);
-                            if (navigation.state.params != undefined && navigation.state.params.category != undefined) {
+                            if (
+                                navigation.state.params != undefined &&
+                                navigation.state.params.category != undefined
+                            ) {
                                 navigation.goBack();
                             } else {
                                 navigation.navigate("DrawerToggle");
@@ -75,28 +79,74 @@ class WalletScreen extends Component {
                     >
                         <Icon
                             name={
-                                navigation.state.params != undefined && navigation.state.params.category != undefined
+                                navigation.state.params != undefined &&
+                                    navigation.state.params.category != undefined
                                     ? "arrow-left"
                                     : "navicon"
                             }
-                            style={{ marginLeft: 10 }}
+                            style={{ marginLeft: 10, marginTop: 10 }}
                             size={35}
                             color="white"
                         />
                     </TouchableOpacity>
-                    <Text style={CommonStyle.headerText}>{baseLocal.t("My Rewards Wallet")}</Text>
+                    <FlatList
+                        ref={list => (navigation.chatList = list)}
+                        style={styles.navigationFlatList}
+                        showsHorizontalScrollIndicator={false}
+                        showsVerticalScrollIndicator={false}
+                        scrollEnabled={false}
+                        pagingEnabled={true}
+                        data={navigation.getParam("navigationHeaderData")}
+                        keyExtractor={item => item.id.toString()}
+                        renderItem={item => (
+                            <View
+                                style={{
+                                    flex: 1,
+                                    flexDirection: "column",
+                                    height: 44,
+                                    justifyContent: "center"
+                                }}
+                            >
+                                <Text style={styles.navigationHeaderText}>
+                                    {item.item.name}
+                                </Text>
+                                {item.item.value ? (
+                                    <Text style={styles.navigationHeaderText}>
+                                        {item.item.value}
+                                    </Text>
+                                ) : null}
+                            </View>
+                        )}
+                    />
+
+                    {/* <Text style={CommonStyle.headerText}>{baseLocal.t("My Rewards Wallet")}</Text> */}
                 </View>
             </View>
         ),
         headerStyle: {
-            backgroundColor: constant.themeColor,
-        },
+            backgroundColor: constant.themeColor
+        }
     });
     componentDidMount = () => {
         Animated.timing(this.segment_X_Translate, {
             toValue: 0,
-            duration: 1.5,
+            duration: 1.5
         }).start();
+
+        var navigationHeaderData = [
+            {
+                id: 0,
+                name: "My Rewards Wallet"
+            },
+            {
+                id: 1,
+                name: "Wallet Balance",
+                value: "SAR " + global.currentSettings.total_reward_sr
+            }
+        ];
+        this.props.navigation.setParams({
+            navigationHeaderData: navigationHeaderData
+        });
         this._getWalletHistoryForAllType();
     };
 
@@ -110,7 +160,7 @@ class WalletScreen extends Component {
         arrWalletType.map(value => {
             var walletParameters = {
                 page: 1,
-                type: value,
+                type: value
             };
 
             this.props.getWalletHistory(walletParameters);
@@ -119,13 +169,17 @@ class WalletScreen extends Component {
 
     _getWalletHistory = (isRefresh = false, isLoadMore = false) => {
         let orderHistoryPage = 1;
-        if (!isRefresh && isLoadMore && this.props.currentPage < this.props.lastPage) {
+        if (
+            !isRefresh &&
+            isLoadMore &&
+            this.props.currentPage < this.props.lastPage
+        ) {
             orderHistoryPage = this.props.currentPage + 1;
         }
 
         var walletParameters = {
             page: orderHistoryPage,
-            type: arrWalletType[this.state.currentPosition],
+            type: arrWalletType[this.state.currentPosition]
         };
 
         this.props.getWalletHistory(walletParameters);
@@ -152,9 +206,15 @@ class WalletScreen extends Component {
         } else if (position >= 3) {
             position = 2;
         }
-        this.setState({ currentPosition: position, scrollY: new Animated.Value(0) }, () => {
-            Animated.timing(this.segment_X_Translate, { toValue: position, duration: 300 }).start();
-        });
+        this.setState(
+            { currentPosition: position, scrollY: new Animated.Value(0) },
+            () => {
+                Animated.timing(this.segment_X_Translate, {
+                    toValue: position,
+                    duration: 300
+                }).start();
+            }
+        );
     }
 
     _onPressSegmentBtn = segment => {
@@ -164,7 +224,10 @@ class WalletScreen extends Component {
         this.walletList.getNode().scrollToOffset({ x: 0, y: 0, animated: true });
 
         // this.setState({ currentPosition: segment }, () => {
-        Animated.timing(this.segment_X_Translate, { toValue: segment, duration: 300 }).start();
+        Animated.timing(this.segment_X_Translate, {
+            toValue: segment,
+            duration: 300
+        }).start();
 
         this.setState({ scrollY: new Animated.Value(0) });
 
@@ -186,7 +249,7 @@ class WalletScreen extends Component {
                             fontSize: 17,
                             color: "gray",
                             fontWeight: "bold",
-                            fontFamily: constant.themeFont,
+                            fontFamily: constant.themeFont
                         }}
                     >
                         {point}
@@ -196,7 +259,7 @@ class WalletScreen extends Component {
                             fontSize: 13,
                             // marginBottom: 2,
                             color: "gray",
-                            fontFamily: constant.themeFont,
+                            fontFamily: constant.themeFont
                         }}
                     >
                         {title}
@@ -211,7 +274,7 @@ class WalletScreen extends Component {
         let userRewardPointsInSAR = global.currentSettings.total_reward_sr;
         var headMov = this.state.scrollY.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, -0.02],
+            outputRange: [0, -0.02]
         });
         return (
             <Animated.View
@@ -219,15 +282,36 @@ class WalletScreen extends Component {
                     marginTop: 15,
                     justifyContent: "center",
                     alignItems: "center",
-                    transform: [{ translateY: headMov }],
+                    transform: [{ translateY: headMov }]
                 }}
             >
-                <Text style={{ fontFamily: constant.themeFont, fontSize: 17, marginBottom: 8 }}>Wallet Balance</Text>
+                <Text
+                    style={{
+                        fontFamily: constant.themeFont,
+                        fontSize: 17,
+                        marginBottom: 8
+                    }}
+                >
+                    Wallet Balance
+        </Text>
                 <View
-                    style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: 18 }}
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginBottom: 18
+                    }}
                 >
                     {this._renderWalletPointImage(userRewardPoints, "Points")}
-                    <Text style={{ fontFamily: constant.themeFont, fontSize: 20, marginHorizontal: 5 }}>=</Text>
+                    <Text
+                        style={{
+                            fontFamily: constant.themeFont,
+                            fontSize: 20,
+                            marginHorizontal: 5
+                        }}
+                    >
+                        =
+          </Text>
                     {this._renderWalletPointImage(userRewardPointsInSAR, "SAR")}
                 </View>
                 <View
@@ -237,7 +321,7 @@ class WalletScreen extends Component {
                         backgroundColor: constant.grayShadeColorAA,
                         position: "absolute",
                         bottom: 2,
-                        opacity: 0.2,
+                        opacity: 0.2
                     }}
                 />
                 {/* {this._renderSegmentView()} */}
@@ -250,13 +334,22 @@ class WalletScreen extends Component {
         return (
             <View style={{ backgroundColor: "white" }}>
                 <View style={{ flexDirection: "row" }}>
-                    <TouchableOpacity style={styles.segmentBtns} onPress={() => this._onPressSegmentBtn(0)}>
+                    <TouchableOpacity
+                        style={styles.segmentBtns}
+                        onPress={() => this._onPressSegmentBtn(0)}
+                    >
                         <Text style={styles.segmentBtnsTxt}> All </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.segmentBtns} onPress={() => this._onPressSegmentBtn(1)}>
+                    <TouchableOpacity
+                        style={styles.segmentBtns}
+                        onPress={() => this._onPressSegmentBtn(1)}
+                    >
                         <Text style={styles.segmentBtnsTxt}> Redeemed </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.segmentBtns} onPress={() => this._onPressSegmentBtn(2)}>
+                    <TouchableOpacity
+                        style={styles.segmentBtns}
+                        onPress={() => this._onPressSegmentBtn(2)}
+                    >
                         <Text style={styles.segmentBtnsTxt}> Collected </Text>
                     </TouchableOpacity>
                 </View>
@@ -271,10 +364,10 @@ class WalletScreen extends Component {
                                 {
                                     translateX: this.segment_X_Translate.interpolate({
                                         inputRange: [0, arrWalletType.length - 1],
-                                        outputRange: [0, (arrWalletType.length - 1) * viewWidth],
-                                    }),
-                                },
-                            ],
+                                        outputRange: [0, (arrWalletType.length - 1) * viewWidth]
+                                    })
+                                }
+                            ]
                         }}
                     />
                 </View>
@@ -296,24 +389,47 @@ class WalletScreen extends Component {
                     flexDirection: "row",
                     marginBottom: StyleSheet.hairlineWidth,
                     backgroundColor: "white",
-                    justifyContent: "space-between",
+                    justifyContent: "space-between"
                 }}
             >
-                <View style={{ marginVertical: 8, marginLeft: 16, justifyContent: "center" }}>
-                    <Text style={{ fontFamily: constant.themeFont, color: constant.grayShadeColor55 }}>
+                <View
+                    style={{
+                        marginVertical: 8,
+                        marginLeft: 16,
+                        justifyContent: "center"
+                    }}
+                >
+                    <Text
+                        style={{
+                            fontFamily: constant.themeFont,
+                            color: constant.grayShadeColor55
+                        }}
+                    >
                         Order Id: #{item.order_id}{" "}
                     </Text>
-                    <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                        <Image style={{ height: 15, width: 15 }} source="contain" source={imgArrow} />
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }}
+                    >
+                        <Image
+                            style={{ height: 15, width: 15 }}
+                            source="contain"
+                            source={imgArrow}
+                        />
                         <Text
                             style={{
                                 fontFamily: constant.themeFont,
                                 color: constant.grayShadeColor55,
                                 marginTop: 2,
-                                marginLeft: 2,
+                                marginLeft: 2
                             }}
                         >
-                            {moment(item.created_at, "DD-MM-YYYY hh:mm:ss A").format("DD MMM, YYYY hh:mm A")}
+                            {moment(item.created_at, "DD-MM-YYYY hh:mm:ss A").format(
+                                "DD MMM, YYYY hh:mm A"
+                            )}
                         </Text>
                     </View>
                 </View>
@@ -328,7 +444,7 @@ class WalletScreen extends Component {
                                 fontSize: 17,
                                 color: "gray",
                                 fontWeight: "bold",
-                                fontFamily: constant.themeFont,
+                                fontFamily: constant.themeFont
                             }}
                         >
                             {item.point}
@@ -357,6 +473,7 @@ class WalletScreen extends Component {
         }
 
         // constant.debugLog("SCROLL Y :====> " + this.state.scrollY);
+
         return (
             <View style={{ backgroundColor: "white", flex: 1 }}>
                 {this.arrShowWallet.length > 0 ? (
@@ -367,12 +484,16 @@ class WalletScreen extends Component {
                             [
                                 {
                                     nativeEvent: {
-                                        contentOffset: { y: this.state.scrollY },
-                                    },
-                                },
+                                        contentOffset: { y: this.state.scrollY }
+                                    }
+                                }
                             ],
                             {
-                                useNativeDriver: true, // <- Native Driver used for animated events
+                                useNativeDriver: true,
+                                listener: event => {
+                                    this._changeNavigationTitle(event);
+                                    // do something special
+                                } // <- Native Driver used for animated events
                             }
                         )}
                         ref={flatList => {
@@ -391,33 +512,63 @@ class WalletScreen extends Component {
                         removeClippedSubviews={false}
                         directionalLockEnabled
                         onEndReached={this._callLoadMore}
-                        // onEndReachedThreshold={0.5}
-                        // ListHeaderComponent={this._renderHeaderView.bind(this)}
-                        // ListFooterComponent={this._renderFooter.bind(this)}
+                    // onEndReachedThreshold={0.5}
+                    // ListHeaderComponent={this._renderHeaderView.bind(this)}
+                    // ListFooterComponent={this._renderFooter.bind(this)}
                     />
                 ) : (
-                    <View />
-                )}
+                        <View />
+                    )}
             </View>
         );
+    };
+
+    //Change Navigation Title From Scrolling FlatList
+
+    _changeNavigationTitle = event => {
+        console.log(this.props.navigation);
+        if (event.nativeEvent.contentOffset.y > 180.0) {
+            if (this.state.navigationTitleIndex == 1) {
+                return;
+            }
+            this.setState({
+                navigationTitleIndex: 1
+            });
+            this.props.navigation.chatList.scrollToIndex({
+                animated: true,
+                index: 1
+            })
+        } else {
+            if (this.state.navigationTitleIndex == 0) {
+                return;
+            }
+            this.setState({
+                navigationTitleIndex: 0
+            });
+            this.props.navigation.chatList.scrollToIndex({
+                animated: true,
+                index: 0
+            });
+        }
     };
 
     render = () => {
         var headMov = this.state.scrollY.interpolate({
             inputRange: [0, 180, 181],
-            outputRange: [0, -150, -150],
+            outputRange: [0, -150, -150]
         });
         return (
             // Main View (Container)
+
             <View style={styles.container}>
                 <Animated.View
                     style={[
                         styles.container,
                         {
                             transform: [{ translateY: headMov }],
-                            bottom: 0,
+                            bottom: 0
                             // position: "absolute",
-                        },
+                        }
                     ]}
                 >
                     {this._renderHeaderView()}
@@ -430,7 +581,7 @@ class WalletScreen extends Component {
                         loop={false}
                         index={this.state.currentPosition}
                         onIndexChanged={index => this._onPageChange(index)}
-                        onMomentumScrollEnd={(e, state, context) => {}}
+                        onMomentumScrollEnd={(e, state, context) => { }}
                         pagingEnabled={true}
                         dotColor="transparent"
                         activeDotColor="transparent"

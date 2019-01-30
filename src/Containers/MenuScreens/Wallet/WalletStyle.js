@@ -42,4 +42,15 @@ export default StyleSheet.create({
         bottom: 0,
         backgroundColor: constant.darkGrayBGColor,
     },
+    navigationHeaderText: {
+        color: "white",
+        // marginLeft: 5,
+        fontSize: 15,
+        fontFamily: constant.themeFont,
+        // flex: 1
+    },
+    navigationFlatList: {
+        margin: 4,
+        height: 44,
+    }
 });

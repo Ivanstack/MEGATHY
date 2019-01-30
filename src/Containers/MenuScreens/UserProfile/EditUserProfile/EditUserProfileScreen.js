@@ -18,6 +18,12 @@ import EditUserProfileStyle from "./EditUserProfileStyle";
 import AppTextField from "../../../../Components/AppTextField"; // Custom Text Field
 import KeyboardManager from "react-native-keyboard-manager"; // IQKeyboard Manager
 
+//Common Styles
+import CommonStyle from "../../../../Helper/CommonStyle"
+
+//Lib
+import Icon from "react-native-vector-icons/EvilIcons";
+
 class EditUserProfileScreen extends Component {
     constructor(props) {
         super(props);
@@ -36,18 +42,45 @@ class EditUserProfileScreen extends Component {
     }
 
     static navigationOptions = CommonUtilities.navigationView(baseLocal.t("Update User Profile"), true);
+    static navigationOptions = ({ navigation }) => ({
+        headerLeft: (
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                <View style={{ flexDirection: "row" }}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            // console.log("Nav Params :==> ",navigation.state.params);
+                            navigation.goBack();
+                        }}
+                    >
+                        <Icon name={"arrow-left"} style={{ marginLeft: 10 }} size={35} color="white" />
+                    </TouchableOpacity>
+                    <Text style={CommonStyle.headerText}>{baseLocal.t("Update User Profile")}</Text>
+                </View>
+            </View>
+        ),
+        headerStyle: {
+            backgroundColor: constant.themeColor,
+        },
+    });
+    componentDidMount() { }
 
-    componentDidMount() {}
-
-    componentWillReceiveProps(newProps) {}
+    componentWillReceiveProps(newProps) {
+        console.log("New Props =======> ",newProps);
+     }
 
     // Misc Methods
-    _onChangeText = text => {
-        ["fullName", "contactNo"].map(name => ({ name, ref: this[name] })).forEach(({ name, ref }) => {
-            if (ref.isFocused()) {
-                this.setState({ [name]: text });
-            }
-        });
+    _onChangeText = (text, name) => {
+        // ["fullName", "contactNo"].map(name => ({ name, ref: this[name] })).forEach(({ name, ref }) => {
+        //     if (ref.isFocused()) {
+        //         this.setState({ [name]: text });
+        //     }
+        // });
+
+        if (name === "fullName") {
+            this.setState({ fullName: text });
+        } else {
+            this.setState({ contactNo: text });
+        }
     };
 
     _onSubmitFullName = () => {
@@ -81,6 +114,19 @@ class EditUserProfileScreen extends Component {
         this[name] = ref;
     };
 
+    _onPressUpdate = () => {
+        Keyboard.dismiss();
+        if (this.state.fullName.trim() === "") {
+            CommonUtilities.showAlert("Full Name cannot be blank");
+            return;
+        }
+        if (this.state.contactNo.trim() === "") {
+            CommonUtilities.showAlert("Phone cannot be blank");
+            return;
+        }
+        this.props.onUpdateProfile();
+    }
+
     render() {
         return (
             // Main View (Container)
@@ -99,11 +145,11 @@ class EditUserProfileScreen extends Component {
                         label={baseLocal.t("Full Name")}
                         value={this.state.fullName}
                         textColor={constant.themeColor}
-                        baseColor={constant.themeColor}
+                        baseColor={this.state.fullName.length > 0 ? constant.themeColor : constant.grayShadeColorAA}
                         tintColor={constant.themeColor}
                         returnKeyType="next"
                         onSubmitEditing={this._onSubmitFullName}
-                        onChangeText={this._onChangeText}
+                        onChangeText={(text) => this._onChangeText(text, "fullName")}
                     />
                     {/* // Phone No. Text Field */}
                     <AppTextField
@@ -111,16 +157,16 @@ class EditUserProfileScreen extends Component {
                         label={baseLocal.t("Phone")}
                         value={this.state.contactNo}
                         textColor={constant.themeColor}
-                        baseColor={constant.themeColor}
+                        baseColor={this.state.contactNo.length > 0 ? constant.themeColor : constant.grayShadeColorAA}
                         tintColor={constant.themeColor}
                         returnKeyType="done"
                         // onSubmitEditing={this._onSubmitComment}
-                        onChangeText={this._onChangeText}
+                        onChangeText={(text) => this._onChangeText(text, "phone")}
                         onFocus={this._onSubmitFullName}
                     />
                 </View>
                 {/* // Update Profile Button */}
-                <TouchableOpacity style={EditUserProfileStyle.updateButtonStyle}>
+                <TouchableOpacity style={EditUserProfileStyle.updateButtonStyle} onPress = {this._onPressUpdate()}>
                     <Text
                         style={{
                             color: "white",
@@ -152,6 +198,11 @@ function mapDispatchToProps(dispatch) {
             dispatch({
                 type: constant.actions.loginRequest,
                 payload: { endPoint: constant.APILogin, parameters: parameters },
+            }),
+        onUpdateProfile: parameters =>
+            dispatch({
+                type: constant.actions.updateUserProfileRequest,
+                payload: { endPoint: constant.APIUpdateProfile, parameters: parameters },
             }),
     };
 }

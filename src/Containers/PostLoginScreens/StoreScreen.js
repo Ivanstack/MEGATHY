@@ -343,7 +343,7 @@ class StoreScreen extends Component {
                             position: "absolute",
                             // marginHorizontal: 40,
                             marginTop: (13 * Dimensions.get("window").height) / 100,
-                            backgroundColor: "black",
+                            backgroundColor: isChangeStoreScr === true ? "black" : "white",
                             height: 1,
                             width: "60%",
                         }}
@@ -353,7 +353,7 @@ class StoreScreen extends Component {
                             position: "absolute",
                             // marginHorizontal: 40,
                             marginTop: (19.5 * Dimensions.get("window").height) / 100,
-                            backgroundColor: "black",
+                            backgroundColor: isChangeStoreScr === true ? "black" : "white",
                             height: 1,
                             width: "60%",
                         }}
