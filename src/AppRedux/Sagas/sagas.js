@@ -29,7 +29,6 @@ import { ChangePasswordScreenCalls } from "./ChangePasswordSagas";
 import { WalletScreenCalls } from "./WalletSagas";
 import { LogoutScreenCalls } from "./LogoutSagas";
 import { UpdateUserProfileScreenCalls } from "./EditUserProfileSagas";
-import { FavouriteScreenCalls } from "./FavouriteProductSaga";
 
 // watcher saga: watches for actions dispatched to the store, starts worker saga
 export function* watcherSaga(action) {
