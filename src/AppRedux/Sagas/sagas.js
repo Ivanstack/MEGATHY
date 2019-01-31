@@ -37,7 +37,7 @@ export function* watcherSaga(action) {
     yield takeEvery(constant.actions.getStoreTimezoneRequest, GeneralAPICallSagas);
 
     // Login/SignUp Flow
-    // Login Screen
+    // Login Screen`
     yield takeEvery(constant.actions.loginRequest, LoginScreenCalls);
     yield takeEvery(constant.actions.FBLoginRequest, LoginScreenCalls);
 
